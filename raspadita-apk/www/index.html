@@ -803,6 +803,7 @@ body.ticket .hide-t,body.ticket .prizes-section:nth-of-type(1){display:none!impo
 
       <div class="actions hide-t">
         <button class="btn btn-secondary" onclick="shareGame()">📤 Compartir por WhatsApp</button>
+        <button class="btn btn-primary" onclick="shareGame()">🎟️ Vendedora: preparar boleta</button>
         
       </div>
       <div class="qty-row hide-t">
@@ -1322,14 +1323,19 @@ function openWhatsApp() {
   waOpen('https://wa.me/' + WHATSAPP + '?text=' + text);
 }
 
-function shareGame() {
-  const url = getPublicBase();
-  if (!url) {
-    alert('El enlace público todavía no está disponible. Intentá nuevamente cuando termine la publicación.');
+async function shareGame() {
+  const sellerCode = prompt('Código de acceso de la vendedora:');
+  if (sellerCode === null) return;
+  if (sellerCode.trim() !== 'Clave Raspadita') {
+    alert('El código no es correcto.');
     return;
   }
-  const text = '🎟️ ¡Jugá a la Raspadita San Pedro del Ycuamandyyú!\nPremios de hasta ₲ 2.000.000\nBoleta: ₲ 5.000\n\nJugá acá: ' + url;
-  waOpen('https://wa.me/?text=' + encodeURIComponent(text));
+  const base = getPublicBase();
+  if (!base) {
+    alert('El enlace público todavía no está disponible. Intentá nuevamente.');
+    return;
+  }
+  alert('La generación segura de enlaces individuales todavía está en preparación. No compartas el enlace general como si fuera una boleta.');
 }
 
 function claimPrize() {
