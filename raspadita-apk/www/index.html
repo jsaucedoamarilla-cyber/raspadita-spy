@@ -962,7 +962,7 @@ const PRIZE_CONFIG = [
 
 // Calcular boletas sin premio
 const assigned = PRIZE_CONFIG.slice(0, -1).reduce((s, p) => s + p.count, 0);
-PRIZE_CONFIG[10].count = TOTAL_TICKETS - assigned; // 1873
+PRIZE_CONFIG[10].count = TOTAL_TICKETS - assigned; // 4673
 
 // ===== Estado =====
 let pool = [];
@@ -1582,8 +1582,8 @@ function copyWa() {
   window.claimPrize = function () {
     if (!currentPrize || !T) return;
     const x = currentPrize.id === 1;
-    const msg = '¡Hola! ' + (x ? 'Me salió "Jugada más" 🔄' : 'Gané en la Raspadita San Pedro del Ycuamandyyú 🎉\n\nPremio: ' + currentPrize.label) +
-      '\nBoleta N° ' + String(T.n).padStart(4, '0') + '\nCódigo: ' + T.code + '\n\nQuiero ' + (x ? 'mi jugada extra.' : 'reclamar mi premio.');
+    const msg = '¡Hola! ' + (x ? 'Gané una boleta gratis 🎟️' : 'Gané en la Raspadita San Pedro del Ycuamandyyú 🎉\n\nPremio: ' + currentPrize.label) +
+      '\nBoleta N° ' + String(T.n).padStart(4, '0') + '\nCódigo: ' + T.code + '\n\nQuiero ' + (x ? 'mi boleta gratis.' : 'reclamar mi premio.');
     waOpen('https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent(msg));
   };
 
