@@ -803,6 +803,7 @@ body.ticket .hide-t,body.ticket .prizes-section:nth-of-type(1){display:none!impo
 
       <div class="actions hide-t">
         <button class="btn btn-secondary" onclick="shareGame()">📤 Compartir por WhatsApp</button>
+        <button class="btn btn-primary" onclick="playSellerTicket()">🎟️ Jugar en este celular</button>
         
       </div>
       <div class="qty-row hide-t">
@@ -1322,14 +1323,45 @@ function openWhatsApp() {
   waOpen('https://wa.me/' + WHATSAPP + '?text=' + text);
 }
 
-function shareGame() {
-  const url = getPublicBase();
-  if (!url) {
-    alert('El enlace público todavía no está disponible. Intentá nuevamente cuando termine la publicación.');
-    return;
+async function issueSellerTicket() {
+  const sellerCode = prompt('Código de acceso de la vendedora:');
+  if (sellerCode === null) return null;
+  if (!sellerCode.trim()) { alert('Ingresá el código de acceso.'); return null; }
+  try {
+    const response = await fetch('https://bmoepjlepqmnkuzmfuvq.supabase.co/functions/v1/raspadita-issue-link', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'apikey': 'sb_publishable_SWI-q3Z_AIG4jRe43SfVIA_x8BgRFWG' },
+      body: JSON.stringify({ pin: sellerCode })
+    });
+    const data = await response.json();
+    if (!response.ok || !data.ok || !data.token) {
+      alert(data.error === 'invalid_pin' ? 'El código no es correcto.' :
+        data.error === 'sold_out' ? 'Ya no quedan boletas disponibles.' :
+        'No se pudo generar la boleta. Revisá internet e intentá otra vez.');
+      return null;
+    }
+    const url = ticketPlayUrl(data.token);
+    if (!url) { alert('El enlace público del juego todavía no está disponible.'); return null; }
+    return { url, number: data.ticket_number };
+  } catch (e) {
+    console.error('No se pudo generar la boleta', e);
+    alert('No se pudo conectar con el servidor. Revisá internet e intentá otra vez.');
+    return null;
   }
-  const text = '🎟️ ¡Jugá a la Raspadita San Pedro del Ycuamandyyú!\nPremios de hasta ₲ 2.000.000\nBoleta: ₲ 5.000\n\nJugá acá: ' + url;
+}
+
+async function shareGame() {
+  const ticket = await issueSellerTicket();
+  if (!ticket) return;
+  const text = '🎟️ ¡Tu boleta de la Raspadita San Pedro del Ycuamandyyú!\nBoleta individual N° ' +
+    String(ticket.number).padStart(4, '0') +
+    '\nPremios de hasta ₲ 2.000.000\n\nAbrí este enlace en tu celular y raspá para descubrir tu premio:\n' + ticket.url;
   waOpen('https://wa.me/?text=' + encodeURIComponent(text));
+}
+
+async function playSellerTicket() {
+  const ticket = await issueSellerTicket();
+  if (ticket) location.href = ticket.url;
 }
 
 function claimPrize() {
