@@ -1153,7 +1153,9 @@ function scratch(e) {
   scratchedPercent = samples ? (transparent / samples) * 100 : 0;
 
   if (scratchedPercent > 28 && !isRevealed) {
-    revealPrize();
+    // Llamar a la versión pública permite validar la boleta en Supabase antes de mostrar el premio.
+    if (typeof window.revealPrize === 'function') window.revealPrize();
+    else revealPrize();
   }
 }
 
