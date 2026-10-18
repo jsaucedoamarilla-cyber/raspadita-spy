@@ -1440,36 +1440,42 @@ document.addEventListener('DOMContentLoaded', function() {
   initScratch();
 
   const c = document.getElementById('scratchCanvas');
-  // Eventos unificados para que raspar funcione de forma fiable en Android, iPhone y PC.
+  // Usar una sola familia de eventos evita que Android procese el mismo gesto dos veces.
   c.style.touchAction = 'none';
   c.style.pointerEvents = 'auto';
-  c.style.touchAction = 'none';
-  // Pointer events plus explicit touch/mouse fallbacks for older Android WebViews.
-  c.addEventListener('pointerdown', function(e) {
-    if (isRevealed) return;
-    if (e.cancelable) e.preventDefault();
-    c.style.touchAction = 'none';
-    try { c.setPointerCapture(e.pointerId); } catch (_) {}
-    startScratch(e);
-  }, { passive: false });
-  c.addEventListener('pointermove', moveScratch, { passive: false });
-  c.addEventListener('pointerup', endScratch);
-  c.addEventListener('pointercancel', endScratch);
-  c.addEventListener('lostpointercapture', endScratch);
-  c.addEventListener('touchstart', function(e) {
-    if (isRevealed) return;
-    if (e.cancelable) e.preventDefault();
-    startScratch(e);
-  }, { passive: false });
-  c.addEventListener('touchmove', function(e) {
-    if (!isScratching || isRevealed) return;
-    if (e.cancelable) e.preventDefault();
-    scratch(e);
-  }, { passive: false });
-  c.addEventListener('touchend', endScratch, { passive: true });
-  c.addEventListener('mousedown', function(e) { if (!isRevealed) startScratch(e); });
-  c.addEventListener('mousemove', function(e) { if (isScratching) moveScratch(e); });
-  window.addEventListener('mouseup', endScratch);
+  if (window.PointerEvent) {
+    c.addEventListener('pointerdown', function(e) {
+      if (isRevealed) return;
+      if (e.cancelable) e.preventDefault();
+      isScratching = true;
+      lastScratchPos = getPos(e);
+      try { c.setPointerCapture(e.pointerId); } catch (_) {}
+      scratch(e);
+    }, { passive: false });
+    c.addEventListener('pointermove', function(e) {
+      if (!isScratching || isRevealed) return;
+      if (e.cancelable) e.preventDefault();
+      scratch(e);
+    }, { passive: false });
+    c.addEventListener('pointerup', endScratch);
+    c.addEventListener('pointercancel', endScratch);
+    c.addEventListener('lostpointercapture', endScratch);
+  } else {
+    c.addEventListener('touchstart', function(e) {
+      if (isRevealed) return;
+      if (e.cancelable) e.preventDefault();
+      startScratch(e);
+    }, { passive: false });
+    c.addEventListener('touchmove', function(e) {
+      if (!isScratching || isRevealed) return;
+      if (e.cancelable) e.preventDefault();
+      scratch(e);
+    }, { passive: false });
+    c.addEventListener('touchend', endScratch, { passive: true });
+    c.addEventListener('mousedown', function(e) { if (!isRevealed) startScratch(e); });
+    c.addEventListener('mousemove', function(e) { if (isScratching) moveScratch(e); });
+    window.addEventListener('mouseup', endScratch);
+  }
 
   window.addEventListener('resize', function() {
     if (!isRevealed) initScratch();
