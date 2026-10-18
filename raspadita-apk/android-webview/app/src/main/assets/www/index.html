@@ -1312,9 +1312,9 @@ function ticketPlayUrl(token) {
   const base = getPublicBase();
   if (!base) return '';
   const sep = base.includes('?') ? '&' : '?';
-  // base ya apunta al html o a la carpeta
+  // GitHub Pages publica este juego como index.html; usar la ruta actual evita enlaces a un archivo inexistente.
   if (/\.html?$/i.test(base)) return base + sep + 't=' + encodeURIComponent(token);
-  return base.replace(/\/+$/, '') + '/raspadita-spy.html?' + 't=' + encodeURIComponent(token);
+  return base.replace(/\/+$/, '') + '/?t=' + encodeURIComponent(token);
 }
 
 function openWhatsApp() {
