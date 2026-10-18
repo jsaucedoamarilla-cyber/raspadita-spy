@@ -639,6 +639,10 @@ body::before {
   z-index: 999;
 }
 
+/* Los clientes con enlace individual solo juegan en la web; no mostrar instalar aplicación. */
+body.ticket .install-banner { display: none !important; }
+body.ticket #installBanner { display: none !important; }
+
 /* Install banner */
 .install-banner {
   position: fixed;
@@ -1375,6 +1379,8 @@ let deferredPrompt;
 window.addEventListener('beforeinstallprompt', function(e) {
   e.preventDefault();
   deferredPrompt = e;
+  // No ofrecer instalación a quienes abren una boleta individual desde WhatsApp.
+  if (new URLSearchParams(window.location.search).has('t')) return;
   const banner = document.getElementById('installBanner');
   if (banner) banner.classList.add('show');
 });
@@ -1414,13 +1420,17 @@ document.addEventListener('DOMContentLoaded', function() {
   initScratch();
 
   const c = document.getElementById('scratchCanvas');
-  c.addEventListener('mousedown', startScratch);
-  c.addEventListener('mousemove', moveScratch);
-  c.addEventListener('mouseup', endScratch);
-  c.addEventListener('mouseleave', endScratch);
-  c.addEventListener('touchstart', startScratch, { passive: false });
-  c.addEventListener('touchmove', moveScratch, { passive: false });
-  c.addEventListener('touchend', endScratch);
+  // Eventos unificados para que raspar funcione de forma fiable en Android, iPhone y PC.
+  c.style.touchAction = 'none';
+  c.addEventListener('pointerdown', function(e) {
+    if (c.style.pointerEvents === 'none' || isRevealed) return;
+    try { c.setPointerCapture(e.pointerId); } catch (_) {}
+    startScratch(e);
+  });
+  c.addEventListener('pointermove', moveScratch);
+  c.addEventListener('pointerup', endScratch);
+  c.addEventListener('pointercancel', endScratch);
+  c.addEventListener('lostpointercapture', endScratch);
 
   window.addEventListener('resize', function() {
     if (!isRevealed) initScratch();
