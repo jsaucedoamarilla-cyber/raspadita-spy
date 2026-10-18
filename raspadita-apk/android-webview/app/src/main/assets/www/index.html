@@ -1395,13 +1395,9 @@ if ('serviceWorker' in navigator) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-  try {
-    const p = location.protocol;
-    if (p === 'file:' || p === 'content:' || p.indexOf('blob') === 0) {
-      const w = document.getElementById('hostWarn');
-      if (w) w.style.display = 'block';
-    }
-  } catch (e) {}
+  // En la APK el HTML se carga desde los recursos locales de Android.
+  // Los enlaces para clientes usan PUBLIC_BASE_URL (HTTPS), así que no mostrar
+  // el aviso de archivo local dentro de la aplicación instalada.
   initPool();
   applyTheme();
   renderHistory();
