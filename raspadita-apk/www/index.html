@@ -978,6 +978,7 @@ let isScratching = false;
 let scratchedPercent = 0;
 let canvas, ctx;
 let isRevealed = false;
+let lastScratchPos = null;
 let plays = 0;
 let wins = 0;
 let freePlays = 0;
@@ -1078,7 +1079,7 @@ function initScratch() {
   canvas.height = rect.height * dpr;
   canvas.style.width = rect.width + 'px';
   canvas.style.height = rect.height + 'px';
-  ctx.scale(dpr, dpr);
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
   const gradient = ctx.createLinearGradient(0, 0, rect.width, rect.height);
   gradient.addColorStop(0, '#b0b0b0');
@@ -1116,34 +1117,50 @@ function getPos(e) {
 }
 
 function scratch(e) {
-  if (isRevealed) return;
-  e.preventDefault();
+  if (isRevealed || !canvas || !ctx) return;
+  if (e && e.cancelable) e.preventDefault();
 
   scratchSound();
   const pos = getPos(e);
-  const radius = 28;
+  const radius = 30;
 
+  // Usar un trazo continuo hace que el raspado responda mejor al dedo en móviles.
+  ctx.save();
   ctx.globalCompositeOperation = 'destination-out';
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  ctx.lineWidth = radius * 2;
+  if (lastScratchPos) {
+    ctx.beginPath();
+    ctx.moveTo(lastScratchPos.x, lastScratchPos.y);
+    ctx.lineTo(pos.x, pos.y);
+    ctx.stroke();
+  }
   ctx.beginPath();
   ctx.arc(pos.x, pos.y, radius, 0, Math.PI * 2);
   ctx.fill();
+  ctx.restore();
+  lastScratchPos = pos;
 
   const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
   const pixels = imageData.data;
   let transparent = 0;
-  const total = pixels.length / 4;
+  let samples = 0;
   for (let i = 3; i < pixels.length; i += 80) {
+    samples++;
     if (pixels[i] === 0) transparent++;
   }
-  scratchedPercent = (transparent / (total / 20)) * 100;
+  scratchedPercent = samples ? (transparent / samples) * 100 : 0;
 
-  if (scratchedPercent > 55 && !isRevealed) {
+  if (scratchedPercent > 28 && !isRevealed) {
     revealPrize();
   }
 }
 
 function startScratch(e) {
+  if (isRevealed || !canvas || !ctx) return;
   isScratching = true;
+  lastScratchPos = getPos(e);
   scratch(e);
 }
 
@@ -1154,6 +1171,7 @@ function moveScratch(e) {
 
 function endScratch() {
   isScratching = false;
+  lastScratchPos = null;
 }
 
 function revealPrize() {
@@ -1423,10 +1441,12 @@ document.addEventListener('DOMContentLoaded', function() {
   // Eventos unificados para que raspar funcione de forma fiable en Android, iPhone y PC.
   c.style.touchAction = 'none';
   c.addEventListener('pointerdown', function(e) {
-    if (c.style.pointerEvents === 'none' || isRevealed) return;
+    if (isRevealed) return;
+    if (e.cancelable) e.preventDefault();
+    c.style.touchAction = 'none';
     try { c.setPointerCapture(e.pointerId); } catch (_) {}
     startScratch(e);
-  });
+  }, { passive: false });
   c.addEventListener('pointermove', moveScratch);
   c.addEventListener('pointerup', endScratch);
   c.addEventListener('pointercancel', endScratch);
