@@ -639,6 +639,10 @@ body::before {
   z-index: 999;
 }
 
+/* Los clientes con enlace individual solo juegan en la web; no mostrar instalar aplicación. */
+body.ticket .install-banner { display: none !important; }
+body.ticket #installBanner { display: none !important; }
+
 /* Install banner */
 .install-banner {
   position: fixed;
@@ -944,7 +948,7 @@ const WHATSAPP = '595984363598'; // 0984 363 598 (Paraguay)
 // ★ IMPORTANTE: URL pública HTTPS donde está subido este HTML (sin / al final).
 // Ejemplo: 'https://tu-usuario.github.io/raspadita' o 'https://raspadita.netlify.app'
 // Si queda vacío, se usa la URL del navegador solo si es http/https (nunca file:// ni content://).
-const PUBLIC_BASE_URL = 'https://jsaucedoamarilla-cyber.github.io/raspadita-spy/';
+const PUBLIC_BASE_URL = 'https://jsaucedoamarilla-cyber.github.io/raspadita-spy/index.html';
 // Los enlaces individuales deben abrir esta web HTTPS, nunca la descarga de la APK.
 
 // Cantidades exactas de cada premio
@@ -974,6 +978,7 @@ let isScratching = false;
 let scratchedPercent = 0;
 let canvas, ctx;
 let isRevealed = false;
+let lastScratchPos = null;
 let plays = 0;
 let wins = 0;
 let freePlays = 0;
@@ -1074,7 +1079,7 @@ function initScratch() {
   canvas.height = rect.height * dpr;
   canvas.style.width = rect.width + 'px';
   canvas.style.height = rect.height + 'px';
-  ctx.scale(dpr, dpr);
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
   const gradient = ctx.createLinearGradient(0, 0, rect.width, rect.height);
   gradient.addColorStop(0, '#b0b0b0');
@@ -1112,34 +1117,52 @@ function getPos(e) {
 }
 
 function scratch(e) {
-  if (isRevealed) return;
-  e.preventDefault();
+  if (isRevealed || !canvas || !ctx) return;
+  if (e && e.cancelable) e.preventDefault();
 
   scratchSound();
   const pos = getPos(e);
-  const radius = 28;
+  const radius = 30;
 
+  // Usar un trazo continuo hace que el raspado responda mejor al dedo en móviles.
+  ctx.save();
   ctx.globalCompositeOperation = 'destination-out';
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  ctx.lineWidth = radius * 2;
+  if (lastScratchPos) {
+    ctx.beginPath();
+    ctx.moveTo(lastScratchPos.x, lastScratchPos.y);
+    ctx.lineTo(pos.x, pos.y);
+    ctx.stroke();
+  }
   ctx.beginPath();
   ctx.arc(pos.x, pos.y, radius, 0, Math.PI * 2);
   ctx.fill();
+  ctx.restore();
+  lastScratchPos = pos;
 
   const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
   const pixels = imageData.data;
   let transparent = 0;
-  const total = pixels.length / 4;
+  let samples = 0;
   for (let i = 3; i < pixels.length; i += 80) {
+    samples++;
     if (pixels[i] === 0) transparent++;
   }
-  scratchedPercent = (transparent / (total / 20)) * 100;
+  scratchedPercent = samples ? (transparent / samples) * 100 : 0;
 
-  if (scratchedPercent > 55 && !isRevealed) {
-    revealPrize();
+  if (scratchedPercent > 28 && !isRevealed) {
+    // Llamar a la versión pública permite validar la boleta en Supabase antes de mostrar el premio.
+    if (typeof window.revealPrize === 'function') window.revealPrize();
+    else revealPrize();
   }
 }
 
 function startScratch(e) {
+  if (isRevealed || !canvas || !ctx) return;
   isScratching = true;
+  lastScratchPos = getPos(e);
   scratch(e);
 }
 
@@ -1150,6 +1173,7 @@ function moveScratch(e) {
 
 function endScratch() {
   isScratching = false;
+  lastScratchPos = null;
 }
 
 function revealPrize() {
@@ -1375,6 +1399,8 @@ let deferredPrompt;
 window.addEventListener('beforeinstallprompt', function(e) {
   e.preventDefault();
   deferredPrompt = e;
+  // No ofrecer instalación a quienes abren una boleta individual desde WhatsApp.
+  if (new URLSearchParams(window.location.search).has('t')) return;
   const banner = document.getElementById('installBanner');
   if (banner) banner.classList.add('show');
 });
@@ -1395,9 +1421,13 @@ if ('serviceWorker' in navigator) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-  // En la APK el HTML se carga desde los recursos locales de Android.
-  // Los enlaces para clientes usan PUBLIC_BASE_URL (HTTPS), así que no mostrar
-  // el aviso de archivo local dentro de la aplicación instalada.
+  try {
+    const p = location.protocol;
+    if (p === 'file:' || p === 'content:' || p.indexOf('blob') === 0) {
+      const w = document.getElementById('hostWarn');
+      if (w) w.style.display = 'block';
+    }
+  } catch (e) {}
   initPool();
   applyTheme();
   renderHistory();
@@ -1410,13 +1440,42 @@ document.addEventListener('DOMContentLoaded', function() {
   initScratch();
 
   const c = document.getElementById('scratchCanvas');
-  c.addEventListener('mousedown', startScratch);
-  c.addEventListener('mousemove', moveScratch);
-  c.addEventListener('mouseup', endScratch);
-  c.addEventListener('mouseleave', endScratch);
-  c.addEventListener('touchstart', startScratch, { passive: false });
-  c.addEventListener('touchmove', moveScratch, { passive: false });
-  c.addEventListener('touchend', endScratch);
+  // Usar una sola familia de eventos evita que Android procese el mismo gesto dos veces.
+  c.style.touchAction = 'none';
+  c.style.pointerEvents = 'auto';
+  if (window.PointerEvent) {
+    c.addEventListener('pointerdown', function(e) {
+      if (isRevealed) return;
+      if (e.cancelable) e.preventDefault();
+      isScratching = true;
+      lastScratchPos = getPos(e);
+      try { c.setPointerCapture(e.pointerId); } catch (_) {}
+      scratch(e);
+    }, { passive: false });
+    c.addEventListener('pointermove', function(e) {
+      if (!isScratching || isRevealed) return;
+      if (e.cancelable) e.preventDefault();
+      scratch(e);
+    }, { passive: false });
+    c.addEventListener('pointerup', endScratch);
+    c.addEventListener('pointercancel', endScratch);
+    c.addEventListener('lostpointercapture', endScratch);
+  } else {
+    c.addEventListener('touchstart', function(e) {
+      if (isRevealed) return;
+      if (e.cancelable) e.preventDefault();
+      startScratch(e);
+    }, { passive: false });
+    c.addEventListener('touchmove', function(e) {
+      if (!isScratching || isRevealed) return;
+      if (e.cancelable) e.preventDefault();
+      scratch(e);
+    }, { passive: false });
+    c.addEventListener('touchend', endScratch, { passive: true });
+    c.addEventListener('mousedown', function(e) { if (!isRevealed) startScratch(e); });
+    c.addEventListener('mousemove', function(e) { if (isScratching) moveScratch(e); });
+    window.addEventListener('mouseup', endScratch);
+  }
 
   window.addEventListener('resize', function() {
     if (!isRevealed) initScratch();
