@@ -1,15 +1,15 @@
 # Inventario seguro de Raspadita San Pedro del Ycuamandyyu
 
-Este repositorio ahora prepara un esquema separado para el inventario definitivo. La tabla anterior `public.boletas` se conserva sin cambios porque sus columnas duplicadas (`id` y `Id`) deben reconciliarse después de revisar su procedencia.
+Este repositorio ahora prepara un esquema separado para el inventario definitivo. La tabla anterior `public.boletas` se conserva sin cambios porque sus columnas duplicadas con el mismo nombre visible (`Identificación`) deben reconciliarse después de revisar su procedencia.
 
 ## Reglas de seguridad
 
 - Nunca colocar una clave `service_role` o `secret` en HTML, APK, GitHub público ni mensajes.
 - La app pública no consulta ni modifica tablas directamente; debe usar una función Edge que valide un token aleatorio, limite reintentos y entregue el resultado de una sola boleta.
 - La clave publishable/anon no otorga permisos administrativos por sí sola; RLS y políticas siguen siendo obligatorias.
-- No crear 5.000 boletas públicas hasta que la función Edge autenticada y el flujo de raspado estén desplegados y probados.
+- No publicar enlaces ni cargar el inventario hasta que la función Edge y el flujo de raspado estén integrados y probados.
 - El inventario de premios debe ser de 5.000 exactas y sin exponer cantidades restantes al cliente.
-- Cantidades solicitadas: ₲5.000 x25; ₲10.000 x20; ₲20.000 x20; ₲50.000 x5; ₲100.000 x3; ₲200.000 x1; ₲500.000 x1; ₲1.000.000 x1; ₲2.000.000 x1; “Ganaste una boleta” x250; sin premio x4.692.
+- Cantidades solicitadas: ₲5.000 x25; ₲10.000 x20; ₲20.000 x20; ₲50.000 x5; ₲100.000 x3; ₲200.000 x1; ₲500.000 x1; ₲1.000.000 x1; ₲2.000.000 x1; “Ganaste una boleta” x250; sin premio x4.673.
 
 ## Tablas
 
