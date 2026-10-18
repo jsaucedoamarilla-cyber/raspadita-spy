@@ -943,7 +943,7 @@ const WHATSAPP = '595984363598'; // 0984 363 598 (Paraguay)
 // ★ IMPORTANTE: URL pública HTTPS donde está subido este HTML (sin / al final).
 // Ejemplo: 'https://tu-usuario.github.io/raspadita' o 'https://raspadita.netlify.app'
 // Si queda vacío, se usa la URL del navegador solo si es http/https (nunca file:// ni content://).
-const PUBLIC_BASE_URL = '';
+const PUBLIC_BASE_URL = 'https://jsaucedoamarilla-cyber.github.io/raspadita-spy/';
 
 // Cantidades exactas de cada premio
 const PRIZE_CONFIG = [
@@ -1325,7 +1325,7 @@ function openWhatsApp() {
 function shareGame() {
   const url = getPublicBase();
   if (!url) {
-    alert('Para compartir por WhatsApp tenés que subir este archivo a internet (HTTPS).\n\n1) Subí raspadita-spy.html a Netlify, GitHub Pages o tu hosting.\n2) Pegá la URL en PUBLIC_BASE_URL al inicio del código.\n\nEjemplo de link válido:\nhttps://tu-sitio.com/raspadita-spy.html');
+    alert('El enlace público todavía no está disponible. Intentá nuevamente cuando termine la publicación.');
     return;
   }
   const text = '🎟️ ¡Jugá a la Raspadita San Pedro del Ycuamandyyú!\nPremios de hasta ₲ 2.000.000\nBoleta: ₲ 5.000\n\nJugá acá: ' + url;
