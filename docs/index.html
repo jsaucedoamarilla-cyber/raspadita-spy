@@ -1273,7 +1273,9 @@ function showResultModal(isWin) {
   }
   overlay.querySelector('.modal').classList.toggle('jackpot', isWin && currentPrize.id >= 7);
   if (isWin && currentCode) document.getElementById('modalSub').textContent += ' · Código: ' + currentCode;
-  overlay.classList.add('active');
+  // Dejar que el jugador vea la animación de los stickers antes de mostrar el resultado emergente.
+  overlay.classList.remove('active');
+  window.setTimeout(function () { overlay.classList.add('active'); }, 1600);
 }
 
 
