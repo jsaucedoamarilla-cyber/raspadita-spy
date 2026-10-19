@@ -11,8 +11,7 @@ const reply = (body: Record<string, unknown>, status = 200) =>
   new Response(JSON.stringify(body), { status, headers: cors });
 
 async function sha256(value: string): Promise<string> {
-  const bytes = new TextEncoder().encode(value);
-  const digest = await crypto.subtle.digest("SHA-256", bytes);
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(value.toUpperCase()));
   return Array.from(new Uint8Array(digest), b => b.toString(16).padStart(2, "0")).join("");
 }
 
@@ -21,14 +20,11 @@ Deno.serve(async (req: Request) => {
   if (req.method !== "POST") return reply({ error: "method_not_allowed" }, 405);
 
   let payload: { action?: string; token?: string };
-  try {
-    payload = await req.json();
-  } catch {
-    return reply({ error: "invalid_json" }, 400);
-  }
+  try { payload = await req.json(); } catch { return reply({ error: "invalid_json" }, 400); }
 
-  const token = typeof payload.token === "string" ? payload.token.trim() : "";
-  if (payload.action !== "scratch" || token.length < 24 || token.length > 160 || !/^[A-Za-z0-9_-]+$/.test(token)) {
+  const token = typeof payload.token === "string" ? payload.token.trim().toUpperCase() : "";
+  if (!["scratch", "status"].includes(payload.action || "") ||
+      token.length < 24 || token.length > 160 || !/^[A-F0-9]+$/.test(token)) {
     return reply({ error: "invalid_request" }, 400);
   }
 
@@ -39,13 +35,28 @@ Deno.serve(async (req: Request) => {
   const db = createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } });
   const tokenHash = await sha256(token);
 
-  // Atomic one-time reveal: the update succeeds only if the ticket has not been scratched.
-  const { data, error } = await db
-    .from("raspadita_tickets")
+  if (payload.action === "status") {
+    const { data, error } = await db.from("raspadita_tickets")
+      .select("ticket_number, scratched, prize_id, prize_label, prize_kind, prize_amount, prize_claim_code")
+      .eq("token_hash", tokenHash).maybeSingle();
+    if (error) {
+      console.error("ticket status failed", error.message);
+      return reply({ error: "temporarily_unavailable" }, 503);
+    }
+    if (!data) return reply({ error: "ticket_not_found" }, 404);
+    if (!data.scratched) return reply({ ok: true, scratched: false, ticket_number: data.ticket_number });
+    return reply({
+      ok: true, scratched: true, ticket_number: data.ticket_number,
+      prize_id: data.prize_id, prize_label: data.prize_label, prize_kind: data.prize_kind,
+      prize_amount: data.prize_amount, prize_claim_code: data.prize_claim_code
+    });
+  }
+
+  // Atomic reveal: only the first request can scratch an unscratch ticket.
+  const { data, error } = await db.from("raspadita_tickets")
     .update({ scratched: true, scratched_at: new Date().toISOString() })
-    .eq("token_hash", tokenHash)
-    .eq("scratched", false)
-    .select("ticket_number, prize_label, prize_kind, prize_amount, scratched")
+    .eq("token_hash", tokenHash).eq("scratched", false)
+    .select("ticket_number, prize_id, prize_label, prize_kind, prize_amount, prize_claim_code")
     .maybeSingle();
 
   if (error) {
@@ -53,21 +64,22 @@ Deno.serve(async (req: Request) => {
     return reply({ error: "temporarily_unavailable" }, 503);
   }
   if (!data) {
-    const { data: existing, error: lookupError } = await db
-      .from("raspadita_tickets")
-      .select("scratched")
-      .eq("token_hash", tokenHash)
-      .maybeSingle();
+    const { data: existing, error: lookupError } = await db.from("raspadita_tickets")
+      .select("ticket_number, scratched, prize_id, prize_label, prize_kind, prize_amount, prize_claim_code")
+      .eq("token_hash", tokenHash).maybeSingle();
     if (lookupError) return reply({ error: "temporarily_unavailable" }, 503);
     if (!existing) return reply({ error: "ticket_not_found" }, 404);
-    return reply({ error: "ticket_already_scratched" }, 409);
+    if (!existing.scratched) return reply({ error: "temporarily_unavailable" }, 503);
+    return reply({
+      ok: true, scratched: true, ticket_number: existing.ticket_number,
+      prize_id: existing.prize_id, prize_label: existing.prize_label, prize_kind: existing.prize_kind,
+      prize_amount: existing.prize_amount, prize_claim_code: existing.prize_claim_code
+    });
   }
 
   return reply({
-    ok: true,
-    ticket_number: data.ticket_number,
-    prize_label: data.prize_label,
-    prize_kind: data.prize_kind,
-    prize_amount: data.prize_amount,
+    ok: true, scratched: true, ticket_number: data.ticket_number,
+    prize_id: data.prize_id, prize_label: data.prize_label, prize_kind: data.prize_kind,
+    prize_amount: data.prize_amount, prize_claim_code: data.prize_claim_code
   });
 });
