@@ -1523,12 +1523,7 @@ function buyMany(q) {
 }
 
 function openAdmin() {
-  if (prompt('PIN de administrador:') !== ADMIN_PIN) return;
-  const left = {}; pool.forEach(function(id) { left[id] = (left[id] || 0) + 1; });
-  const rows = PRIZE_CONFIG.map(function(p) { return p.emoji + ' ' + p.label + ': quedan <b>' + (left[p.id] || 0) + '</b> de ' + p.count; }).join('<br>');
-  const sold = TOTAL_TICKETS - pool.length;
-  document.getElementById('adminBody').innerHTML = 'Boletas vendidas: <b>' + sold + '</b> · Recaudado: <b>' + formatGuaranies(sold * TICKET_PRICE) + '</b><br>Premios entregados: <b>' + wins + '</b><hr>' + rows + '<hr><small>Datos locales de este dispositivo.</small>';
-  openModal('adminModal');
+  location.href = 'admin.html';
 }
 function resetPool() {
   if (!confirm('¿Reiniciar el pozo y las estadísticas?')) return;
