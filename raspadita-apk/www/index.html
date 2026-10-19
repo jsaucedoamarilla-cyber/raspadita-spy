@@ -1368,8 +1368,10 @@ async function issueSellerTicket() {
     });
     const data = await response.json();
     if (!response.ok || !data.ok || !data.token) {
-      alert(data.error === 'invalid_pin' ? 'El código no es correcto.' :
-        data.error === 'sold_out' ? 'Ya no quedan boletas disponibles.' :
+      alert(data.error === 'invalid_pin' ? 'El código no es correcto. Verificá el PIN privado de la vendedora.' :
+        data.error === 'no_assigned_tickets' ? 'El PIN es válido, pero esta vendedora todavía no tiene boletas asignadas. Pedí al administrador que le asigne boletas.' :
+        data.error === 'sold_out' ? 'Ya no quedan boletas disponibles para esta vendedora.' :
+        data.error === 'temporarily_unavailable' ? 'El servidor está ocupado por un momento. Esperá unos segundos e intentá otra vez.' :
         'No se pudo generar la boleta. Revisá internet e intentá otra vez.');
       return null;
     }
