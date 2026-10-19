@@ -36,6 +36,9 @@
   box-sizing: border-box;
 }
 
+/* Ocultar opciones que no se usan en la versión web */
+.qty-row, #installBanner { display: none !important; }
+
 html, body {
   height: 100%;
   font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
@@ -1122,7 +1125,7 @@ function scratch(e) {
 
   scratchSound();
   const pos = getPos(e);
-  const radius = 30;
+  const radius = 40; // Trazo más ancho para que el raspado sea cómodo en pantallas táctiles.
 
   // Usar un trazo continuo hace que el raspado responda mejor al dedo en móviles.
   ctx.save();
@@ -1146,7 +1149,7 @@ function scratch(e) {
   const pixels = imageData.data;
   let transparent = 0;
   let samples = 0;
-  for (let i = 3; i < pixels.length; i += 80) {
+  for (let i = 3; i < pixels.length; i += 16) {
     samples++;
     if (pixels[i] === 0) transparent++;
   }
@@ -1365,8 +1368,10 @@ async function issueSellerTicket() {
     });
     const data = await response.json();
     if (!response.ok || !data.ok || !data.token) {
-      alert(data.error === 'invalid_pin' ? 'El código no es correcto.' :
-        data.error === 'sold_out' ? 'Ya no quedan boletas disponibles.' :
+      alert(data.error === 'invalid_pin' ? 'El código no es correcto. Verificá el PIN privado de la vendedora.' :
+        data.error === 'no_assigned_tickets' ? 'El PIN es válido, pero esta vendedora todavía no tiene boletas asignadas. Pedí al administrador que le asigne boletas.' :
+        data.error === 'sold_out' ? 'Ya no quedan boletas disponibles para esta vendedora.' :
+        data.error === 'temporarily_unavailable' ? 'El servidor está ocupado por un momento. Esperá unos segundos e intentá otra vez.' :
         'No se pudo generar la boleta. Revisá internet e intentá otra vez.');
       return null;
     }
@@ -1421,7 +1426,7 @@ function installApp() {
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
-    navigator.serviceWorker.register('sw.js').catch(console.error);
+    navigator.serviceWorker.register('sw.js').then(function(reg) { return reg.update(); }).catch(console.error);
   });
 }
 
