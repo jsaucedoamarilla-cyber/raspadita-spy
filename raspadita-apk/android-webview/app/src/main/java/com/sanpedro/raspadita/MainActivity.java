@@ -1,11 +1,16 @@
 package com.sanpedro.raspadita;
 
 import android.annotation.SuppressLint;
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -24,10 +29,43 @@ public class MainActivity extends AppCompatActivity {
         s.setAllowFileAccess(true);
         s.setMediaPlaybackRequiresUserGesture(false);
         webView.setWebChromeClient(new WebChromeClient());
-        webView.setWebViewClient(new WebViewClient());
+        webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                return handleExternalUrl(request.getUrl().toString());
+            }
+
+            @SuppressWarnings("deprecation")
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                return handleExternalUrl(url);
+            }
+        });
         // Abrir la pantalla de vendedores incluida dentro de la APK.
-        // Evita el error 404 si la página aún no está publicada en GitHub Pages.
         webView.loadUrl("file:///android_asset/www/vendedora.html");
+    }
+
+    private boolean handleExternalUrl(String rawUrl) {
+        Uri uri = Uri.parse(rawUrl);
+        String scheme = uri.getScheme() == null ? "" : uri.getScheme().toLowerCase();
+        String host = uri.getHost() == null ? "" : uri.getHost().toLowerCase();
+
+        // WhatsApp debe abrirse fuera del WebView: no mostrar ERR_UNKNOWN_URL_SCHEME.
+        boolean whatsappLink = "whatsapp".equals(scheme) || "intent".equals(scheme)
+                || (("https".equals(scheme) || "http".equals(scheme))
+                && ("wa.me".equals(host) || "api.whatsapp.com".equals(host)
+                || "web.whatsapp.com".equals(host)));
+        if (!whatsappLink) return false;
+
+        try {
+            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+            startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(this, "No se pudo abrir WhatsApp. Verificá que esté instalado.", Toast.LENGTH_LONG).show();
+        } catch (Exception e) {
+            Toast.makeText(this, "No se pudo abrir el enlace de WhatsApp.", Toast.LENGTH_LONG).show();
+        }
+        return true;
     }
 
     @Override
