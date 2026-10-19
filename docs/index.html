@@ -941,6 +941,11 @@ body.ticket .hide-t,body.ticket .prizes-section:nth-of-type(1){display:none!impo
   <div class="modal-overlay" id="resultModal">
     <div class="modal">
       <div class="big-emoji" id="modalEmoji">🎉</div>
+      <div class="modal-animals" id="modalAnimals" aria-label="Nueve animalitos animados">
+        <span class="modal-animal">🦊</span><span class="modal-animal">🐼</span><span class="modal-animal">🐸</span>
+        <span class="modal-animal">🦁</span><span class="modal-animal">🐯</span><span class="modal-animal">🐵</span>
+        <span class="modal-animal">🐨</span><span class="modal-animal">🐰</span><span class="modal-animal">🐻</span>
+      </div>
       <h3 id="modalTitle">¡Felicitaciones!</h3>
       <div class="prize-won" id="modalPrize">₲ 50.000</div>
       <p id="modalSub">Efectivo · San Pedro del Ycuamandyyú</p>
@@ -1057,12 +1062,11 @@ function getPrizeById(id) {
 }
 
 function setPrizeStickers(prize) {
+  const animals = ['🦊', '🐼', '🐸', '🦁', '🐯', '🐵', '🐨', '🐰', '🐻'];
   const row = document.getElementById('stickerRow');
-  if (!row) return;
-  const icons = prize && prize.id === 11
-    ? ['🐸', '🦊', '🐼']
-    : [prize ? prize.emoji : '❔', prize ? prize.emoji : '❔', prize ? prize.emoji : '❔'];
-  row.innerHTML = icons.map(icon => '<span class="animal-sticker">' + icon + '</span>').join('');
+  if (row) row.innerHTML = animals.slice(0, 3).map(icon => '<span class="animal-sticker">' + icon + '</span>').join('');
+  const modalRow = document.getElementById('modalAnimals');
+  if (modalRow) modalRow.innerHTML = animals.map(icon => '<span class="modal-animal">' + icon + '</span>').join('');
 }
 
 function remainingTickets() {
