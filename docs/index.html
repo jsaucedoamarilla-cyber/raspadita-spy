@@ -261,10 +261,20 @@ body::before {
   align-items: center;
   justify-content: center;
   gap: 10px;
-  z-index: 1;
+  z-index: 3;
+  opacity: 0;
+  pointer-events: none;
   padding: 16px;
   text-align: center;
+  transition: opacity .35s ease;
   animation: prizePulse 3s ease-in-out infinite;
+}
+.scratch-wrapper.show-prize #prizeLayer { opacity: 1; }
+.scratch-wrapper.show-prize .animal-sticker { animation: stickerPop .55s cubic-bezier(.2,1.5,.4,1) both, stickerFloat 2.4s ease-in-out .55s infinite; }
+@keyframes stickerPop {
+  0% { transform: translateY(18px) scale(.35) rotate(-12deg); opacity: 0; }
+  75% { transform: translateY(-4px) scale(1.08) rotate(3deg); opacity: 1; }
+  100% { transform: translateY(0) scale(1) rotate(0); opacity: 1; }
 }
 
 @keyframes prizePulse {
@@ -1217,6 +1227,7 @@ function revealPrize() {
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   const wrapper = document.querySelector('.scratch-wrapper');
+  wrapper.classList.add('show-prize');
   wrapper.classList.add('revealed');
   setTimeout(function() { wrapper.classList.remove('revealed'); }, 600);
 
@@ -1281,6 +1292,7 @@ function newGame() {
   const prizeId = pool.pop();
   currentPrize = getPrizeById(prizeId);
 
+  document.querySelector('.scratch-wrapper').classList.remove('show-prize');
   setPrizeStickers(currentPrize);
   document.getElementById('prizeLabel').textContent = currentPrize.label;
   document.getElementById('prizeSub').textContent = currentPrize.sub;
@@ -1777,6 +1789,7 @@ function copyWa() {
         cv.style.display = 'none';
         showBox();
       } else {
+        document.querySelector('.scratch-wrapper').classList.remove('show-prize');
         setPrizeStickers(null);
         $('prizeLabel').textContent = 'Tu premio está oculto';
         $('prizeSub').textContent = 'Raspá la tarjeta para descubrirlo';
