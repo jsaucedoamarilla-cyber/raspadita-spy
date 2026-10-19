@@ -6,6 +6,7 @@ on:
   push:
     paths:
       - "raspadita-apk/android-webview/**"
+      - "raspadita-apk/www/**"
       - ".github/workflows/main.yml"
 
 permissions:
@@ -28,6 +29,10 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: "8.2"
+
+      - name: Sincronizar web actual con los recursos del APK
+        working-directory: raspadita-apk/android-webview
+        run: cp -R ../www/. app/src/main/assets/www/
 
       - name: Compilar APK
         working-directory: raspadita-apk/android-webview
