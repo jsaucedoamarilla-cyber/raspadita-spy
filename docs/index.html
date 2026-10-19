@@ -273,9 +273,18 @@ body::before {
 }
 
 .prize-icon {
-  font-size: 3.4rem;
+  display: grid;
+  place-items: center;
+  width: 96px;
+  height: 96px;
+  border-radius: 28px;
+  font-size: 4rem;
   line-height: 1;
-  filter: drop-shadow(0 6px 12px rgba(0,0,0,0.4));
+  background: radial-gradient(circle at 30% 20%, #fff8cf 0%, #ffd54f 24%, #ff9800 64%, #9b3d00 100%);
+  border: 3px solid #fff0a6;
+  box-shadow: inset 0 4px 0 rgba(255,255,255,.85), inset 0 -8px 0 rgba(95,35,0,.25), 0 10px 0 #78350f, 0 15px 24px rgba(0,0,0,.45), 0 0 26px rgba(255,193,7,.5);
+  text-shadow: 0 4px 1px rgba(80,30,0,.35), 0 0 16px rgba(255,255,255,.7);
+  -webkit-text-stroke: 1px rgba(120,53,15,.18);
   animation: floatIcon 2.5s ease-in-out infinite;
 }
 
@@ -956,15 +965,15 @@ const PUBLIC_BASE_URL = 'https://jsaucedoamarilla-cyber.github.io/raspadita-spy/
 
 // Cantidades exactas de cada premio
 const PRIZE_CONFIG = [
-  { id: 1,  emoji: '🔄', label: 'Ganaste una boleta', sub: 'Boleta gratis', count: 250 },
-  { id: 2,  emoji: '💵', label: '₲ 5.000',    sub: 'Efectivo', count: 25 },
-  { id: 3,  emoji: '💵', label: '₲ 10.000',   sub: 'Efectivo', count: 20 },
-  { id: 4,  emoji: '💰', label: '₲ 20.000',   sub: 'Efectivo', count: 20 },
-  { id: 5,  emoji: '💰', label: '₲ 50.000',   sub: 'Efectivo', count: 5 },
-  { id: 6,  emoji: '🏆', label: '₲ 100.000',  sub: 'Efectivo', count: 3 },
-  { id: 7,  emoji: '🏆', label: '₲ 200.000',  sub: 'Efectivo', count: 1 },
-  { id: 8,  emoji: '💎', label: '₲ 500.000',  sub: 'Gran premio', count: 1 },
-  { id: 9,  emoji: '🎉', label: '₲ 1.000.000', sub: '¡Súper premio!', count: 1 },
+  { id: 1,  emoji: '🎟️', label: 'Ganaste una boleta', sub: 'Boleta gratis', count: 250 },
+  { id: 2,  emoji: '🐸', label: '₲ 5.000',    sub: 'Efectivo', count: 25 },
+  { id: 3,  emoji: '🦊', label: '₲ 10.000',   sub: 'Efectivo', count: 20 },
+  { id: 4,  emoji: '🐼', label: '₲ 20.000',   sub: 'Efectivo', count: 20 },
+  { id: 5,  emoji: '🦜', label: '₲ 50.000',   sub: 'Efectivo', count: 5 },
+  { id: 6,  emoji: '🦁', label: '₲ 100.000',  sub: 'Efectivo', count: 3 },
+  { id: 7,  emoji: '🐯', label: '₲ 200.000',  sub: 'Efectivo', count: 1 },
+  { id: 8,  emoji: '🦚', label: '₲ 500.000',  sub: 'Gran premio', count: 1 },
+  { id: 9,  emoji: '🐉', label: '₲ 1.000.000', sub: '¡Súper premio!', count: 1 },
   { id: 10, emoji: '👑', label: '₲ 2.000.000', sub: '¡JACKPOT!', count: 1 },
   { id: 11, emoji: '😢', label: 'Seguí participando', sub: '¡Casi!', count: 0 }, // se calcula
 ];
@@ -1225,9 +1234,9 @@ function showResultModal(isWin) {
       claimBtn.style.display = (currentPrize.id === 1) ? 'none' : 'flex';
     }
   } else {
-    document.getElementById('modalTitle').textContent = '¡Casi lo lográs!';
+    document.getElementById('modalTitle').textContent = 'Esta vez no ganaste';
     document.getElementById('modalPrize').textContent = 'Seguí participando';
-    document.getElementById('modalSub').textContent = 'La suerte está de tu lado la próxima vez';
+    document.getElementById('modalSub').textContent = 'Gracias por jugar. Revisá siempre el resultado y jugá con responsabilidad.';
     if (claimBtn) claimBtn.style.display = 'none';
   }
   overlay.querySelector('.modal').classList.toggle('jackpot', isWin && currentPrize.id >= 7);
@@ -1694,7 +1703,7 @@ function copyWa() {
     b.innerHTML = win
       ? '<h3>' + p.emoji + ' ¡Ganaste ' + (p.id === 1 ? 'una boleta gratis' : p.label) + '!</h3>' + (p.id === 1 ? '' : '<p>Tu código: <b>' + T.code + '</b></p>') +
         '<button class="btn btn-primary" style="width:100%;background:linear-gradient(145deg,#25D366,#128C7E);color:#fff" onclick="claimPrize()">💬 ' + (p.id === 1 ? 'Reclamar mi boleta gratis' : 'Reclamar mi premio') + '</button>'
-      : '<h3>😢 Esta boleta no tiene premio</h3><p>¡Gracias por participar! Probá con otra boleta.</p>';
+      : '<h3>🌟 Esta vez no ganaste</h3><p>Esta boleta no tiene premio. Gracias por participar; jugá solo si querés y dentro de tu presupuesto.</p>';
   }
 
   document.addEventListener('DOMContentLoaded', async function () {
