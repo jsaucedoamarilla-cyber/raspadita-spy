@@ -1122,7 +1122,7 @@ function scratch(e) {
 
   scratchSound();
   const pos = getPos(e);
-  const radius = 30;
+  const radius = 40; // Trazo más ancho para que el raspado sea cómodo en pantallas táctiles.
 
   // Usar un trazo continuo hace que el raspado responda mejor al dedo en móviles.
   ctx.save();
@@ -1146,13 +1146,13 @@ function scratch(e) {
   const pixels = imageData.data;
   let transparent = 0;
   let samples = 0;
-  for (let i = 3; i < pixels.length; i += 80) {
+  for (let i = 3; i < pixels.length; i += 16) {
     samples++;
     if (pixels[i] === 0) transparent++;
   }
   scratchedPercent = samples ? (transparent / samples) * 100 : 0;
 
-  if (scratchedPercent > 28 && !isRevealed) {
+  if (scratchedPercent > 18 && !isRevealed) {
     // Llamar a la versión pública permite validar la boleta en Supabase antes de mostrar el premio.
     if (typeof window.revealPrize === 'function') window.revealPrize();
     else revealPrize();
