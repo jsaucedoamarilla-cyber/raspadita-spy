@@ -32,17 +32,42 @@ public class MainActivity extends AppCompatActivity {
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-                return handleExternalUrl(request.getUrl().toString());
+                String url = request.getUrl().toString();
+                if (isAssetDirectoryUrl(url)) {
+                    view.loadUrl("file:///android_asset/www/index.html" + queryAndFragment(url));
+                    return true;
+                }
+                return handleExternalUrl(url);
             }
 
             @SuppressWarnings("deprecation")
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                if (isAssetDirectoryUrl(url)) {
+                    view.loadUrl("file:///android_asset/www/index.html" + queryAndFragment(url));
+                    return true;
+                }
                 return handleExternalUrl(url);
             }
         });
         // Abrir la pantalla de vendedores incluida dentro de la APK.
         webView.loadUrl("file:///android_asset/www/vendedora.html");
+    }
+
+    // Android WebView no resuelve automáticamente index.html al abrir una carpeta local.
+    // Las boletas compartidas pueden llegar como file:///android_asset/www/?t=CODIGO.
+    private boolean isAssetDirectoryUrl(String rawUrl) {
+        Uri uri = Uri.parse(rawUrl);
+        String path = uri.getPath() == null ? "" : uri.getPath();
+        return "file".equalsIgnoreCase(uri.getScheme())
+                && "/android_asset/www/".equals(path);
+    }
+
+    private String queryAndFragment(String rawUrl) {
+        Uri uri = Uri.parse(rawUrl);
+        String suffix = uri.getEncodedQuery() == null ? "" : "?" + uri.getEncodedQuery();
+        if (uri.getEncodedFragment() != null) suffix += "#" + uri.getEncodedFragment();
+        return suffix;
     }
 
     private boolean handleExternalUrl(String rawUrl) {
