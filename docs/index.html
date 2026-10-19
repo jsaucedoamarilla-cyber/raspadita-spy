@@ -1039,6 +1039,7 @@ let scratchedPercent = 0;
 let canvas, ctx;
 let isRevealed = false;
 let lastScratchPos = null;
+let scratchCheckCounter = 0;
 let plays = 0;
 let wins = 0;
 let freePlays = 0;
@@ -1141,13 +1142,14 @@ function initScratch() {
 
   const wrapper = document.querySelector('.scratch-wrapper');
   const rect = wrapper.getBoundingClientRect();
-  const dpr = window.devicePixelRatio || 1;
-
-  canvas.width = rect.width * dpr;
-  canvas.height = rect.height * dpr;
+  // Usar la resolución visible del cartón evita leer millones de píxeles
+  // en cada movimiento en teléfonos Android de alta densidad.
+  canvas.width = Math.max(1, Math.round(rect.width));
+  canvas.height = Math.max(1, Math.round(rect.height));
   canvas.style.width = rect.width + 'px';
   canvas.style.height = rect.height + 'px';
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  scratchCheckCounter = 0;
 
   const gradient = ctx.createLinearGradient(0, 0, rect.width, rect.height);
   gradient.addColorStop(0, '#b0b0b0');
@@ -1210,13 +1212,17 @@ function scratch(e) {
   ctx.restore();
   lastScratchPos = pos;
 
+  // Revisar el porcentaje cada 4 movimientos para que el raspado no se
+  // congele en móviles; el trazo se dibuja en todos los movimientos.
+  scratchCheckCounter++;
+  if (scratchCheckCounter % 4 !== 0) return;
   const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
   const pixels = imageData.data;
   let transparent = 0;
   let samples = 0;
-  for (let i = 3; i < pixels.length; i += 80) {
+  for (let i = 3; i < pixels.length; i += 160) {
     samples++;
-    if (pixels[i] === 0) transparent++;
+    if (pixels[i] < 32) transparent++;
   }
   scratchedPercent = samples ? (transparent / samples) * 100 : 0;
 
