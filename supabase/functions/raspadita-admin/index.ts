@@ -44,12 +44,12 @@ Deno.serve(async req => {
    return json({ok:true,token,expires_in:28800});
   }
   if(action==="seller_login") {
-   const sid=Number(body.seller_id), pin=String(body.pin||"");
-   if(!Number.isInteger(sid)||sid<1||pin.length<4||pin.length>12) return json({ok:false,error:"Ingresá número de vendedora y PIN de 4 a 12 caracteres."},400);
+   const sid=Number(body.seller_id), pin=String(body.pin||""), cleanPin=pin.trim();
+   if(!Number.isInteger(sid)||sid<1||cleanPin.length<4||cleanPin.length>12) return json({ok:false,error:"Ingresá el número de vendedora y un PIN de 4 a 12 caracteres, sin espacios al principio o al final."},400);
    const attempts=await db(`raspadita_admin_login_attempts?ip_hash=eq.${ipHash}&attempted_at=gte.${encodeURIComponent(new Date(Date.now()-15*60*1000).toISOString())}&succeeded=eq.false&select=id`);
    if(attempts.length>=8) return json({ok:false,error:"Demasiados intentos. Esperá 15 minutos."},429);
    const seller=await db(`raspadita_sellers?id=eq.${sid}&active=eq.true&select=id,name,pin_hash`);
-   const good=!!seller.length&&!!seller[0].pin_hash&&await hash(pin)===seller[0].pin_hash;
+   const good=!!seller.length&&!!seller[0].pin_hash&&(await hash(pin)===seller[0].pin_hash||await hash(cleanPin)===seller[0].pin_hash);
    await db("raspadita_admin_login_attempts",{method:"POST",headers:{Prefer:"return=minimal"},body:JSON.stringify({ip_hash:ipHash,succeeded:good})});
    if(!good) return json({ok:false,error:"Número de vendedora o PIN incorrecto, o cuenta inactiva."},401);
    const token=crypto.randomUUID()+crypto.randomUUID();
@@ -68,7 +68,7 @@ Deno.serve(async req => {
     db(`raspadita_sellers?id=eq.${sellerId}&select=id,name,active`),
     db(`raspadita_seller_assignments?seller_id=eq.${sellerId}&select=ticket_number,status,assigned_at,sold_at,sold_amount,note&order=ticket_number.asc`),
     db(`raspadita_seller_remittances?seller_id=eq.${sellerId}&select=amount,note,received_at&order=received_at.desc`),
-    db("raspadita_ticket_links?select=ticket_number,token&order=ticket_number.asc"),
+    db("raspadita_ticket_links?select=ticket_number,issued_at&order=ticket_number.asc"),
     db("raspadita_tickets?select=ticket_number,scratched,prize_label,prize_amount,prize_kind,claimed")
    ]);
    if(!seller.length||!seller[0].active) return json({ok:false,error:"La cuenta de vendedora está inactiva."},403);
@@ -78,9 +78,22 @@ Deno.serve(async req => {
    const sold=assignments.filter((a:any)=>a.status==="sold");
    const revenue=sold.reduce((s:number,a:any)=>s+Number(a.sold_amount||5000),0);
    const remitted=remittances.reduce((s:number,a:any)=>s+Number(a.amount),0);
-   return json({ok:true,seller:seller[0],assignments:assignments.map((a:any)=>({...a,ticket:byNum.get(a.ticket_number)||null})),remittances,revenue,remitted,balance:revenue-remitted,sold_count:sold.length,assigned_count:assignments.length,ticket_links:ownLinks});
+   return json({ok:true,seller:seller[0],assignments:assignments.map((a:any)=>{const t=byNum.get(a.ticket_number); return {...a,ticket:t?{ticket_number:t.ticket_number,scratched:t.scratched,claimed:t.claimed,prize_label:t.prize_label,prize_amount:t.prize_amount,prize_kind:t.prize_kind}:null};}),remittances,revenue,remitted,balance:revenue-remitted,sold_count:sold.length,assigned_count:assignments.length,ticket_links:ownLinks});
   }
-  if(role!=="admin" && !["seller_mark_sold"].includes(action)) return json({ok:false,error:"No tenés permiso para esa operación."},403);
+  if(role!=="admin" && !["seller_mark_sold","seller_issue_link"].includes(action)) return json({ok:false,error:"No tenés permiso para esa operación."},403);
+  if(action==="seller_issue_link") {
+   if(role!=="seller"||!sellerId) return json({ok:false,error:"Esta opción es solo para una vendedora."},403);
+   const n=Number(body.ticket_number);
+   if(!Number.isInteger(n)||n<1||n>5000) return json({ok:false,error:"Número de boleta inválido."},400);
+   const assigned=await db(`raspadita_seller_assignments?ticket_number=eq.${n}&seller_id=eq.${sellerId}&select=ticket_number&limit=1`);
+   if(!assigned.length) return json({ok:false,error:"Esa boleta no está asignada a tu cuenta."},403);
+   const links=await db(`raspadita_ticket_links?ticket_number=eq.${n}&select=ticket_number,token,issued_at&limit=1`);
+   if(!links.length||!links[0].token) return json({ok:false,error:"No se encontró el enlace de esta boleta."},404);
+   if(!links[0].issued_at) {
+    await rows(`raspadita_ticket_links?ticket_number=eq.${n}&issued_at=is.null`,{method:"PATCH",body:JSON.stringify({issued_at:new Date().toISOString()})});
+   }
+   return json({ok:true,ticket_number:n,token:links[0].token});
+  }
   if(action==="seller_mark_sold") {
    if(role!=="seller"||!sellerId) return json({ok:false,error:"Esta opción es solo para una vendedora."},403);
    const n=Number(body.ticket_number);
@@ -104,10 +117,13 @@ Deno.serve(async req => {
    return json({ok:true,tickets,sellers,assignments,remittances:remits,events,ticket_links:ticketLinks});
   }
   if(action==="create_seller") {
-   const name=String(body.name||"").trim(), pin=String(body.pin||"");
+   const name=String(body.name||"").trim(), pin=String(body.pin||"").trim();
    if(!name) return json({ok:false,error:"Escribí el nombre de la vendedora"},400);
    if(!/^.{4,12}$/.test(pin)) return json({ok:false,error:"Creá un PIN de vendedora de 4 a 12 caracteres."},400);
-   const seller=(await rows("raspadita_sellers",{method:"POST",body:JSON.stringify({name,phone:String(body.phone||"").trim()||null,pin_hash:await hash(pin)}),headers:{Prefer:"return=representation"}}))[0];
+   const pinHash=await hash(pin);
+   const duplicatePin=await db(`raspadita_sellers?pin_hash=eq.${pinHash}&select=id&limit=1`);
+   if(duplicatePin.length) return json({ok:false,error:"Ese PIN ya está usado por otra vendedora. Elegí un PIN diferente para que los enlaces de WhatsApp identifiquen la cuenta correcta."},409);
+   const seller=(await rows("raspadita_sellers",{method:"POST",body:JSON.stringify({name,phone:String(body.phone||"").trim()||null,pin_hash:pinHash}),headers:{Prefer:"return=representation"}}))[0];
    return json({ok:true,seller:{id:seller.id,name:seller.name,phone:seller.phone,active:seller.active}});
   }
   if(action==="set_seller_active") {
@@ -169,7 +185,7 @@ Deno.serve(async req => {
    const sold=assignments.filter((a:any)=>a.status==="sold");
    const revenue=sold.reduce((s:number,a:any)=>s+Number(a.sold_amount||5000),0);
    const remitted=remittances.reduce((s:number,a:any)=>s+Number(a.amount),0);
-   const detail=assignments.map((a:any)=>({...a,ticket:byNum.get(a.ticket_number)||null}));
+   const detail=assignments.map((a:any)=>{const t=byNum.get(a.ticket_number); return {...a,ticket:t?{ticket_number:t.ticket_number,scratched:t.scratched,claimed:t.claimed}:null};});
    return json({ok:true,seller:seller[0]||null,assignments:detail,remittances,revenue,remitted,balance:revenue-remitted,sold_count:sold.length,assigned_count:assignments.length});
   }
   return json({ok:false,error:"Acción no reconocida"},400);
