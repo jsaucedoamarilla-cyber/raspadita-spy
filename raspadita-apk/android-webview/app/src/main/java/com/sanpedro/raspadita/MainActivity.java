@@ -25,9 +25,9 @@ public class MainActivity extends AppCompatActivity {
         s.setMediaPlaybackRequiresUserGesture(false);
         webView.setWebChromeClient(new WebChromeClient());
         webView.setWebViewClient(new WebViewClient());
-        // Carga la versión pública HTTPS para que las boletas se compartan por Internet.
-        // La página web y los enlaces individuales deben funcionar sin depender de archivos locales.
-        webView.loadUrl("https://jsaucedoamarilla-cyber.github.io/raspadita-spy/index.html");
+        // La APK de vendedores comienza en el acceso privado con número y PIN.
+        // Las boletas individuales siguen abriéndose desde la web pública HTTPS.
+        webView.loadUrl("https://jsaucedoamarilla-cyber.github.io/raspadita-spy/vendedora.html");
     }
 
     @Override
