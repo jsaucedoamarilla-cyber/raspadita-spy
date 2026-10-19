@@ -20,7 +20,7 @@ function date(s){return s?new Date(s).toLocaleString('es-PY'):'—'}
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 async function api(action,data={}){const r=await fetch(END,{method:'POST',headers:{'Content-Type':'application/json','apikey':KEY,...(session?{'x-admin-session':session}:{})},body:JSON.stringify({action,...data})});let j;try{j=await r.json()}catch(e){throw Error('El servidor respondió de forma inesperada.')}if(!r.ok||!j.ok)throw Error(j.error||'No se pudo completar la operación');return j}
 function show(on){$('login').classList.toggle('hidden',on);$('dashboard').classList.toggle('hidden',!on)}
-async function login(){const j=await api('seller_login',{seller_id:Number($('sellerId').value),pin:$('pin').value});session=j.token;sessionStorage.setItem('raspadita_seller_session',session);$('pin').value='';show(true);await load()}
+async function login(){const j=await api('seller_login',{seller_id:Number($('sellerId').value),pin:$('pin').value.trim()});session=j.token;sessionStorage.setItem('raspadita_seller_session',session);$('pin').value='';show(true);await load()}
 async function load(){try{state=await api('seller_summary');render();$('message').classList.add('hidden')}catch(e){if(/sesión|permiso|vendedora/i.test(e.message)){session='';sessionStorage.removeItem('raspadita_seller_session');show(false)}msg(e.message,true)}}
 function ticketBaseUrl(token){const u=new URL(location.pathname.includes('/docs/')?'../':'./',location.href);u.search='';u.hash='';u.searchParams.set('t',token);return u.toString()}
 async function fetchSellerTicket(n){return await api('seller_issue_link',{ticket_number:Number(n)})}
