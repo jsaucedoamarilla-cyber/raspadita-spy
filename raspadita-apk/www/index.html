@@ -1155,7 +1155,7 @@ function scratch(e) {
   }
   scratchedPercent = samples ? (transparent / samples) * 100 : 0;
 
-  if (scratchedPercent > 18 && !isRevealed) {
+  if (scratchedPercent >= 55 && !isRevealed) {
     // Llamar a la versión pública permite validar la boleta en Supabase antes de mostrar el premio.
     if (typeof window.revealPrize === 'function') window.revealPrize();
     else revealPrize();
@@ -1183,8 +1183,13 @@ function revealPrize() {
   if (isRevealed) return;
   isRevealed = true;
 
+  // Borrar toda la capa protectora usando coordenadas reales del canvas,
+  // para que la boleta completa quede visible en cualquier densidad de pantalla.
+  ctx.save();
   ctx.globalCompositeOperation = 'destination-out';
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.restore();
 
   const wrapper = document.querySelector('.scratch-wrapper');
   wrapper.classList.add('revealed');
