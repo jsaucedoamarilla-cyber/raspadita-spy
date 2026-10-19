@@ -25,9 +25,9 @@ public class MainActivity extends AppCompatActivity {
         s.setMediaPlaybackRequiresUserGesture(false);
         webView.setWebChromeClient(new WebChromeClient());
         webView.setWebViewClient(new WebViewClient());
-        // La APK de vendedores comienza en el acceso privado con número y PIN.
-        // Las boletas individuales siguen abriéndose desde la web pública HTTPS.
-        webView.loadUrl("https://jsaucedoamarilla-cyber.github.io/raspadita-spy/vendedora.html");
+        // Abrir la pantalla de vendedores incluida dentro de la APK.
+        // Evita el error 404 si la página aún no está publicada en GitHub Pages.
+        webView.loadUrl("file:///android_asset/www/vendedora.html");
     }
 
     @Override
