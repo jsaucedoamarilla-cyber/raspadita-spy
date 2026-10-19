@@ -272,21 +272,31 @@ body::before {
   50% { transform: scale(1.03); }
 }
 
-.prize-icon {
+.sticker-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(7px, 2.4vw, 14px);
+  width: 100%;
+  margin: 2px auto 8px;
+}
+.animal-sticker {
   display: grid;
   place-items: center;
-  width: 96px;
-  height: 96px;
-  border-radius: 28px;
-  font-size: 4rem;
+  flex: 0 1 84px;
+  width: clamp(64px, 23vw, 84px);
+  height: clamp(64px, 23vw, 84px);
+  border-radius: 23px;
+  font-size: clamp(2.8rem, 11vw, 4rem);
   line-height: 1;
-  background: radial-gradient(circle at 30% 20%, #fff8cf 0%, #ffd54f 24%, #ff9800 64%, #9b3d00 100%);
+  background: radial-gradient(circle at 28% 18%, #fffde7 0%, #ffe082 22%, #ff9800 62%, #9b3d00 100%);
   border: 3px solid #fff0a6;
-  box-shadow: inset 0 4px 0 rgba(255,255,255,.85), inset 0 -8px 0 rgba(95,35,0,.25), 0 10px 0 #78350f, 0 15px 24px rgba(0,0,0,.45), 0 0 26px rgba(255,193,7,.5);
-  text-shadow: 0 4px 1px rgba(80,30,0,.35), 0 0 16px rgba(255,255,255,.7);
-  -webkit-text-stroke: 1px rgba(120,53,15,.18);
+  box-shadow: inset 0 4px 0 rgba(255,255,255,.9), inset 0 -7px 0 rgba(95,35,0,.22), 0 7px 0 #78350f, 0 11px 16px rgba(0,0,0,.4), 0 0 20px rgba(255,193,7,.4);
+  text-shadow: 0 4px 1px rgba(80,30,0,.25), 0 0 12px rgba(255,255,255,.6);
   animation: floatIcon 2.5s ease-in-out infinite;
 }
+.animal-sticker:nth-child(2) { animation-delay: .18s; }
+.animal-sticker:nth-child(3) { animation-delay: .36s; }
 
 @keyframes floatIcon {
   0%, 100% { transform: translateY(0); }
@@ -800,9 +810,11 @@ body.ticket .hide-t,body.ticket .prizes-section:nth-of-type(1){display:none!impo
       <div class="scratch-wrapper">
         <!-- Premio debajo -->
         <div id="prizeLayer">
-          <div class="prize-icon" id="prizeEmoji">💰</div>
-          <div class="prize-label" id="prizeLabel">₲ 50.000</div>
-          <div class="prize-sub" id="prizeSub">Efectivo</div>
+          <div class="sticker-row" id="stickerRow" aria-label="Stickers de la boleta">
+            <span class="animal-sticker">❔</span><span class="animal-sticker">❔</span><span class="animal-sticker">❔</span>
+          </div>
+          <div class="prize-label" id="prizeLabel">Tu premio</div>
+          <div class="prize-sub" id="prizeSub">Raspá para descubrir el resultado</div>
         </div>
         <!-- Capa para raspar -->
         <canvas id="scratchCanvas"></canvas>
@@ -1034,6 +1046,15 @@ function getPrizeById(id) {
   return PRIZE_CONFIG.find(p => p.id === id);
 }
 
+function setPrizeStickers(prize) {
+  const row = document.getElementById('stickerRow');
+  if (!row) return;
+  const icons = prize && prize.id === 11
+    ? ['🐸', '🦊', '🐼']
+    : [prize ? prize.emoji : '❔', prize ? prize.emoji : '❔', prize ? prize.emoji : '❔'];
+  row.innerHTML = icons.map(icon => '<span class="animal-sticker">' + icon + '</span>').join('');
+}
+
 function remainingTickets() {
   return pool.length;
 }
@@ -1260,7 +1281,7 @@ function newGame() {
   const prizeId = pool.pop();
   currentPrize = getPrizeById(prizeId);
 
-  document.getElementById('prizeEmoji').textContent = currentPrize.emoji;
+  setPrizeStickers(currentPrize);
   document.getElementById('prizeLabel').textContent = currentPrize.label;
   document.getElementById('prizeSub').textContent = currentPrize.sub;
 
@@ -1445,7 +1466,7 @@ document.addEventListener('DOMContentLoaded', function() {
   renderHistory();
   updateStats();
 
-  document.getElementById('prizeEmoji').textContent = '🎟️';
+  setPrizeStickers(null);
   document.getElementById('prizeLabel').textContent = 'Tu premio';
   document.getElementById('prizeSub').textContent = 'Tocá Jugar y raspa';
 
@@ -1678,6 +1699,7 @@ function copyWa() {
       currentCode = T.code;
       currentPrize = getPrizeById(Number(data.prize_id));
       if (!currentPrize) throw new Error('Premio inválido en el servidor');
+      setPrizeStickers(currentPrize);
       _rev();
       try { localStorage.setItem(KEY, '1'); } catch (e) {}
       showBox();
@@ -1748,13 +1770,14 @@ function copyWa() {
       });
       if (data.scratched) {
         currentPrize = getPrizeById(Number(data.prize_id));
+        setPrizeStickers(currentPrize);
         currentCode = T.code;
         if (!currentPrize) throw new Error('Premio inválido');
         isRevealed = true;
         cv.style.display = 'none';
         showBox();
       } else {
-        $('prizeEmoji').textContent = '🎟️';
+        setPrizeStickers(null);
         $('prizeLabel').textContent = 'Tu premio está oculto';
         $('prizeSub').textContent = 'Raspá la tarjeta para descubrirlo';
         cv.style.display = '';
