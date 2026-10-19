@@ -1541,14 +1541,28 @@ function resetPool() {
 })();
 
 function waOpen(url) {
-  let w = null;
-  try { w = window.open(url, '_blank', 'noopener'); } catch (e) {}
-  if (w) return;
-  // Bloqueado (ej. vista previa en iframe): mostrar enlace tocable
+  // Usar HTTPS oficial; evitar whatsapp://, que falla en algunos WebView de Android.
+  let safeUrl = url;
+  try {
+    const u = new URL(url, location.href);
+    if (u.protocol === 'whatsapp:') {
+      const text = u.searchParams.get('text') || '';
+      safeUrl = 'https://api.whatsapp.com/send' + (text ? '?text=' + encodeURIComponent(text) : '');
+    } else if (u.hostname === 'wa.me') {
+      safeUrl = 'https://api.whatsapp.com/send' + (u.search ? u.search : '');
+    }
+  } catch (e) {}
+  // Mostrar siempre una alternativa tocable si la app no permite abrir una ventana nueva.
   const a = document.getElementById('waLink');
-  a.href = url;
-  document.getElementById('waCopy').dataset.url = url;
-  openModal('waModal');
+  const copy = document.getElementById('waCopy');
+  if (a) a.href = safeUrl;
+  if (copy) copy.dataset.url = safeUrl;
+  let w = null;
+  try { w = window.open(safeUrl, '_blank'); } catch (e) {}
+  if (!w) {
+    if (typeof openModal === 'function' && document.getElementById('waModal')) openModal('waModal');
+    else if (a) a.click();
+  }
 }
 function copyWa() {
   const u = document.getElementById('waCopy').dataset.url;
