@@ -25,8 +25,9 @@ public class MainActivity extends AppCompatActivity {
         s.setMediaPlaybackRequiresUserGesture(false);
         webView.setWebChromeClient(new WebChromeClient());
         webView.setWebViewClient(new WebViewClient());
-        // Carga la app local (copiá www/ a assets/)
-        webView.loadUrl("file:///android_asset/www/index.html");
+        // Carga la versión pública HTTPS para que las boletas se compartan por Internet.
+        // La página web y los enlaces individuales deben funcionar sin depender de archivos locales.
+        webView.loadUrl("https://jsaucedoamarilla-cyber.github.io/raspadita-spy/index.html");
     }
 
     @Override
