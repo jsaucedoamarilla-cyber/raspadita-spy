@@ -1747,7 +1747,7 @@ function copyWa() {
     const p = currentPrize, win = p.id !== 11, b = $('resultBox');
     b.style.display = 'block';
     b.className = 'result-box ' + (win ? 'win' : 'lose');
-    const animalStrip = '<div class="result-animals" aria-label="Animalitos elegidos">🦊🐼🐸🦁🐯🐵🐨🐰🐻'.split('').map(function(){return '';}).join('') + ['🦊','🐼','🐸','🦁','🐯','🐵','🐨','🐰','🐻'].map(function(icon){return '<span class="result-animal">' + icon + '</span>';}).join('') + '</div>';
+    const animalStrip = '<div class="result-animals" aria-label="Animalitos elegidos">' + ['🦊','🐼','🐸','🦁','🐯','🐵','🐨','🐰','🐻'].map(function(icon){return '<span class="result-animal">' + icon + '</span>';}).join('') + '</div>';
     b.innerHTML = animalStrip + (win
       ? '<h3>' + p.emoji + ' ¡Ganaste ' + (p.id === 1 ? 'una boleta gratis' : p.label) + '!</h3>' + (p.id === 1 ? '' : '<p>Tu código: <b>' + T.code + '</b></p>') +
         '<button class="btn btn-primary" style="width:100%;background:linear-gradient(145deg,#25D366,#128C7E);color:#fff" onclick="claimPrize()">💬 ' + (p.id === 1 ? 'Reclamar mi boleta gratis' : 'Reclamar mi premio') + '</button>'
