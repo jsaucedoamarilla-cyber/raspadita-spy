@@ -784,6 +784,13 @@ body.light{--bg-dark:#f6f1ff;--bg-card:#fff;--purple:#e6dcf7;--purple-light:#d8c
 .result-box{margin:14px 0;padding:16px;border-radius:16px;text-align:center;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.05)}
 .result-box.win{border-color:var(--gold);background:rgba(255,193,7,.12);box-shadow:0 0 24px rgba(255,193,7,.25)}
 .result-box h3{margin-bottom:8px}.result-box p{margin-bottom:12px}
+.result-animals{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;max-width:340px;margin:14px auto 18px}
+.result-animal{display:grid;place-items:center;min-height:76px;border-radius:18px;font-size:2.7rem;line-height:1;background:radial-gradient(circle at 30% 20%,#fffde7,#ffd54f 48%,#ef6c00 100%);border:3px solid #fff0a6;box-shadow:inset 0 4px 0 rgba(255,255,255,.75),0 5px 0 #78350f,0 8px 12px rgba(0,0,0,.28);animation:floatIcon 2.5s ease-in-out infinite}
+.result-animal:nth-child(3n+2){animation-delay:.18s}.result-animal:nth-child(3n){animation-delay:.36s}
+.modal-animals{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;max-width:300px;margin:12px auto 18px}
+.modal-animal{display:grid;place-items:center;min-height:62px;border-radius:15px;font-size:2.35rem;line-height:1;background:radial-gradient(circle at 30% 20%,#fffde7,#ffd54f 48%,#ef6c00 100%);border:2px solid #fff0a6;box-shadow:inset 0 3px 0 rgba(255,255,255,.75),0 4px 0 #78350f,0 7px 10px rgba(0,0,0,.25);animation:floatIcon 2.5s ease-in-out infinite}
+.modal-animal:nth-child(3n+2){animation-delay:.18s}.modal-animal:nth-child(3n){animation-delay:.36s}
+@media(max-width:380px){.result-animal{min-height:62px;font-size:2.2rem}.modal-animal{min-height:54px;font-size:2rem}}
 body.ticket .hide-t,body.ticket .prizes-section:nth-of-type(1){display:none!important}
 </style>
 </head>
@@ -1740,10 +1747,11 @@ function copyWa() {
     const p = currentPrize, win = p.id !== 11, b = $('resultBox');
     b.style.display = 'block';
     b.className = 'result-box ' + (win ? 'win' : 'lose');
-    b.innerHTML = win
+    const animalStrip = '<div class="result-animals" aria-label="Animalitos elegidos">🦊🐼🐸🦁🐯🐵🐨🐰🐻'.split('').map(function(){return '';}).join('') + ['🦊','🐼','🐸','🦁','🐯','🐵','🐨','🐰','🐻'].map(function(icon){return '<span class="result-animal">' + icon + '</span>';}).join('') + '</div>';
+    b.innerHTML = animalStrip + (win
       ? '<h3>' + p.emoji + ' ¡Ganaste ' + (p.id === 1 ? 'una boleta gratis' : p.label) + '!</h3>' + (p.id === 1 ? '' : '<p>Tu código: <b>' + T.code + '</b></p>') +
         '<button class="btn btn-primary" style="width:100%;background:linear-gradient(145deg,#25D366,#128C7E);color:#fff" onclick="claimPrize()">💬 ' + (p.id === 1 ? 'Reclamar mi boleta gratis' : 'Reclamar mi premio') + '</button>'
-      : '<h3>🌟 Esta vez no ganaste</h3><p>Esta boleta no tiene premio. Gracias por participar; jugá solo si querés y dentro de tu presupuesto.</p>';
+      : '<h3>🌟 Esta vez no ganaste</h3><p>Esta boleta no tiene premio. Gracias por participar; jugá solo si querés y dentro de tu presupuesto.</p>');
   }
 
   document.addEventListener('DOMContentLoaded', async function () {
