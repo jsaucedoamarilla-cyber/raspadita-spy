@@ -1734,6 +1734,8 @@ function copyWa() {
         if (!currentPrize) throw new Error('Premio inválido');
         isRevealed = true;
         cv.style.display = 'none';
+        cv.style.pointerEvents = 'none';
+        bar.innerHTML = '🔒 <b>Esta boleta ya fue raspada</b><div style="font-size:0.78rem;color:var(--text-muted);margin-top:5px">El resultado original se conserva y no se puede volver a jugar.</div>';
         showBox();
       } else {
         $('prizeEmoji').textContent = '🎟️';
