@@ -1,5 +1,5 @@
 /* Raspadita SPY - Service Worker. Cache versionado para no servir una raspadita vieja. */
-const CACHE = 'raspadita-spy-v3';
+const CACHE = 'raspadita-spy-v4';
 const ASSETS = ['./', './index.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png'];
 
 self.addEventListener('install', (event) => {
