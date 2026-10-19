@@ -1416,7 +1416,7 @@ function installApp() {
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
-    navigator.serviceWorker.register('sw.js').catch(console.error);
+    navigator.serviceWorker.register('sw.js').then(function(reg) { return reg.update(); }).catch(console.error);
   });
 }
 
