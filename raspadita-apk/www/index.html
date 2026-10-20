@@ -1758,10 +1758,9 @@ function copyWa() {
         return;
       }
       T = { n: data.ticket_number, code: data.prize_claim_code || '' };
-      setPrizeStickers(data.scratched ? getPrizeById(Number(data.prize_id)) : null, data.sticker_ids);
       currentCode = T.code;
       currentPrize = getPrizeById(Number(data.prize_id));
-      setPrizeStickers(currentPrize);
+      setPrizeStickers(currentPrize, data.sticker_ids);
       if (!currentPrize) throw new Error('Premio inválido en el servidor');
       _rev();
       try { localStorage.setItem(KEY, '1'); } catch (e) {}
@@ -1824,6 +1823,7 @@ function copyWa() {
       const data = await response.json();
       if (!response.ok || !data.ok) throw new Error(data.error || 'ticket_not_found');
       T = { n: data.ticket_number, code: data.prize_claim_code || '' };
+      setPrizeStickers(data.scratched ? getPrizeById(Number(data.prize_id)) : null, data.sticker_ids);
       bar.innerHTML = '🎟️ Boleta N° <b>' + String(T.n).padStart(4, '0') + '</b>' +
         '<div style="font-size:0.72rem;color:var(--text-muted);margin-top:6px;word-break:break-all">Tu enlace individual · <button type="button" id="copyTicketLink" style="background:none;border:0;color:var(--gold);font-weight:700;cursor:pointer;padding:0">Copiar enlace</button></div>';
       $('copyTicketLink').addEventListener('click', function () {
@@ -1834,7 +1834,6 @@ function copyWa() {
       });
       if (data.scratched) {
         currentPrize = getPrizeById(Number(data.prize_id));
-        setPrizeStickers(currentPrize);
         currentCode = T.code;
         if (!currentPrize) throw new Error('Premio inválido');
         isRevealed = true;
