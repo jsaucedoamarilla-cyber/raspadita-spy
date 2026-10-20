@@ -1135,7 +1135,7 @@ function initScratch() {
     let drawing = false, last = null;
     function pos(e) {
       const r = layer.getBoundingClientRect();
-      return {x:(e.clientX-r.left)*(layer.width/r.width),y:(e.clientY-r.top)*(layer.height/r.height)};
+      return {x:e.clientX-r.left,y:e.clientY-r.top};
     }
     function erase(e) {
       if (!drawing || layer.dataset.done === '1' || isRevealed) return;
