@@ -1037,7 +1037,7 @@ function saveState() {
 function setPrizeStickers(prize, serverStickerIds) {
   const animals = [
     { icon: '🎟️', id: 1, value: '¡GANASTE<br>UNA BOLETA!', sub: '¡Volvé a jugar gratis!' },
-    { icon: '🐕', id: 2, value: '₲ 5.000' },
+    { icon: '🎟️', id: 2, value: 'GANASTE<br>UNA JUGADA GRATIS' },
     { icon: '🐖', id: 3, value: '₲ 10.000' },
     { icon: '🐎', id: 4, value: '₲ 20.000' },
     { icon: '🐘', id: 5, value: '₲ 50.000' },
@@ -1103,6 +1103,9 @@ function setPrizeStickers(prize, serverStickerIds) {
     grid.innerHTML = stickers.map(a => {
       if (a.id === 1) {
         return '<span class="ticket-animal animal-id-1 free-ticket-sticker"><span class="sticker-animal">🎟️</span><span class="sticker-value">¡GANASTE<br>UNA BOLETA!</span><span class="sticker-sub">¡Volvé a jugar gratis!</span></span>';
+      }
+      if (a.id === 2) {
+        return '<span class="ticket-animal animal-id-2 free-ticket-sticker"><span class="sticker-value">GANASTE<br>UNA JUGADA GRATIS</span></span>';
       }
       return '<span class="ticket-animal animal-id-' + a.id + '"><span class="sticker-animal">' + a.icon + '</span><span class="sticker-value">' + a.value + '</span></span>';
     }).join('');
