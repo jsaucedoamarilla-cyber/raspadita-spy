@@ -868,7 +868,7 @@ body.ticket .hide-t,body.ticket .prizes-section:nth-of-type(1){display:none!impo
       <div id="ticketAnimalShowcase" class="ticket-animal-showcase" aria-label="Nueve casillas de animales y valores">
         <div class="ticket-animal-title">🐾 ¡Rasca y descubrí! 🐾</div>
         <div class="ticket-animal-grid" id="ticketAnimalGrid">
-          <span class="ticket-animal animal-id-2"><span class="sticker-animal">🐕</span><span class="sticker-value">₲ 5.000</span></span>
+          <span class="ticket-animal animal-id-2 free-ticket-sticker"><span class="sticker-value">GANASTE<br>UNA JUGADA GRATIS</span></span>
           <span class="ticket-animal animal-id-3"><span class="sticker-animal">🐈</span><span class="sticker-value">₲ 10.000</span></span>
           <span class="ticket-animal animal-id-4"><span class="sticker-animal">🐼</span><span class="sticker-value">₲ 20.000</span></span>
           <span class="ticket-animal animal-id-5"><span class="sticker-animal">🐘</span><span class="sticker-value">₲ 50.000</span></span>
@@ -1096,7 +1096,7 @@ function getPrizeById(id) {
 
 function setPrizeStickers(prize) {
   const animals = [
-    { icon: '🐕', id: 2, value: '₲ 5.000' }, { icon: '🐈', id: 3, value: '₲ 10.000' },
+    { icon: '🎟️', id: 2, value: 'GANASTE<br>UNA JUGADA GRATIS' }, { icon: '🐈', id: 3, value: '₲ 10.000' },
     { icon: '🐼', id: 4, value: '₲ 20.000' }, { icon: '🐘', id: 5, value: '₲ 50.000' },
     { icon: '🐤', id: 6, value: '₲ 100.000' }, { icon: '🐄', id: 7, value: '₲ 200.000' },
     { icon: '🦁', id: 8, value: '₲ 500.000' }, { icon: '🐧', id: 9, value: '₲ 1.000.000' },
