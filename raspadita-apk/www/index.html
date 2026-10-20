@@ -764,16 +764,17 @@ body.light{--bg-dark:#f6f1ff;--bg-card:#fff;--purple:#e6dcf7;--purple-light:#d8c
 .sticker-animal{display:flex;align-items:center;justify-content:center;font-family:"Noto Color Emoji","Apple Color Emoji","Segoe UI Emoji",sans-serif;font-size:clamp(2rem,9vw,3.4rem);font-weight:400;line-height:1;min-height:0;min-width:0;flex:1 1 auto;width:100%;max-height:76%;overflow:visible;filter:none;transform:translateZ(0);text-rendering:geometricPrecision;-webkit-font-smoothing:antialiased}
 .sticker-value{display:block;flex:0 0 auto;position:relative;z-index:2;color:#000000;font-size:clamp(.58rem,2.5vw,.82rem);font-weight:1000;line-height:1.15;text-align:center;white-space:nowrap;text-shadow:0 1px 0 rgba(255,255,255,.95);-webkit-text-stroke:.15px #000;padding:1px 0 2px;max-width:100%}
 /* El fondo pertenece al animal, no a la posición: siempre conserva su color */
-.ticket-animal.animal-id-1{background:linear-gradient(145deg,#fffde7,#ffd54f 55%,#ff6f00)}
-.ticket-animal.animal-id-2{background:linear-gradient(145deg,#fff3b0,#ffb300 65%,#e65100)}
-.ticket-animal.animal-id-3{background:linear-gradient(145deg,#f3e5f5,#ce93d8 58%,#7b1fa2)}
-.ticket-animal.animal-id-4{background:linear-gradient(145deg,#dcedc8,#8bc34a 58%,#33691e)}
-.ticket-animal.animal-id-5{background:linear-gradient(145deg,#b3e5fc,#29b6f6 58%,#01579b)}
-.ticket-animal.animal-id-6{background:linear-gradient(145deg,#ffcdd2,#ef5350 58%,#b71c1c)}
-.ticket-animal.animal-id-7{background:linear-gradient(145deg,#ffe0b2,#ff9800 58%,#e65100)}
-.ticket-animal.animal-id-8{background:linear-gradient(145deg,#d1c4e9,#9575cd 58%,#4527a0)}
-.ticket-animal.animal-id-9{background:linear-gradient(145deg,#b2dfdb,#4db6ac 58%,#00695c)}
-.ticket-animal.animal-id-10{background:linear-gradient(145deg,#f8bbd0,#f06292 58%,#880e4f)}
+.ticket-animal.animal-id-1{background:linear-gradient(135deg,#fff0b8,#ffdc75,#fff4c9);color:#4b2376;border:2px dashed #9a6500}
+.ticket-animal.animal-id-3{background:linear-gradient(145deg,#ffc5df,#f48fb1 58%,#ad1457)}
+.ticket-animal.animal-id-4{background:linear-gradient(145deg,#b9f0d2,#66c99b 58%,#176b50)}
+.ticket-animal.animal-id-5{background:linear-gradient(145deg,#d9c9ff,#a78bfa 58%,#5b21b6)}
+.ticket-animal.animal-id-6{background:linear-gradient(145deg,#fff4a8,#ffe066 58%,#c28a00)}
+.ticket-animal.animal-id-7{background:linear-gradient(145deg,#c9e89b,#8bc34a 58%,#33691e)}
+.ticket-animal.animal-id-8{background:linear-gradient(145deg,#ffc89c,#fb923c 58%,#9a3412)}
+.ticket-animal.animal-id-9{background:linear-gradient(145deg,#aee7f5,#38bdf8 58%,#075985)}
+.ticket-animal.animal-id-10{background:linear-gradient(145deg,#d8b7f4,#b084e8 58%,#6b21a8)}
+.ticket-animal .sticker-value{font-size:clamp(.55rem,2.2vw,.78rem);white-space:normal;overflow-wrap:anywhere}
+.ticket-animal .sticker-sub{font-size:clamp(.45rem,1.8vw,.65rem);font-weight:900;text-align:center;line-height:1.05;color:#4b2376;padding:0 2px}
 @media(max-width:380px){.ticket-animal-grid{gap:4px}.ticket-animal{padding:2px 1px;border-radius:9px;gap:2px}.sticker-animal,.ticket-animal .sticker-animal{font-size:clamp(1.65rem,8.5vw,2.6rem);max-height:76%}.sticker-value,.ticket-animal .sticker-value{display:block;flex:0 0 auto;position:relative;z-index:3;color:#fff;font-size:clamp(.66rem,2.8vw,.9rem);font-weight:1000;line-height:1.15;text-align:center;white-space:nowrap;background:rgba(25,12,38,.94);border:1px solid rgba(255,255,255,.85);border-radius:999px;padding:3px 6px 4px;margin:1px 0 0;max-width:100%;box-sizing:border-box;text-shadow:0 1px 1px #000;box-shadow:0 2px 3px rgba(0,0,0,.25);letter-spacing:.1px}}
 body.ticket .hide-t,body.ticket .prizes-section:nth-of-type(1){display:none!important}
 </style>
@@ -811,17 +812,7 @@ body.ticket .hide-t,body.ticket .prizes-section:nth-of-type(1){display:none!impo
       <div class="scratch-wrapper">
       <div id="ticketAnimalShowcase" class="ticket-animal-showcase" aria-label="Nueve casillas de animales con sus valores">
         <div class="ticket-animal-title">🐾 ¡Rasca y descubrí! 🐾</div>
-        <div id="stickerRow" class="ticket-animal-grid">
-          <span class="ticket-animal animal-id-2"><span class="sticker-animal">🐕</span><span class="sticker-value">₲ 5.000</span></span>
-          <span class="ticket-animal animal-id-3"><span class="sticker-animal">🐈</span><span class="sticker-value">₲ 10.000</span></span>
-          <span class="ticket-animal animal-id-4"><span class="sticker-animal">🐼</span><span class="sticker-value">₲ 20.000</span></span>
-          <span class="ticket-animal animal-id-5"><span class="sticker-animal">🐘</span><span class="sticker-value">₲ 50.000</span></span>
-          <span class="ticket-animal animal-id-6"><span class="sticker-animal">🐤</span><span class="sticker-value">₲ 100.000</span></span>
-          <span class="ticket-animal animal-id-7"><span class="sticker-animal">🐄</span><span class="sticker-value">₲ 200.000</span></span>
-          <span class="ticket-animal animal-id-8"><span class="sticker-animal">🦁</span><span class="sticker-value">₲ 500.000</span></span>
-          <span class="ticket-animal animal-id-9"><span class="sticker-animal">🐧</span><span class="sticker-value">₲ 1.000.000</span></span>
-          <span class="ticket-animal animal-id-10"><span class="sticker-animal">🐅</span><span class="sticker-value">₲ 2.000.000</span></span>
-        </div>
+        <div id="ticketAnimalGrid" class="ticket-animal-grid" aria-live="polite"></div>
       </div>
  
         <!-- Premio debajo -->
@@ -888,44 +879,17 @@ body.ticket .hide-t,body.ticket .prizes-section:nth-of-type(1){display:none!impo
     <div class="prize-grid">
       <div class="prize-card">
         <div class="emoji">🎟️</div>
-        <div class="name">Jugada más</div>
+        <div class="name">¡GANASTE UNA BOLETA!</div>
+        <div class="value">¡Volvé a jugar gratis!</div>
       </div>
-      <div class="prize-card">
-        <div class="emoji">🐶</div>
-        <div class="name">₲ 5.000</div>
-      </div>
-      <div class="prize-card">
-        <div class="emoji">🐱</div>
-        <div class="name">₲ 10.000</div>
-      </div>
-      <div class="prize-card">
-        <div class="emoji">🐼</div>
-        <div class="name">₲ 20.000</div>
-      </div>
-      <div class="prize-card">
-        <div class="emoji">🐘</div>
-        <div class="name">₲ 50.000</div>
-      </div>
-      <div class="prize-card">
-        <div class="emoji">🐥</div>
-        <div class="name">₲ 100.000</div>
-      </div>
-      <div class="prize-card">
-        <div class="emoji">🐮</div>
-        <div class="name">₲ 200.000</div>
-      </div>
-      <div class="prize-card">
-        <div class="emoji">🦁</div>
-        <div class="name">₲ 500.000</div>
-      </div>
-      <div class="prize-card">
-        <div class="emoji">🐧</div>
-        <div class="name">₲ 1.000.000</div>
-      </div>
-      <div class="prize-card">
-        <div class="emoji">🐯</div>
-        <div class="name">₲ 2.000.000</div>
-      </div>
+      <div class="prize-card"><div class="emoji">🐖</div><div class="name">₲ 10.000</div></div>
+      <div class="prize-card"><div class="emoji">🐎</div><div class="name">₲ 20.000</div></div>
+      <div class="prize-card"><div class="emoji">🐘</div><div class="name">₲ 50.000</div></div>
+      <div class="prize-card"><div class="emoji">🐥</div><div class="name">₲ 100.000</div></div>
+      <div class="prize-card"><div class="emoji">🐄</div><div class="name">₲ 200.000</div></div>
+      <div class="prize-card"><div class="emoji">🐅</div><div class="name">₲ 500.000</div></div>
+      <div class="prize-card"><div class="emoji">🐳</div><div class="name">₲ 1.000.000</div></div>
+      <div class="prize-card"><div class="emoji">🦜</div><div class="name">₲ 2.000.000</div></div>
     </div>
   </section>
 
@@ -991,17 +955,16 @@ const PUBLIC_BASE_URL = 'https://jsaucedoamarilla-cyber.github.io/raspadita-spy/
 
 // Catálogo visual de premios. Las cantidades y la distribución permanecen solo en el servidor.
 const PRIZE_CONFIG = [
-  { id: 1,  emoji: '🔄', label: 'Ganaste una boleta', sub: 'Boleta gratis' },
-  { id: 2,  emoji: '💵', label: '₲ 5.000',    sub: 'Efectivo' },
-  { id: 3,  emoji: '💵', label: '₲ 10.000',   sub: 'Efectivo' },
-  { id: 4,  emoji: '💰', label: '₲ 20.000',   sub: 'Efectivo' },
-  { id: 5,  emoji: '💰', label: '₲ 50.000',   sub: 'Efectivo' },
-  { id: 6,  emoji: '🏆', label: '₲ 100.000',  sub: 'Efectivo' },
-  { id: 7,  emoji: '🏆', label: '₲ 200.000',  sub: 'Efectivo' },
-  { id: 8,  emoji: '💎', label: '₲ 500.000',  sub: 'Gran premio' },
-  { id: 9,  emoji: '🎉', label: '₲ 1.000.000', sub: '¡Súper premio!' },
-  { id: 10, emoji: '👑', label: '₲ 2.000.000', sub: '¡JACKPOT!' },
-  { id: 11, emoji: '😢', label: 'Seguí participando', sub: '¡Casi!' }
+  { id: 1,  emoji: '🎟️', label: '¡GANASTE UNA BOLETA!', sub: '¡Volvé a jugar gratis!' },
+  { id: 3,  emoji: '🐖', label: '₲ 10.000',    sub: 'Premio en efectivo' },
+  { id: 4,  emoji: '🐎', label: '₲ 20.000',    sub: 'Premio en efectivo' },
+  { id: 5,  emoji: '🐘', label: '₲ 50.000',    sub: 'Premio en efectivo' },
+  { id: 6,  emoji: '🐥', label: '₲ 100.000',   sub: 'Premio en efectivo' },
+  { id: 7,  emoji: '🐄', label: '₲ 200.000',   sub: 'Premio en efectivo' },
+  { id: 8,  emoji: '🐅', label: '₲ 500.000',   sub: 'Premio en efectivo' },
+  { id: 9,  emoji: '🐳', label: '₲ 1.000.000', sub: 'Premio en efectivo' },
+  { id: 10, emoji: '🦜', label: '₲ 2.000.000', sub: 'Premio en efectivo' },
+  { id: 11, emoji: '😢', label: 'Seguí participando', sub: '¡Gracias por participar!' }
 ];
 
 // ===== Estado =====
@@ -1051,38 +1014,33 @@ function saveState() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify({ pool, plays, wins, freePlays, history, theme }));
 }
 
+let stickersInitialized = false;
 function setPrizeStickers(prize) {
+  // Las nueve figuras son únicas en cada boleta; solo cambia el orden aleatoriamente.
   const animals = [
-    { icon: '🐕', id: 2, value: '₲ 5.000' }, { icon: '🐈', id: 3, value: '₲ 10.000' },
-    { icon: '🐼', id: 4, value: '₲ 20.000' }, { icon: '🐘', id: 5, value: '₲ 50.000' },
-    { icon: '🐤', id: 6, value: '₲ 100.000' }, { icon: '🐄', id: 7, value: '₲ 200.000' },
-    { icon: '🦁', id: 8, value: '₲ 500.000' }, { icon: '🐧', id: 9, value: '₲ 1.000.000' },
-    { icon: '🐅', id: 10, value: '₲ 2.000.000' },
-    { icon: '🎟️', id: 1, value: 'BOLETA GRATIS' }
+    { icon: '🎟️', id: 1, value: '¡GANASTE UNA BOLETA!', sub: '¡Volvé a jugar gratis!' },
+    { icon: '🐖', id: 3, value: '₲ 10.000' },
+    { icon: '🐎', id: 4, value: '₲ 20.000' },
+    { icon: '🐘', id: 5, value: '₲ 50.000' },
+    { icon: '🐥', id: 6, value: '₲ 100.000' },
+    { icon: '🐄', id: 7, value: '₲ 200.000' },
+    { icon: '🐅', id: 8, value: '₲ 500.000' },
+    { icon: '🐳', id: 9, value: '₲ 1.000.000' },
+    { icon: '🦜', id: 10, value: '₲ 2.000.000' }
   ];
   const grid = document.getElementById('ticketAnimalGrid');
-  if (grid) {
-    const shuffle = arr => {
-      for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-      }
-      return arr;
-    };
-    const winningId = prize && Number(prize.id) >= 1 && Number(prize.id) <= 10 ? Number(prize.id) : null;
-    let picks = [];
-    if (winningId !== null) {
-      const winner = animals.find(a => a.id === winningId) || animals[0];
-      picks = [winner, winner, winner];
-      const extras = shuffle(animals.filter(a => a.id !== winningId)).slice(0, 6);
-      picks.push(...extras);
-    } else {
-      // Boleta perdedora: pares de premios altos y otros valores, pero nunca tres iguales.
-      const choices = shuffle(animals.filter(a => a.id !== 1)).slice(0, 6);
-      picks = [choices[0], choices[0], choices[1], choices[1], choices[2], choices[2], choices[3], choices[4], choices[5]];
+  if (grid && !stickersInitialized) {
+    for (let i = animals.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [animals[i], animals[j]] = [animals[j], animals[i]];
     }
-    shuffle(picks);
-    grid.innerHTML = picks.map(a => '<span class="ticket-animal animal-id-' + a.id + '"><span class="sticker-animal">' + a.icon + '</span><span class="sticker-value">' + a.value + '</span></span>').join('');
+    grid.innerHTML = animals.map(a => {
+      if (a.id === 1) {
+        return '<span class="ticket-animal animal-id-1 free-ticket-sticker"><span class="sticker-animal">🎟️</span><span class="sticker-value">¡GANASTE<br>UNA BOLETA!</span><span class="sticker-sub">¡Volvé a jugar gratis!</span></span>';
+      }
+      return '<span class="ticket-animal animal-id-' + a.id + '"><span class="sticker-animal">' + a.icon + '</span><span class="sticker-value">' + a.value + '</span></span>';
+    }).join('');
+    stickersInitialized = true;
   }
   const modalRow = document.getElementById('modalAnimals');
   if (modalRow) modalRow.innerHTML = animals.filter(a => a.id !== 1).map(a => '<span class="modal-animal">' + a.icon + '</span>').join('');
@@ -1507,6 +1465,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   } catch (e) {}
   initPool();
+  setPrizeStickers(null);
   applyTheme();
   renderHistory();
   updateStats();
