@@ -1111,6 +1111,7 @@ function initScratch() {
     layer.className = 'tile-scratch-canvas';
     layer.setAttribute('aria-label', 'Raspar cuadrado ' + (index + 1));
     layer.dataset.done = '0';
+    layer.style.pointerEvents = 'none'; // activar solo después de validar que la boleta está disponible
     tile.appendChild(layer);
     const rect = tile.getBoundingClientRect();
     const dpr = Math.max(1, window.devicePixelRatio || 1);
@@ -1775,13 +1776,16 @@ function copyWa() {
         cv.style.display = 'none';
         cv.style.pointerEvents = 'none';
         bar.innerHTML = '🔒 <b>Esta boleta ya fue raspada</b><div style="font-size:0.78rem;color:var(--text-muted);margin-top:5px">El resultado original se conserva y no se puede volver a jugar.</div>';
+        document.querySelectorAll('.tile-scratch-canvas').forEach(function(layer){layer.style.display='none';layer.style.pointerEvents='none';});
         showBox();
       } else {
         $('prizeEmoji').textContent = '🎟️';
         $('prizeLabel').textContent = 'Tu premio está oculto';
         $('prizeSub').textContent = 'Raspá la tarjeta para descubrirlo';
         cv.style.display = '';
-        cv.style.pointerEvents = 'auto';
+        cv.style.pointerEvents = 'none';
+        document.querySelectorAll('.tile-scratch-canvas').forEach(function(layer){layer.style.display='';layer.style.pointerEvents='auto';});
+        tileScratchCount = 0; tileScratchComplete = false;
         isRevealed = false;
         setTimeout(function () { if (!isRevealed) { try { initScratch(); } catch (e) {} cv.style.pointerEvents = 'auto'; } }, 60);
       }
