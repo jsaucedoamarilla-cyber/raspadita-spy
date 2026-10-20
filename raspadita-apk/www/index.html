@@ -774,7 +774,7 @@ body.light{--bg-dark:#f6f1ff;--bg-card:#fff;--purple:#e6dcf7;--purple-light:#d8c
 .ticket-animal.animal-id-9{background:linear-gradient(145deg,#aee7f5,#38bdf8 58%,#075985)}
 .ticket-animal.animal-id-10{background:linear-gradient(145deg,#d8b7f4,#b084e8 58%,#6b21a8)}
 .ticket-animal .sticker-value{font-size:clamp(.55rem,2.2vw,.78rem);white-space:normal;overflow-wrap:anywhere}
-.ticket-animal .sticker-sub{font-size:clamp(.45rem,1.8vw,.65rem);font-weight:900;text-align:center;line-height:1.05;color:#4b2376;padding:0 2px}
+.ticket-animal .sticker-sub{font-size:clamp(.45rem,1.8vw,.65rem);font-weight:900;text-align:center;line-height:1.05;color:#4b2376;padding:0 2px}.ticket-animal.free-ticket-sticker .free-ticket-note{font-size:clamp(.34rem,1.25vw,.5rem);font-weight:800;line-height:1.02;color:#4b2376;padding:0 1px}
 @media(max-width:380px){.ticket-animal-grid{gap:4px}.ticket-animal{padding:2px 1px;border-radius:9px;gap:2px}.sticker-animal,.ticket-animal .sticker-animal{font-size:clamp(1.65rem,8.5vw,2.6rem);max-height:76%}.sticker-value,.ticket-animal .sticker-value{display:block;flex:0 0 auto;position:relative;z-index:3;color:#fff;font-size:clamp(.66rem,2.8vw,.9rem);font-weight:1000;line-height:1.15;text-align:center;white-space:nowrap;background:rgba(25,12,38,.94);border:1px solid rgba(255,255,255,.85);border-radius:999px;padding:3px 6px 4px;margin:1px 0 0;max-width:100%;box-sizing:border-box;text-shadow:0 1px 1px #000;box-shadow:0 2px 3px rgba(0,0,0,.25);letter-spacing:.1px}}
 body.ticket .hide-t,body.ticket .prizes-section:nth-of-type(1){display:none!important}
 </style>
@@ -1036,7 +1036,7 @@ function setPrizeStickers(prize) {
     }
     grid.innerHTML = animals.map(a => {
       if (a.id === 1) {
-        return '<span class="ticket-animal animal-id-1 free-ticket-sticker"><span class="sticker-animal">🎟️</span><span class="sticker-value">¡GANASTE<br>UNA BOLETA!</span><span class="sticker-sub">¡Volvé a jugar gratis!</span></span>';
+        return '<span class="ticket-animal animal-id-1 free-ticket-sticker"><span class="sticker-animal">🎟️</span><span class="sticker-value">¡GANASTE<br>UNA BOLETA!</span><span class="sticker-sub">¡Volvé a jugar gratis!</span><span class="sticker-sub free-ticket-note">Un premio especial, diferente de los premios en efectivo.</span></span>';
       }
       return '<span class="ticket-animal animal-id-' + a.id + '"><span class="sticker-animal">' + a.icon + '</span><span class="sticker-value">' + a.value + '</span></span>';
     }).join('');
