@@ -298,7 +298,7 @@ body::before {
   font-weight: 500;
 }
 
-.scratch-wrapper:not(.revealed) #prizeLayer{display:none}.scratch-wrapper.revealed #prizeLayer{display:flex}
+.scratch-wrapper #prizeLayer{display:none!important}
 
 #scratchCanvas {
   position: absolute;
@@ -757,7 +757,7 @@ body.light{--bg-dark:#f6f1ff;--bg-card:#fff;--purple:#e6dcf7;--purple-light:#d8c
 .result-box{margin:14px 0;padding:16px;border-radius:16px;text-align:center;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.05)}
 .result-box.win{border-color:var(--gold);background:rgba(255,193,7,.12);box-shadow:0 0 24px rgba(255,193,7,.25)}
 .result-box h3{margin-bottom:8px}.result-box p{margin-bottom:12px}
-.ticket-animal-showcase{position:absolute;inset:0;margin:0;padding:12px;box-sizing:border-box;border-radius:16px;text-align:center;background:linear-gradient(145deg,#321653,#170d2b);border:0;box-shadow:inset 0 0 18px rgba(255,193,7,.12);z-index:0;display:flex;flex-direction:column;justify-content:center;gap:8px}
+.ticket-animal-showcase{position:absolute;inset:0;margin:0;padding:12px;box-sizing:border-box;border-radius:16px;text-align:center;background:linear-gradient(145deg,#321653,#170d2b);border:0;box-shadow:inset 0 0 18px rgba(255,193,7,.12);z-index:1;display:flex;flex-direction:column;justify-content:center;gap:8px}
 .ticket-animal-title{font-weight:900;color:#ffe082;font-size:1.05rem;margin-bottom:13px;text-shadow:0 2px 8px rgba(255,193,7,.35)}
 .ticket-animal-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;max-width:340px;width:100%;flex:1;align-content:center;margin:0 auto;min-height:0}
 .ticket-animal{display:grid;place-items:center;min-height:74px;border-radius:17px;font-size:2.7rem;line-height:1;background:radial-gradient(circle at 30% 20%,#fffde7,#ffd54f 48%,#ef6c00 100%);border:3px solid #fff0a6;box-shadow:inset 0 4px 0 rgba(255,255,255,.75),0 5px 0 #78350f,0 8px 12px rgba(0,0,0,.28);animation:floatIcon 2.5s ease-in-out infinite}
