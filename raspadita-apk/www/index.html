@@ -1034,10 +1034,10 @@ function saveState() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify({ pool, plays, wins, freePlays, history, theme }));
 }
 
-function setPrizeStickers(prize) {
-  // La combinación de cada boleta individual se guarda en el dispositivo y no cambia al volver a abrirla.
+function setPrizeStickers(prize, serverStickerIds) {
   const animals = [
     { icon: '🎟️', id: 1, value: '¡GANASTE<br>UNA BOLETA!', sub: '¡Volvé a jugar gratis!' },
+    { icon: '🐕', id: 2, value: '₲ 5.000' },
     { icon: '🐖', id: 3, value: '₲ 10.000' },
     { icon: '🐎', id: 4, value: '₲ 20.000' },
     { icon: '🐘', id: 5, value: '₲ 50.000' },
@@ -1053,34 +1053,33 @@ function setPrizeStickers(prize) {
     const match = window.location.hash.match(/[?&#]?t=([^&]+)/i) || window.location.hash.match(/t=([^&]+)/i);
     if (match) token = decodeURIComponent(match[1]);
   }
-  const layoutKey = token ? 'raspadita_layout_v1_' + token.toUpperCase() : '';
+  const layoutKey = token ? 'raspadita_layout_v2_' + token.toUpperCase() : '';
   const byId = id => animals.find(a => a.id === Number(id));
   let stickers = null;
 
-  // Recuperar la misma disposición si esta boleta ya se abrió antes en este teléfono.
-  if (layoutKey && prize) {
-    try {
-      const saved = JSON.parse(localStorage.getItem(layoutKey) || 'null');
-      if (Array.isArray(saved) && saved.length === 9 && saved.every(id => byId(id))) {
-        stickers = saved.map(byId);
-      }
-    } catch (e) {}
+  // El servidor manda el diseño guardado en la base de datos: es igual para todos los teléfonos.
+  if (Array.isArray(serverStickerIds) && serverStickerIds.length === 9 &&
+      serverStickerIds.every(id => byId(id))) {
+    stickers = serverStickerIds.map(byId);
+    if (layoutKey) {
+      try { localStorage.setItem(layoutKey, JSON.stringify(serverStickerIds.map(Number))); } catch (e) {}
+    }
   }
 
+  // Respaldo para la vista sin conexión/en modo de demostración. El servidor reemplaza
+  // esta disposición por la oficial al verificar una boleta individual.
+  if (!stickers && layoutKey) {
+    try {
+      const saved = JSON.parse(localStorage.getItem(layoutKey) || 'null');
+      if (Array.isArray(saved) && saved.length === 9 && saved.every(id => byId(id))) stickers = saved.map(byId);
+    } catch (e) {}
+  }
   if (!stickers) {
-    // Usar una semilla estable también antes de conocer el resultado, para que
-    // la vista inicial no cambie al recargar la misma boleta.
+    const seedText = (token || 'demo') + (prize ? ':' + prize.id : ':pending');
     let seed = 0;
-    if (token) {
-      const seedText = token.toUpperCase() + (prize ? ':' + prize.id : ':pending');
-      for (let i = 0; i < seedText.length; i++) seed = (Math.imul(seed, 31) + seedText.charCodeAt(i)) >>> 0;
-      if (!seed) seed = 123456789;
-    }
-    const random = () => {
-      if (!token) return Math.random();
-      seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
-      return seed / 4294967296;
-    };
+    for (let i = 0; i < seedText.length; i++) seed = (Math.imul(seed, 31) + seedText.charCodeAt(i)) >>> 0;
+    if (!seed) seed = 123456789;
+    const random = () => { seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0; return seed / 4294967296; };
     const shuffled = list => {
       const result = list.slice();
       for (let i = result.length - 1; i > 0; i--) {
@@ -1089,21 +1088,14 @@ function setPrizeStickers(prize) {
       }
       return result;
     };
-    stickers = [];
-    if (prize && prize.id !== 11) {
-      const winningAnimal = byId(prize.id) || animals.find(a => a.id === 3);
-      stickers.push(winningAnimal, winningAnimal, winningAnimal);
-      shuffled(animals.filter(a => a.id !== 1 && a.id !== winningAnimal.id)).slice(0, 3)
-        .forEach(a => stickers.push(a, a));
+    if (prize && prize.id >= 1 && prize.id <= 10) {
+      const winner = byId(prize.id);
+      stickers = [winner, winner, winner, ...shuffled(animals.filter(a => a.id !== prize.id)).slice(0, 6)];
     } else {
       const chosen = shuffled(animals.filter(a => a.id !== 1)).slice(0, 5);
-      chosen.slice(0, 4).forEach(a => stickers.push(a, a));
-      stickers.push(chosen[4]);
+      stickers = [chosen[0], chosen[0], chosen[1], chosen[1], chosen[2], chosen[2], chosen[3], chosen[3], chosen[4]];
     }
     stickers = shuffled(stickers);
-    if (layoutKey && prize) {
-      try { localStorage.setItem(layoutKey, JSON.stringify(stickers.map(a => a.id))); } catch (e) {}
-    }
   }
 
   const grid = document.getElementById('ticketAnimalGrid');
@@ -1345,7 +1337,7 @@ function newGame() {
 
   const prizeId = pool.pop();
   currentPrize = getPrizeById(prizeId);
-  setPrizeStickers(currentPrize);
+  setPrizeStickers(currentPrize, data.sticker_ids);
 
   document.getElementById('prizeEmoji').textContent = currentPrize.emoji;
   document.getElementById('prizeLabel').textContent = currentPrize.label;
@@ -1766,6 +1758,7 @@ function copyWa() {
         return;
       }
       T = { n: data.ticket_number, code: data.prize_claim_code || '' };
+      setPrizeStickers(data.scratched ? getPrizeById(Number(data.prize_id)) : null, data.sticker_ids);
       currentCode = T.code;
       currentPrize = getPrizeById(Number(data.prize_id));
       setPrizeStickers(currentPrize);
