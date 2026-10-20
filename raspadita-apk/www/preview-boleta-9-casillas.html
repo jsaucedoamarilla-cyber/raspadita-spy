@@ -18,7 +18,7 @@ main{max-width:440px;margin:auto}.top{text-align:center;padding:12px 4px 18px}.b
 .tile .foil{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:5px;background:repeating-linear-gradient(135deg,#b8bdc8 0,#e9edf4 7px,#8f96a5 14px,#d9dce4 21px);color:#303444;font-size:12px;font-weight:950;text-shadow:0 1px #fff;cursor:pointer;transition:clip-path .25s ease;clip-path:inset(0 round 10px)}
 .tile .foil:after{content:"RASPAR";position:absolute;bottom:9px;font-size:9px;letter-spacing:1.5px;background:#fff9;padding:4px 7px;border-radius:5px}
 .tile.revealed .foil{clip-path:inset(0 0 100% 100% round 10px);pointer-events:none}
-.tile.special{outline:2px solid var(--gold);outline-offset:1px}
+.tile.special{outline:2px solid var(--gold);outline-offset:1px}.free-ticket-tile{border:2px dashed #9a6500;padding:5px 3px}.free-ticket-tile .animal{font-size:clamp(26px,8vw,36px)}.free-ticket-tile .free-title{font-size:clamp(10px,3.1vw,13px);font-weight:1000;line-height:1.1;text-align:center;margin-top:3px}.free-ticket-tile .free-subtitle{font-size:clamp(8px,2.5vw,10px);font-weight:850;line-height:1.1;text-align:center;margin-top:5px}.free-ticket-tile .free-note{font-size:clamp(7px,2vw,9px);font-weight:800;line-height:1.1;text-align:center;margin-top:5px}
 .ribbon{position:absolute;top:5px;left:50%;transform:translateX(-50%);background:linear-gradient(90deg,#9a6500,#ffe082,#b78000);color:#271a08;font-size:8px;font-weight:1000;letter-spacing:.5px;padding:3px 7px;border-radius:8px;white-space:nowrap;z-index:1}
 .instructions{text-align:center;margin:14px 2px 0;font-size:12px;color:#e0d5ee}.notice{margin-top:14px;padding:10px;border:1px solid #604b76;border-radius:12px;font-size:11px;color:#c8bdd6;text-align:center}
 .actions{display:flex;gap:8px;margin-top:13px}button,a.btn{flex:1;border:0;border-radius:12px;padding:12px 8px;font:700 13px system-ui;text-align:center;text-decoration:none;cursor:pointer;background:var(--gold);color:var(--ink)}a.btn.secondary{background:#453254;color:#fff;border:1px solid #6b537f}
@@ -29,7 +29,7 @@ main{max-width:440px;margin:auto}.top{text-align:center;padding:12px 4px 18px}.b
 <header class="top"><div class="brand">🎟 RASPADITA SAN PEDRO</div><h1>¡Raspá y descubrí<br>tu premio!</h1><p>Propuesta visual · 9 casillas</p></header>
 <section class="card"><div class="card-title">Tu boleta</div><p class="hint">Tocá cada casilla para ver el diseño de abajo</p>
 <div class="grid" id="grid">
-<div class="tile" style="background:#a8d9ff"><span class="animal">🐕</span><span class="amount">₲ 5.000</span><span class="name">PERRO</span><div class="foil">🎟️<br>RASPADITA</div></div>
+<div class="tile special free-ticket-tile" style="background:linear-gradient(135deg,#fff0b8,#ffdc75,#fff4c9);color:#4b2376"><span class="animal">🎟️</span><span class="free-title">¡GANASTE<br>UNA BOLETA!</span><span class="free-subtitle">¡Volvé a jugar gratis!</span><span class="free-note">Un premio especial, diferente de los premios en efectivo.</span><div class="foil">🎟️<br>RASPADITA</div></div>
 <div class="tile" style="background:#ffc5df"><span class="animal">🐖</span><span class="amount">₲ 10.000</span><span class="name">CERDO</span><div class="foil">🎟️<br>RASPADITA</div></div>
 <div class="tile" style="background:#b9f0d2"><span class="animal">🐎</span><span class="amount">₲ 20.000</span><span class="name">CABALLO</span><div class="foil">🎟️<br>RASPADITA</div></div>
 <div class="tile" style="background:#d9c9ff"><span class="animal">🐘</span><span class="amount">₲ 50.000</span><span class="name">ELEFANTE</span><div class="foil">🎟️<br>RASPADITA</div></div>
@@ -38,11 +38,6 @@ main{max-width:440px;margin:auto}.top{text-align:center;padding:12px 4px 18px}.b
 <div class="tile" style="background:#ffc89c"><span class="animal">🐅</span><span class="amount">₲ 500.000</span><span class="name">TIGRE</span><div class="foil">🎟️<br>RASPADITA</div></div>
 <div class="tile" style="background:#aee7f5"><span class="animal">🐳</span><span class="amount">₲ 1.000.000</span><span class="name">BALLENA</span><div class="foil">🎟️<br>RASPADITA</div></div>
 <div class="tile" style="background:#d8b7f4"><span class="animal">🦜</span><span class="amount">₲ 2.000.000</span><span class="name">LORO</span><div class="foil">🎟️<br>RASPADITA</div></div>
-</div>
-<div class="free-ticket" style="margin-top:14px;padding:14px 10px;border-radius:16px;border:2px dashed #ffd56a;background:linear-gradient(135deg,#fff0b8,#ffdc75,#fff4c9);color:#4b2376;text-align:center;box-shadow:0 5px 18px #0003">
-<div style="font-size:30px;line-height:1.2">🎟️🎉</div>
-<div style="font-size:18px;font-weight:1000;line-height:1.2;margin-top:5px">¡GANASTE UNA BOLETA!</div>
-<div style="font-size:12px;font-weight:800;margin-top:5px">¡Volvé a jugar gratis!</div>
 </div>
 <div class="instructions">Raspá las 9 casillas para descubrir el resultado.</div>
 <div class="actions"><button id="reveal">Ver todas las casillas</button><a class="btn secondary" href="./admin.html">Volver al panel</a></div>
