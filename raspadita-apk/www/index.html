@@ -1035,8 +1035,7 @@ function saveState() {
 }
 
 function setPrizeStickers(prize) {
-  // Cada boleta muestra 9 casillas. Ganadoras: exactamente 3 símbolos del premio.
-  // No ganadoras: cuatro parejas y un símbolo suelto; nunca hay tres iguales.
+  // La combinación de cada boleta individual se guarda en el dispositivo y no cambia al volver a abrirla.
   const animals = [
     { icon: '🎟️', id: 1, value: '¡GANASTE<br>UNA BOLETA!', sub: '¡Volvé a jugar gratis!' },
     { icon: '🐖', id: 3, value: '₲ 10.000' },
@@ -1048,42 +1047,62 @@ function setPrizeStickers(prize) {
     { icon: '🐳', id: 9, value: '₲ 1.000.000' },
     { icon: '🦜', id: 10, value: '₲ 2.000.000' }
   ];
-
-  // En enlaces individuales usamos una semilla estable para que la misma boleta
-  // conserve su combinación al recargar. En el modo local se mezcla al azar.
-  const token = new URLSearchParams(window.location.search).get('t') || '';
-  let seed = 0;
-  if (token && prize) {
-    const seedText = token + ':' + prize.id;
-    for (let i = 0; i < seedText.length; i++) seed = (Math.imul(seed, 31) + seedText.charCodeAt(i)) >>> 0;
-    if (!seed) seed = 123456789;
+  const params = new URLSearchParams(window.location.search);
+  let token = params.get('t') || '';
+  if (!token && window.location.hash) {
+    const match = window.location.hash.match(/[?&#]?t=([^&]+)/i) || window.location.hash.match(/t=([^&]+)/i);
+    if (match) token = decodeURIComponent(match[1]);
   }
-  const random = () => {
-    if (!token || !prize) return Math.random();
-    seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
-    return seed / 4294967296;
-  };
-  const shuffled = list => {
-    const result = list.slice();
-    for (let i = result.length - 1; i > 0; i--) {
-      const j = Math.floor(random() * (i + 1));
-      [result[i], result[j]] = [result[j], result[i]];
+  const layoutKey = token ? 'raspadita_layout_v1_' + token.toUpperCase() : '';
+  const byId = id => animals.find(a => a.id === Number(id));
+  let stickers = null;
+
+  // Recuperar la misma disposición si esta boleta ya se abrió antes en este teléfono.
+  if (layoutKey && prize) {
+    try {
+      const saved = JSON.parse(localStorage.getItem(layoutKey) || 'null');
+      if (Array.isArray(saved) && saved.length === 9 && saved.every(id => byId(id))) {
+        stickers = saved.map(byId);
+      }
+    } catch (e) {}
+  }
+
+  if (!stickers) {
+    let seed = 0;
+    if (token && prize) {
+      const seedText = token.toUpperCase() + ':' + prize.id;
+      for (let i = 0; i < seedText.length; i++) seed = (Math.imul(seed, 31) + seedText.charCodeAt(i)) >>> 0;
+      if (!seed) seed = 123456789;
     }
-    return result;
-  };
-
-  let stickers = [];
-  if (prize && prize.id !== 11) {
-    const winningAnimal = animals.find(a => a.id === prize.id) || animals[1];
-    stickers.push(winningAnimal, winningAnimal, winningAnimal);
-    const otherAnimals = shuffled(animals.filter(a => a.id !== 1 && a.id !== winningAnimal.id)).slice(0, 3);
-    otherAnimals.forEach(a => stickers.push(a, a));
-  } else {
-    const chosen = shuffled(animals.filter(a => a.id !== 1)).slice(0, 5);
-    chosen.slice(0, 4).forEach(a => stickers.push(a, a));
-    stickers.push(chosen[4]);
+    const random = () => {
+      if (!token || !prize) return Math.random();
+      seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
+      return seed / 4294967296;
+    };
+    const shuffled = list => {
+      const result = list.slice();
+      for (let i = result.length - 1; i > 0; i--) {
+        const j = Math.floor(random() * (i + 1));
+        [result[i], result[j]] = [result[j], result[i]];
+      }
+      return result;
+    };
+    stickers = [];
+    if (prize && prize.id !== 11) {
+      const winningAnimal = byId(prize.id) || animals.find(a => a.id === 3);
+      stickers.push(winningAnimal, winningAnimal, winningAnimal);
+      shuffled(animals.filter(a => a.id !== 1 && a.id !== winningAnimal.id)).slice(0, 3)
+        .forEach(a => stickers.push(a, a));
+    } else {
+      const chosen = shuffled(animals.filter(a => a.id !== 1)).slice(0, 5);
+      chosen.slice(0, 4).forEach(a => stickers.push(a, a));
+      stickers.push(chosen[4]);
+    }
+    stickers = shuffled(stickers);
+    if (layoutKey && prize) {
+      try { localStorage.setItem(layoutKey, JSON.stringify(stickers.map(a => a.id))); } catch (e) {}
+    }
   }
-  stickers = shuffled(stickers);
 
   const grid = document.getElementById('ticketAnimalGrid');
   if (grid) {
