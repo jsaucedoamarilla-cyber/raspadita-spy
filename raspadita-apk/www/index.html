@@ -757,12 +757,14 @@ body.light{--bg-dark:#f6f1ff;--bg-card:#fff;--purple:#e6dcf7;--purple-light:#d8c
 .result-box{margin:14px 0;padding:16px;border-radius:16px;text-align:center;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.05)}
 .result-box.win{border-color:var(--gold);background:rgba(255,193,7,.12);box-shadow:0 0 24px rgba(255,193,7,.25)}
 .result-box h3{margin-bottom:8px}.result-box p{margin-bottom:12px}
-.ticket-animal-showcase{position:absolute;inset:0;margin:0;padding:12px;box-sizing:border-box;border-radius:16px;text-align:center;background:linear-gradient(145deg,#321653,#170d2b);border:0;box-shadow:inset 0 0 18px rgba(255,193,7,.12);z-index:1;display:flex;flex-direction:column;justify-content:center;gap:8px}
-.ticket-animal-title{font-weight:900;color:#ffe082;font-size:1.05rem;margin-bottom:13px;text-shadow:0 2px 8px rgba(255,193,7,.35)}
-.ticket-animal-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;max-width:340px;width:100%;flex:1;align-content:center;margin:0 auto;min-height:0}
-.ticket-animal{display:grid;place-items:center;min-height:74px;border-radius:17px;font-size:2.7rem;line-height:1;background:radial-gradient(circle at 30% 20%,#fffde7,#ffd54f 48%,#ef6c00 100%);border:3px solid #fff0a6;box-shadow:inset 0 4px 0 rgba(255,255,255,.75),0 5px 0 #78350f,0 8px 12px rgba(0,0,0,.28);animation:floatIcon 2.5s ease-in-out infinite}
-.ticket-animal:nth-child(3n+2){animation-delay:.18s}.ticket-animal:nth-child(3n){animation-delay:.36s}
-@media(max-width:380px){.ticket-animal{min-height:60px;font-size:2.2rem}}
+.ticket-animal-showcase{position:absolute;inset:0;margin:0;padding:10px;box-sizing:border-box;border-radius:16px;text-align:center;background:linear-gradient(145deg,#321653,#170d2b);border:0;box-shadow:inset 0 0 18px rgba(255,193,7,.12);z-index:1;display:flex;flex-direction:column;justify-content:center;gap:8px}
+.ticket-animal-title{font-weight:900;color:#ffe082;font-size:1.05rem;margin-bottom:6px;text-shadow:0 2px 8px rgba(255,193,7,.35)}
+.ticket-animal-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;max-width:380px;width:100%;align-content:center;margin:0 auto;min-height:0}
+.ticket-animal{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;min-width:0;min-height:100px;padding:8px 3px;border-radius:17px;line-height:1;background:linear-gradient(145deg,#fffde7,#ffd54f 58%,#ef6c00);border:3px solid #fff0a6;box-shadow:inset 0 4px 0 rgba(255,255,255,.75),0 5px 0 #78350f,0 8px 12px rgba(0,0,0,.28);animation:floatIcon 2.5s ease-in-out infinite}
+.sticker-animal{font-size:clamp(2rem,8vw,3.1rem);line-height:1.05}
+.sticker-value{color:#3b1600;font-size:clamp(.57rem,2.5vw,.8rem);font-weight:900;line-height:1.15;text-align:center;white-space:nowrap;text-shadow:0 1px 0 rgba(255,255,255,.45)}
+.ticket-animal:nth-child(2){animation-delay:.18s}.ticket-animal:nth-child(3){animation-delay:.36s}
+@media(max-width:380px){.ticket-animal{min-height:82px;padding:6px 1px}.sticker-animal{font-size:2rem}.sticker-value{font-size:.57rem}}
 body.ticket .hide-t,body.ticket .prizes-section:nth-of-type(1){display:none!important}
 </style>
 </head>
@@ -797,12 +799,12 @@ body.ticket .hide-t,body.ticket .prizes-section:nth-of-type(1){display:none!impo
 
       <div id="ticketBar" class="ticket-bar"></div>
       <div class="scratch-wrapper">
-      <div id="ticketAnimalShowcase" class="ticket-animal-showcase" aria-label="Animalitos de la raspadita">
-        <div class="ticket-animal-title">🐾 ¡Los 9 animalitos de la suerte! 🐾</div>
-        <div class="ticket-animal-grid">
-          <span class="ticket-animal">🐱</span><span class="ticket-animal">🐶</span><span class="ticket-animal">🐴</span>
-          <span class="ticket-animal">🐷</span><span class="ticket-animal">🐑</span><span class="ticket-animal">🦁</span>
-          <span class="ticket-animal">🦜</span><span class="ticket-animal">🦉</span><span class="ticket-animal">🐘</span>
+      <div id="ticketAnimalShowcase" class="ticket-animal-showcase" aria-label="Tres stickers con sus premios">
+        <div class="ticket-animal-title">🐾 ¡Rasca y descubrí! 🐾</div>
+        <div id="stickerRow" class="ticket-animal-grid">
+          <span class="ticket-animal"><span class="sticker-animal">🐶</span><span class="sticker-value">₲ 5.000</span></span>
+          <span class="ticket-animal"><span class="sticker-animal">🐱</span><span class="sticker-value">₲ 10.000</span></span>
+          <span class="ticket-animal"><span class="sticker-animal">🐼</span><span class="sticker-value">₲ 20.000</span></span>
         </div>
       </div>
  
@@ -1031,6 +1033,26 @@ function initPool() {
 
 function saveState() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify({ pool, plays, wins, freePlays, history, theme }));
+}
+
+function setPrizeStickers(prize) {
+  const animals = [
+    { icon: '🐶', id: 2, value: '₲ 5.000' }, { icon: '🐱', id: 3, value: '₲ 10.000' },
+    { icon: '🐼', id: 4, value: '₲ 20.000' }, { icon: '🐘', id: 5, value: '₲ 50.000' },
+    { icon: '🐥', id: 6, value: '₲ 100.000' }, { icon: '🐮', id: 7, value: '₲ 200.000' },
+    { icon: '🦁', id: 8, value: '₲ 500.000' }, { icon: '🐧', id: 9, value: '₲ 1.000.000' },
+    { icon: '🐯', id: 10, value: '₲ 2.000.000' }
+  ];
+  const row = document.getElementById('stickerRow');
+  if (!row) return;
+  const matching = animals.find(a => a.id === Number(prize && prize.id)) || animals[Math.floor(Math.random() * animals.length)];
+  const pool = animals.filter(a => a.id !== matching.id);
+  const picks = [
+    Math.random() < 0.5 ? matching : pool[Math.floor(Math.random() * pool.length)],
+    Math.random() < 0.5 ? matching : pool[Math.floor(Math.random() * pool.length)],
+    matching
+  ].sort(() => Math.random() - 0.5);
+  row.innerHTML = picks.map(a => '<span class="ticket-animal"><span class="sticker-animal">' + a.icon + '</span><span class="sticker-value">' + a.value + '</span></span>').join('');
 }
 
 function getPrizeById(id) {
@@ -1267,6 +1289,7 @@ function newGame() {
 
   const prizeId = pool.pop();
   currentPrize = getPrizeById(prizeId);
+  setPrizeStickers(currentPrize);
 
   document.getElementById('prizeEmoji').textContent = currentPrize.emoji;
   document.getElementById('prizeLabel').textContent = currentPrize.label;
@@ -1687,6 +1710,7 @@ function copyWa() {
       T = { n: data.ticket_number, code: data.prize_claim_code || '' };
       currentCode = T.code;
       currentPrize = getPrizeById(Number(data.prize_id));
+      setPrizeStickers(currentPrize);
       if (!currentPrize) throw new Error('Premio inválido en el servidor');
       _rev();
       try { localStorage.setItem(KEY, '1'); } catch (e) {}
@@ -1758,6 +1782,7 @@ function copyWa() {
       });
       if (data.scratched) {
         currentPrize = getPrizeById(Number(data.prize_id));
+        setPrizeStickers(currentPrize);
         currentCode = T.code;
         if (!currentPrize) throw new Error('Premio inválido');
         isRevealed = true;
