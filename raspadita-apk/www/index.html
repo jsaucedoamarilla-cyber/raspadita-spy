@@ -1068,14 +1068,16 @@ function setPrizeStickers(prize) {
   }
 
   if (!stickers) {
+    // Usar una semilla estable también antes de conocer el resultado, para que
+    // la vista inicial no cambie al recargar la misma boleta.
     let seed = 0;
-    if (token && prize) {
-      const seedText = token.toUpperCase() + ':' + prize.id;
+    if (token) {
+      const seedText = token.toUpperCase() + (prize ? ':' + prize.id : ':pending');
       for (let i = 0; i < seedText.length; i++) seed = (Math.imul(seed, 31) + seedText.charCodeAt(i)) >>> 0;
       if (!seed) seed = 123456789;
     }
     const random = () => {
-      if (!token || !prize) return Math.random();
+      if (!token) return Math.random();
       seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
       return seed / 4294967296;
     };
