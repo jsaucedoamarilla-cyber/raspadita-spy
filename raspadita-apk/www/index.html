@@ -232,17 +232,18 @@ body::before {
   margin-bottom: 18px;
 }
 
-/* Regla de juego visible antes de raspar */
+/* Instrucciones compactas y barras de resultado */
 .how-to-win {
-  margin: 0 0 16px; padding: 13px 10px; border: 1px solid rgba(255,193,7,.42);
-  border-radius: 15px; background: linear-gradient(145deg, rgba(255,193,7,.13), rgba(255,255,255,.035)); text-align: center;
+  margin: 0 0 10px; padding: 8px 9px; border: 1px solid rgba(255,193,7,.34);
+  border-radius: 12px; background: rgba(255,255,255,.035); text-align: center;
 }
-.how-to-win h3 { color: var(--gold-bright); font-size: .98rem; font-weight: 900; margin-bottom: 5px; }
-.how-to-win .rule { color: var(--text); font-size: .82rem; line-height: 1.35; font-weight: 800; margin-bottom: 10px; }
-.how-to-win .example { display: flex; align-items: center; justify-content: center; gap: 7px; font-size: 1.65rem; line-height: 1.1; margin: 5px 0; }
-.how-to-win .example-label { font-size: .82rem; font-weight: 900; margin-bottom: 8px; }
-.how-to-win .win { color: #00e676; } .how-to-win .lose { color: #ff6b6b; }
-@media (max-width: 360px) { .how-to-win { padding: 11px 7px; } .how-to-win .rule { font-size: .76rem; } }
+.how-to-win h3 { color: var(--gold-bright); font-size: .76rem; line-height: 1.2; font-weight: 900; margin: 0 0 4px; }
+.how-to-win .rule { color: var(--text); font-size: .72rem; line-height: 1.2; font-weight: 800; margin: 0 0 6px; }
+.how-to-win .result-bar { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 5px 8px; border-radius: 8px; font-size: .92rem; line-height: 1.1; font-weight: 900; margin: 4px 0; }
+.how-to-win .win-bar { background: linear-gradient(90deg, #087f3e, #16a34a); color: #fff; border: 1px solid #4ade80; }
+.how-to-win .lose-bar { background: linear-gradient(90deg, #991b1b, #dc2626); color: #fff; border: 1px solid #f87171; }
+.how-to-win .animals { font-size: 1.12rem; letter-spacing: 1px; white-space: nowrap; }
+@media (max-width: 360px) { .how-to-win { padding: 7px; } .how-to-win h3 { font-size: .71rem; } .how-to-win .rule { font-size: .68rem; } .how-to-win .result-bar { font-size: .84rem; padding: 5px; } }
 
 /* Scratch area */
 .scratch-wrapper {
@@ -823,11 +824,9 @@ body.ticket .hide-t,body.ticket .prizes-section:nth-of-type(1){display:none!impo
 
       <div class="how-to-win" aria-label="Reglas para ganar">
         <h3>🎟️ RASPADITA SAN PEDRO DEL YCUAMANDYYÚ</h3>
-        <div class="rule">¿CÓMO GANAR?<br>PARA GANAR DEBES TENER 3 IMÁGENES IGUALES</div>
-        <div class="example" aria-label="Tres cerdos iguales">🐖 🐖 🐖</div>
-        <div class="example-label win">🏆 ¡GANASTE!</div>
-        <div class="example" aria-label="Tres animales diferentes">🐖 🐄 🐥</div>
-        <div class="example-label lose">❌ NO GANASTE</div>
+        <div class="rule">¿CÓMO GANAR? PARA GANAR DEBES TENER 3 IMÁGENES IGUALES</div>
+        <div class="result-bar win-bar"><span class="animals">🐖 🐖 🐖</span><span>🏆 ¡GANASTE!</span></div>
+        <div class="result-bar lose-bar"><span class="animals">🐖 🐄 🐥</span><span>❌ NO GANASTE</span></div>
       </div>
 
       <div id="ticketBar" class="ticket-bar"></div>
