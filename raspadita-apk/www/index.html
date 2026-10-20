@@ -761,6 +761,7 @@ body.light{--bg-dark:#f6f1ff;--bg-card:#fff;--purple:#e6dcf7;--purple-light:#d8c
 .ticket-animal-title{font-weight:900;color:#ffe082;font-size:1.05rem;margin-bottom:6px;text-shadow:0 2px 8px rgba(255,193,7,.35)}
 .ticket-animal-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(3,minmax(0,1fr));gap:7px;max-width:380px;width:100%;height:100%;align-content:stretch;justify-content:stretch;margin:0 auto;min-height:0;flex:1}
 .ticket-animal{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-width:0;min-height:0;padding:5px 2px;border-radius:13px;line-height:1;background:linear-gradient(145deg,#fffde7,#ffd54f 58%,#ef6c00);border:2px solid #fff0a6;box-shadow:inset 0 3px 0 rgba(255,255,255,.75),0 3px 0 #78350f,0 5px 8px rgba(0,0,0,.28);overflow:hidden;}
+.ticket-animal{position:relative;isolation:isolate}.tile-scratch-canvas{position:absolute;inset:0;width:100%;height:100%;z-index:8;border-radius:11px;touch-action:none;cursor:crosshair;user-select:none;-webkit-user-select:none}.scratch-wrapper>#scratchCanvas{display:none!important}.ticket-animal.scratched-tile .tile-scratch-canvas{pointer-events:none}
 .sticker-animal{display:flex;align-items:center;justify-content:center;font-family:"Noto Color Emoji","Apple Color Emoji","Segoe UI Emoji",sans-serif;font-size:clamp(2rem,9vw,3.4rem);font-weight:400;line-height:1;min-height:0;min-width:0;flex:1 1 auto;width:100%;max-height:76%;overflow:visible;filter:none;transform:translateZ(0);text-rendering:geometricPrecision;-webkit-font-smoothing:antialiased}
 .sticker-value{display:block;flex:0 0 auto;position:relative;z-index:2;color:#000000;font-size:clamp(.58rem,2.5vw,.82rem);font-weight:1000;line-height:1.15;text-align:center;white-space:nowrap;text-shadow:0 1px 0 rgba(255,255,255,.95);-webkit-text-stroke:.15px #000;padding:1px 0 2px;max-width:100%}
 /* El fondo pertenece al animal, no a la posición: siempre conserva su color */
@@ -806,7 +807,7 @@ body.ticket .hide-t,body.ticket .prizes-section:nth-of-type(1){display:none!impo
   <main class="main-card">
     <div class="scratch-container">
       <div class="card-title">🎟️ Cartón Digital</div>
-      <div class="card-subtitle">Deslizá el dedo para descubrir tu premio</div>
+      <div class="card-subtitle">Raspá cada cuadrado por separado y descubrí las 9 casillas</div>
 
       <div id="ticketBar" class="ticket-bar"></div>
       <div class="scratch-wrapper">
@@ -827,7 +828,7 @@ body.ticket .hide-t,body.ticket .prizes-section:nth-of-type(1){display:none!impo
 
      <div id="resultBox" class="result-box" style="display:none"></div>
       <div class="instructions hide-r">
-        <strong>Raspa</strong> más del 55% para revelar el premio
+        <strong>Raspá los 9 cuadrados</strong> para confirmar el resultado de tu boleta
       </div>
 
       <div class="price-tag hide-t">
@@ -1096,113 +1097,104 @@ function updateStats(animate = false) {
 }
 
 function initScratch() {
+  // Cada casilla tiene su propia capa raspable; las demás no se borran al raspar una.
   canvas = document.getElementById('scratchCanvas');
-  ctx = canvas.getContext('2d');
-
-  const wrapper = document.querySelector('.scratch-wrapper');
-  const rect = wrapper.getBoundingClientRect();
-  const dpr = window.devicePixelRatio || 1;
-
-  canvas.width = rect.width * dpr;
-  canvas.height = rect.height * dpr;
-  canvas.style.width = rect.width + 'px';
-  canvas.style.height = rect.height + 'px';
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-  const gradient = ctx.createLinearGradient(0, 0, rect.width, rect.height);
-  gradient.addColorStop(0, '#b0b0b0');
-  gradient.addColorStop(0.3, '#d8d8d8');
-  gradient.addColorStop(0.5, '#c0c0c0');
-  gradient.addColorStop(0.7, '#e0e0e0');
-  gradient.addColorStop(1, '#a8a8a8');
-
-  ctx.fillStyle = gradient;
-  ctx.fillRect(0, 0, rect.width, rect.height);
-
-  ctx.fillStyle = 'rgba(60,40,20,0.35)';
-  ctx.font = 'bold ' + Math.floor(rect.width * 0.11) + 'px system-ui, sans-serif';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText('RASPA AQUÍ', rect.width / 2, rect.height / 2 - 10);
-
-  ctx.font = Math.floor(rect.width * 0.045) + 'px system-ui, sans-serif';
-  ctx.fillText('👆 Deslizá el dedo', rect.width / 2, rect.height / 2 + 28);
-
-  for (let i = 0; i < 400; i++) {
-    ctx.fillStyle = 'rgba(255,255,255,' + (Math.random() * 0.08) + ')';
-    ctx.fillRect(Math.random() * rect.width, Math.random() * rect.height, 2, 2);
+  if (canvas) {
+    ctx = canvas.getContext('2d');
+    canvas.style.pointerEvents = 'none';
   }
-
-  isRevealed = false;
-  scratchedPercent = 0;
+  const tiles = Array.from(document.querySelectorAll('#ticketAnimalGrid .ticket-animal'));
+  if (!tiles.length) return;
+  tiles.forEach(function(tile, index) {
+    if (tile.querySelector('.tile-scratch-canvas')) return;
+    const layer = document.createElement('canvas');
+    layer.className = 'tile-scratch-canvas';
+    layer.setAttribute('aria-label', 'Raspar cuadrado ' + (index + 1));
+    layer.dataset.done = '0';
+    tile.appendChild(layer);
+    const rect = tile.getBoundingClientRect();
+    const dpr = Math.max(1, window.devicePixelRatio || 1);
+    layer.width = Math.max(1, Math.round(rect.width * dpr));
+    layer.height = Math.max(1, Math.round(rect.height * dpr));
+    const c = layer.getContext('2d');
+    c.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const g = c.createLinearGradient(0, 0, rect.width, rect.height);
+    g.addColorStop(0, '#777b85'); g.addColorStop(.25, '#e7e9ed');
+    g.addColorStop(.5, '#aeb4be'); g.addColorStop(.75, '#f5f6f8');
+    g.addColorStop(1, '#858b96');
+    c.fillStyle = g; c.fillRect(0, 0, rect.width, rect.height);
+    c.strokeStyle = 'rgba(255,255,255,.55)'; c.lineWidth = 1;
+    for (let y = 5; y < rect.height; y += 8) {
+      c.beginPath(); c.moveTo(0, y); c.lineTo(rect.width, y - 3); c.stroke();
+    }
+    c.fillStyle = '#252033'; c.textAlign = 'center'; c.textBaseline = 'middle';
+    c.font = '900 ' + Math.max(10, Math.min(15, rect.width * .17)) + 'px system-ui,sans-serif';
+    c.fillText('RASPA', rect.width / 2, rect.height / 2);
+    c.font = 'bold ' + Math.max(8, Math.min(10, rect.width * .11)) + 'px system-ui,sans-serif';
+    c.fillText('AQUÍ ⬇', rect.width / 2, rect.height / 2 + 13);
+    let drawing = false, last = null;
+    function pos(e) {
+      const r = layer.getBoundingClientRect();
+      return {x:(e.clientX-r.left)*(layer.width/r.width),y:(e.clientY-r.top)*(layer.height/r.height)};
+    }
+    function erase(e) {
+      if (!drawing || layer.dataset.done === '1' || isRevealed) return;
+      if (e.cancelable) e.preventDefault();
+      const p = pos(e), cc = layer.getContext('2d');
+      cc.save(); cc.globalCompositeOperation = 'destination-out'; cc.lineCap = 'round'; cc.lineJoin = 'round';
+      cc.lineWidth = Math.max(18, rect.width * .24);
+      if (last) { cc.beginPath(); cc.moveTo(last.x,last.y); cc.lineTo(p.x,p.y); cc.stroke(); }
+      cc.beginPath(); cc.arc(p.x,p.y,Math.max(9,rect.width*.12),0,Math.PI*2); cc.fill(); cc.restore();
+      last = p; scratchSound();
+      const data = cc.getImageData(0,0,layer.width,layer.height).data;
+      let clear=0, samples=0;
+      for(let i=3;i<data.length;i+=32){samples++;if(data[i]===0)clear++;}
+      if(samples && clear/samples >= .52) {
+        cc.clearRect(0,0,layer.width,layer.height);
+        layer.dataset.done='1'; layer.style.pointerEvents='none'; tile.classList.add('scratched-tile');
+        tileScratchCount = document.querySelectorAll('#ticketAnimalGrid .tile-scratch-canvas[data-done="1"]').length;
+        if(tileScratchCount >= tiles.length && !tileScratchComplete) {
+          tileScratchComplete = true;
+          if(typeof window.revealPrize === 'function') window.revealPrize();
+          else revealPrize();
+        }
+      }
+    }
+    layer.addEventListener('pointerdown',function(e){
+      if(isRevealed || layer.dataset.done==='1') return;
+      drawing=true;last=null;try{layer.setPointerCapture(e.pointerId)}catch(_){}
+      erase(e);
+    },{passive:false});
+    layer.addEventListener('pointermove',erase,{passive:false});
+    function stop(){drawing=false;last=null;}
+    layer.addEventListener('pointerup',stop);layer.addEventListener('pointercancel',stop);layer.addEventListener('lostpointercapture',stop);
+  });
 }
-
+let tileScratchCount = 0;
+let tileScratchComplete = false;
+function resetTileScratchLayers() {
+  tileScratchCount = 0; tileScratchComplete = false; isRevealed = false;
+  document.querySelectorAll('#ticketAnimalGrid .tile-scratch-canvas').forEach(function(layer){
+    const tile=layer.parentElement; if(tile) tile.classList.remove('scratched-tile');
+    layer.dataset.done='0'; layer.style.pointerEvents='auto';
+    const rect=layer.getBoundingClientRect(), dpr=Math.max(1,window.devicePixelRatio||1);
+    layer.width=Math.max(1,Math.round(rect.width*dpr));layer.height=Math.max(1,Math.round(rect.height*dpr));
+    const c=layer.getContext('2d');c.setTransform(dpr,0,0,dpr,0,0);
+    const g=c.createLinearGradient(0,0,rect.width,rect.height);
+    g.addColorStop(0,'#777b85');g.addColorStop(.25,'#e7e9ed');g.addColorStop(.5,'#aeb4be');g.addColorStop(.75,'#f5f6f8');g.addColorStop(1,'#858b96');
+    c.fillStyle=g;c.fillRect(0,0,rect.width,rect.height);
+    c.fillStyle='#252033';c.textAlign='center';c.textBaseline='middle';c.font='900 '+Math.max(10,Math.min(15,rect.width*.17))+'px system-ui,sans-serif';c.fillText('RASPA',rect.width/2,rect.height/2);
+    c.font='bold '+Math.max(8,Math.min(10,rect.width*.11))+'px system-ui,sans-serif';c.fillText('AQUÍ ⬇',rect.width/2,rect.height/2+13);
+  });
+}
 function getPos(e) {
   const rect = canvas.getBoundingClientRect();
-  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-  const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-  return { x: clientX - rect.left, y: clientY - rect.top };
+  return { x: e.clientX - rect.left, y: e.clientY - rect.top };
 }
-
-function scratch(e) {
-  if (isRevealed || !canvas || !ctx) return;
-  if (e && e.cancelable) e.preventDefault();
-
-  scratchSound();
-  const pos = getPos(e);
-  const radius = 40; // Trazo más ancho para que el raspado sea cómodo en pantallas táctiles.
-
-  // Usar un trazo continuo hace que el raspado responda mejor al dedo en móviles.
-  ctx.save();
-  ctx.globalCompositeOperation = 'destination-out';
-  ctx.lineCap = 'round';
-  ctx.lineJoin = 'round';
-  ctx.lineWidth = radius * 2;
-  if (lastScratchPos) {
-    ctx.beginPath();
-    ctx.moveTo(lastScratchPos.x, lastScratchPos.y);
-    ctx.lineTo(pos.x, pos.y);
-    ctx.stroke();
-  }
-  ctx.beginPath();
-  ctx.arc(pos.x, pos.y, radius, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.restore();
-  lastScratchPos = pos;
-
-  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-  const pixels = imageData.data;
-  let transparent = 0;
-  let samples = 0;
-  for (let i = 3; i < pixels.length; i += 16) {
-    samples++;
-    if (pixels[i] === 0) transparent++;
-  }
-  scratchedPercent = samples ? (transparent / samples) * 100 : 0;
-
-  if (scratchedPercent >= 55 && !isRevealed) {
-    // Llamar a la versión pública permite validar la boleta en Supabase antes de mostrar el premio.
-    if (typeof window.revealPrize === 'function') window.revealPrize();
-    else revealPrize();
-  }
-}
-
-function startScratch(e) {
-  if (isRevealed || !canvas || !ctx) return;
-  isScratching = true;
-  lastScratchPos = getPos(e);
-  scratch(e);
-}
-
-function moveScratch(e) {
-  if (!isScratching) return;
-  scratch(e);
-}
-
-function endScratch() {
-  isScratching = false;
-  lastScratchPos = null;
-}
+function scratch(e) {}
+function startScratch(e) {}
+function moveScratch(e) {}
+function endScratch() { isScratching = false; lastScratchPos = null; }
 
 function revealPrize() {
   if (isRevealed) return;
@@ -1697,6 +1689,7 @@ function copyWa() {
         bar.textContent = data.error === 'ticket_not_found' ? 'Esta boleta no existe o el enlace no es válido.' : 'No pudimos conectar. Revisá tu internet e intentá otra vez.';
         serverBusy = false;
         cv.style.pointerEvents = 'auto';
+        resetTileScratchLayers();
         return;
       }
       T = { n: data.ticket_number, code: data.prize_claim_code || '' };
@@ -1712,6 +1705,7 @@ function copyWa() {
       bar.textContent = 'No pudimos conectar con el servidor. Comprobá internet e intentá otra vez.';
       serverBusy = false;
       cv.style.pointerEvents = 'auto';
+      resetTileScratchLayers();
     }
   };
   window.claimPrize = function () {
