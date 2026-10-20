@@ -1076,10 +1076,10 @@ function setPrizeStickers(prize) {
   if (prize && prize.id !== 11) {
     const winningAnimal = animals.find(a => a.id === prize.id) || animals[1];
     stickers.push(winningAnimal, winningAnimal, winningAnimal);
-    const otherAnimals = shuffled(animals.filter(a => a.id !== winningAnimal.id)).slice(0, 3);
+    const otherAnimals = shuffled(animals.filter(a => a.id !== 1 && a.id !== winningAnimal.id)).slice(0, 3);
     otherAnimals.forEach(a => stickers.push(a, a));
   } else {
-    const chosen = shuffled(animals).slice(0, 5);
+    const chosen = shuffled(animals.filter(a => a.id !== 1)).slice(0, 5);
     chosen.slice(0, 4).forEach(a => stickers.push(a, a));
     stickers.push(chosen[4]);
   }
