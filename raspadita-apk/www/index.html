@@ -759,12 +759,13 @@ body.light{--bg-dark:#f6f1ff;--bg-card:#fff;--purple:#e6dcf7;--purple-light:#d8c
 .result-box h3{margin-bottom:8px}.result-box p{margin-bottom:12px}
 .ticket-animal-showcase{position:absolute;inset:0;margin:0;padding:10px;box-sizing:border-box;border-radius:16px;text-align:center;background:linear-gradient(145deg,#321653,#170d2b);border:0;box-shadow:inset 0 0 18px rgba(255,193,7,.12);z-index:1;display:flex;flex-direction:column;justify-content:center;gap:8px}
 .ticket-animal-title{font-weight:900;color:#ffe082;font-size:1.05rem;margin-bottom:6px;text-shadow:0 2px 8px rgba(255,193,7,.35)}
-.ticket-animal-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;max-width:380px;width:100%;align-content:center;margin:0 auto;min-height:0}
-.ticket-animal{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;min-width:0;min-height:100px;padding:8px 3px;border-radius:17px;line-height:1;background:linear-gradient(145deg,#fffde7,#ffd54f 58%,#ef6c00);border:3px solid #fff0a6;box-shadow:inset 0 4px 0 rgba(255,255,255,.75),0 5px 0 #78350f,0 8px 12px rgba(0,0,0,.28);animation:floatIcon 2.5s ease-in-out infinite}
-.sticker-animal{font-size:clamp(2rem,8vw,3.1rem);line-height:1.05}
-.sticker-value{color:#3b1600;font-size:clamp(.57rem,2.5vw,.8rem);font-weight:900;line-height:1.15;text-align:center;white-space:nowrap;text-shadow:0 1px 0 rgba(255,255,255,.45)}
-.ticket-animal:nth-child(2){animation-delay:.18s}.ticket-animal:nth-child(3){animation-delay:.36s}
-@media(max-width:380px){.ticket-animal{min-height:82px;padding:6px 1px}.sticker-animal{font-size:2rem}.sticker-value{font-size:.57rem}}
+.ticket-animal-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(3,minmax(0,1fr));gap:7px;max-width:380px;width:100%;height:100%;align-content:stretch;justify-content:stretch;margin:0 auto;min-height:0;flex:1}
+.ticket-animal{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-width:0;min-height:0;padding:5px 2px;border-radius:13px;line-height:1;background:linear-gradient(145deg,#fffde7,#ffd54f 58%,#ef6c00);border:2px solid #fff0a6;box-shadow:inset 0 3px 0 rgba(255,255,255,.75),0 3px 0 #78350f,0 5px 8px rgba(0,0,0,.28);overflow:hidden;}
+.sticker-animal{display:flex;align-items:center;justify-content:center;font-size:clamp(1.8rem,8vw,3rem);line-height:1.15;min-height:0;flex:1;width:100%;filter:drop-shadow(0 2px 2px rgba(60,25,0,.18))}
+.sticker-value{color:#3b1600;font-size:clamp(.52rem,2.25vw,.78rem);font-weight:900;line-height:1.1;text-align:center;white-space:nowrap;text-shadow:0 1px 0 rgba(255,255,255,.45);padding-bottom:2px}
+.ticket-animal:nth-child(3n+2){background:linear-gradient(145deg,#f3e5f5,#ce93d8 58%,#7b1fa2)}
+.ticket-animal:nth-child(3n){background:linear-gradient(145deg,#e0f7fa,#80deea 58%,#00838f)}
+@media(max-width:380px){.ticket-animal-grid{gap:5px}.ticket-animal{padding:4px 1px;border-radius:10px}.sticker-animal{font-size:clamp(1.55rem,7.2vw,2.4rem)}.sticker-value{font-size:clamp(.48rem,2.1vw,.62rem)}}
 body.ticket .hide-t,body.ticket .prizes-section:nth-of-type(1){display:none!important}
 </style>
 </head>
@@ -799,12 +800,18 @@ body.ticket .hide-t,body.ticket .prizes-section:nth-of-type(1){display:none!impo
 
       <div id="ticketBar" class="ticket-bar"></div>
       <div class="scratch-wrapper">
-      <div id="ticketAnimalShowcase" class="ticket-animal-showcase" aria-label="Tres stickers con sus premios">
+      <div id="ticketAnimalShowcase" class="ticket-animal-showcase" aria-label="Nueve casillas de animales con sus valores">
         <div class="ticket-animal-title">🐾 ¡Rasca y descubrí! 🐾</div>
         <div id="stickerRow" class="ticket-animal-grid">
-          <span class="ticket-animal"><span class="sticker-animal">🐶</span><span class="sticker-value">₲ 5.000</span></span>
-          <span class="ticket-animal"><span class="sticker-animal">🐱</span><span class="sticker-value">₲ 10.000</span></span>
+          <span class="ticket-animal"><span class="sticker-animal">🐕</span><span class="sticker-value">₲ 5.000</span></span>
+          <span class="ticket-animal"><span class="sticker-animal">🐈</span><span class="sticker-value">₲ 10.000</span></span>
           <span class="ticket-animal"><span class="sticker-animal">🐼</span><span class="sticker-value">₲ 20.000</span></span>
+          <span class="ticket-animal"><span class="sticker-animal">🐘</span><span class="sticker-value">₲ 50.000</span></span>
+          <span class="ticket-animal"><span class="sticker-animal">🐤</span><span class="sticker-value">₲ 100.000</span></span>
+          <span class="ticket-animal"><span class="sticker-animal">🐄</span><span class="sticker-value">₲ 200.000</span></span>
+          <span class="ticket-animal"><span class="sticker-animal">🦁</span><span class="sticker-value">₲ 500.000</span></span>
+          <span class="ticket-animal"><span class="sticker-animal">🐧</span><span class="sticker-value">₲ 1.000.000</span></span>
+          <span class="ticket-animal"><span class="sticker-animal">🐅</span><span class="sticker-value">₲ 2.000.000</span></span>
         </div>
       </div>
  
@@ -1037,21 +1044,21 @@ function saveState() {
 
 function setPrizeStickers(prize) {
   const animals = [
-    { icon: '🐶', id: 2, value: '₲ 5.000' }, { icon: '🐱', id: 3, value: '₲ 10.000' },
+    { icon: '🐕', id: 2, value: '₲ 5.000' }, { icon: '🐈', id: 3, value: '₲ 10.000' },
     { icon: '🐼', id: 4, value: '₲ 20.000' }, { icon: '🐘', id: 5, value: '₲ 50.000' },
-    { icon: '🐥', id: 6, value: '₲ 100.000' }, { icon: '🐮', id: 7, value: '₲ 200.000' },
+    { icon: '🐤', id: 6, value: '₲ 100.000' }, { icon: '🐄', id: 7, value: '₲ 200.000' },
     { icon: '🦁', id: 8, value: '₲ 500.000' }, { icon: '🐧', id: 9, value: '₲ 1.000.000' },
-    { icon: '🐯', id: 10, value: '₲ 2.000.000' }
+    { icon: '🐅', id: 10, value: '₲ 2.000.000' }
   ];
   const row = document.getElementById('stickerRow');
   if (!row) return;
-  const matching = animals.find(a => a.id === Number(prize && prize.id)) || animals[Math.floor(Math.random() * animals.length)];
-  const pool = animals.filter(a => a.id !== matching.id);
-  const picks = [
-    Math.random() < 0.5 ? matching : pool[Math.floor(Math.random() * pool.length)],
-    Math.random() < 0.5 ? matching : pool[Math.floor(Math.random() * pool.length)],
-    matching
-  ].sort(() => Math.random() - 0.5);
+  // Mostrar siempre las nueve casillas, en orden aleatorio y sin triplicar animales.
+  // La combinación visual no modifica el premio asignado a la boleta.
+  const picks = animals.slice();
+  for (let i = picks.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [picks[i], picks[j]] = [picks[j], picks[i]];
+  }
   row.innerHTML = picks.map(a => '<span class="ticket-animal"><span class="sticker-animal">' + a.icon + '</span><span class="sticker-value">' + a.value + '</span></span>').join('');
 }
 
