@@ -270,7 +270,27 @@ body::before {
   animation: prizePulse 3s ease-in-out infinite;
 }
 .scratch-wrapper.show-prize #prizeLayer { opacity: 1; }
-.scratch-wrapper.show-prize .animal-sticker { animation: stickerPop .55s cubic-bezier(.2,1.5,.4,1) both, stickerFloat 2.4s ease-in-out .55s infinite; }
+.scratch-wrapper.show-prize .animal-sticker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  flex: 0 1 84px;
+  width: clamp(64px, 23vw, 84px);
+  min-height: clamp(78px, 26vw, 100px);
+  height: auto;
+  padding: 5px 2px;
+  box-sizing: border-box;
+  border-radius: 18px;
+  background: radial-gradient(circle at 28% 18%, #fffde7 0%, #ffe082 22%, #ff9800 62%, #9b3d00 100%);
+  border: 3px solid #fff0a6;
+  box-shadow: inset 0 4px 0 rgba(255,255,255,.9), inset 0 -7px 0 rgba(95,35,0,.22), 0 7px 0 #78350f, 0 11px 16px rgba(0,0,0,.4), 0 0 20px rgba(255,193,7,.4);
+  animation: floatIcon 2.5s ease-in-out infinite;
+ }
+ .sticker-animal { font-size: clamp(2.2rem, 8vw, 3.3rem); line-height: 1.05; }
+ .sticker-value { color: #3b1600; font-size: clamp(.62rem, 2.5vw, .78rem); font-weight: 900; line-height: 1.1; text-align: center; white-space: nowrap; text-shadow: 0 1px 0 rgba(255,255,255,.45); }
+ animation: stickerPop .55s cubic-bezier(.2,1.5,.4,1) both, stickerFloat 2.4s ease-in-out .55s infinite; }
 @keyframes stickerPop {
   0% { transform: translateY(18px) scale(.35) rotate(-12deg); opacity: 0; }
   75% { transform: translateY(-4px) scale(1.08) rotate(3deg); opacity: 1; }
@@ -1057,20 +1077,32 @@ function getPrizeById(id) {
 }
 
 function setPrizeStickers(prize) {
-  const animals = ['🐶','🐱','🐼','🐘','🐥','🐮','🦁','🐧','🐯'];
-  const prizeAnimal = ({1:'🎟️',2:'🐶',3:'🐱',4:'🐼',5:'🐘',6:'🐥',7:'🐮',8:'🦁',9:'🐧',10:'🐯'})[Number(prize && prize.id)] || '🐾';
-  // Cada boleta muestra tres animales; pueden coincidir dos, nunca los tres.
-  const others = animals.filter(a => a !== prizeAnimal);
-  const first = Math.random() < 0.45 ? prizeAnimal : others[Math.floor(Math.random()*others.length)];
-  const second = Math.random() < 0.45 ? prizeAnimal : others[Math.floor(Math.random()*others.length)];
-  const third = prizeAnimal;
-  const stickers = [first, second, third].sort(() => Math.random() - 0.5);
+  const animals = [
+    { icon: '🐶', id: 2, value: '₲ 5.000' },
+    { icon: '🐱', id: 3, value: '₲ 10.000' },
+    { icon: '🐼', id: 4, value: '₲ 20.000' },
+    { icon: '🐘', id: 5, value: '₲ 50.000' },
+    { icon: '🐥', id: 6, value: '₲ 100.000' },
+    { icon: '🐮', id: 7, value: '₲ 200.000' },
+    { icon: '🦁', id: 8, value: '₲ 500.000' },
+    { icon: '🐧', id: 9, value: '₲ 1.000.000' },
+    { icon: '🐯', id: 10, value: '₲ 2.000.000' }
+  ];
   const row = document.getElementById('stickerRow');
-  if (row) row.innerHTML = stickers.map(icon => '<span class="animal-sticker">' + icon + '</span>').join('');
+  if (row) {
+    // Se muestran tres animales con su valor. Puede repetirse uno, pero no los tres.
+    const matching = animals.find(a => a.id === Number(prize && prize.id)) || animals[0];
+    const pool = animals.filter(a => a.id !== matching.id);
+    const picks = [
+      Math.random() < 0.5 ? matching : pool[Math.floor(Math.random() * pool.length)],
+      Math.random() < 0.5 ? matching : pool[Math.floor(Math.random() * pool.length)],
+      matching
+    ].sort(() => Math.random() - 0.5);
+    row.innerHTML = picks.map(a => '<span class="animal-sticker"><span class="sticker-animal">' + a.icon + '</span><span class="sticker-value">' + a.value + '</span></span>').join('');
+  }
   const modalRow = document.getElementById('modalAnimals');
-  if (modalRow) modalRow.innerHTML = animals.map(icon => '<span class="modal-animal">' + icon + '</span>').join('');
+  if (modalRow) modalRow.innerHTML = animals.map(a => '<span class="modal-animal">' + a.icon + '</span>').join('');
 }
-
 function remainingTickets() {
   return pool.length;
 }
