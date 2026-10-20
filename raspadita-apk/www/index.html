@@ -1034,11 +1034,11 @@ function saveState() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify({ pool, plays, wins, freePlays, history, theme }));
 }
 
-let stickersInitialized = false;
 function setPrizeStickers(prize) {
-  // Las nueve figuras son únicas en cada boleta; solo cambia el orden aleatoriamente.
+  // Cada boleta muestra 9 casillas. Ganadoras: exactamente 3 símbolos del premio.
+  // No ganadoras: cuatro parejas y un símbolo suelto; nunca hay tres iguales.
   const animals = [
-    { icon: '🎟️', id: 1, value: '¡GANASTE UNA BOLETA!', sub: '¡Volvé a jugar gratis!' },
+    { icon: '🎟️', id: 1, value: '¡GANASTE<br>UNA BOLETA!', sub: '¡Volvé a jugar gratis!' },
     { icon: '🐖', id: 3, value: '₲ 10.000' },
     { icon: '🐎', id: 4, value: '₲ 20.000' },
     { icon: '🐘', id: 5, value: '₲ 50.000' },
@@ -1048,19 +1048,51 @@ function setPrizeStickers(prize) {
     { icon: '🐳', id: 9, value: '₲ 1.000.000' },
     { icon: '🦜', id: 10, value: '₲ 2.000.000' }
   ];
-  const grid = document.getElementById('ticketAnimalGrid');
-  if (grid && !stickersInitialized) {
-    for (let i = animals.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [animals[i], animals[j]] = [animals[j], animals[i]];
+
+  // En enlaces individuales usamos una semilla estable para que la misma boleta
+  // conserve su combinación al recargar. En el modo local se mezcla al azar.
+  const token = new URLSearchParams(window.location.search).get('t') || '';
+  let seed = 0;
+  if (token && prize) {
+    const seedText = token + ':' + prize.id;
+    for (let i = 0; i < seedText.length; i++) seed = (Math.imul(seed, 31) + seedText.charCodeAt(i)) >>> 0;
+    if (!seed) seed = 123456789;
+  }
+  const random = () => {
+    if (!token || !prize) return Math.random();
+    seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
+    return seed / 4294967296;
+  };
+  const shuffled = list => {
+    const result = list.slice();
+    for (let i = result.length - 1; i > 0; i--) {
+      const j = Math.floor(random() * (i + 1));
+      [result[i], result[j]] = [result[j], result[i]];
     }
-    grid.innerHTML = animals.map(a => {
+    return result;
+  };
+
+  let stickers = [];
+  if (prize && prize.id !== 11) {
+    const winningAnimal = animals.find(a => a.id === prize.id) || animals[1];
+    stickers.push(winningAnimal, winningAnimal, winningAnimal);
+    const otherAnimals = shuffled(animals.filter(a => a.id !== winningAnimal.id)).slice(0, 3);
+    otherAnimals.forEach(a => stickers.push(a, a));
+  } else {
+    const chosen = shuffled(animals).slice(0, 5);
+    chosen.slice(0, 4).forEach(a => stickers.push(a, a));
+    stickers.push(chosen[4]);
+  }
+  stickers = shuffled(stickers);
+
+  const grid = document.getElementById('ticketAnimalGrid');
+  if (grid) {
+    grid.innerHTML = stickers.map(a => {
       if (a.id === 1) {
-        return '<span class="ticket-animal animal-id-1 free-ticket-sticker"><span class="sticker-animal">🎟️</span><span class="sticker-value">¡GANASTE<br>UNA BOLETA!</span><span class="sticker-sub">¡Volvé a jugar gratis!</span><span class="sticker-sub free-ticket-note">Un premio especial, diferente de los premios en efectivo.</span></span>';
+        return '<span class="ticket-animal animal-id-1 free-ticket-sticker"><span class="sticker-animal">🎟️</span><span class="sticker-value">¡GANASTE<br>UNA BOLETA!</span><span class="sticker-sub">¡Volvé a jugar gratis!</span></span>';
       }
       return '<span class="ticket-animal animal-id-' + a.id + '"><span class="sticker-animal">' + a.icon + '</span><span class="sticker-value">' + a.value + '</span></span>';
     }).join('');
-    stickersInitialized = true;
   }
   const modalRow = document.getElementById('modalAnimals');
   if (modalRow) modalRow.innerHTML = animals.filter(a => a.id !== 1).map(a => '<span class="modal-animal">' + a.icon + '</span>').join('');
