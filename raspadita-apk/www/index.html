@@ -1851,7 +1851,17 @@ function copyWa() {
         document.querySelectorAll('.tile-scratch-canvas').forEach(function(layer){layer.style.display='';layer.style.pointerEvents='auto';});
         tileScratchCount = 0; tileScratchComplete = false;
         isRevealed = false;
-        setTimeout(function () { if (!isRevealed) { try { initScratch(); } catch (e) {} cv.style.pointerEvents = 'auto'; } }, 60);
+        setTimeout(function () {
+          if (!isRevealed) {
+            try { initScratch(); } catch (e) { console.error('No se pudieron preparar los cuadrados raspables', e); }
+            // setPrizeStickers reemplaza los 9 cuadrados después de que initScratch se ejecutó al cargar la página.
+            // Por eso hay que activar las capas NUEVAS después de volver a crearlas.
+            document.querySelectorAll('#ticketAnimalGrid .tile-scratch-canvas').forEach(function(layer) {
+              layer.style.pointerEvents = 'auto';
+            });
+            cv.style.pointerEvents = 'none';
+          }
+        }, 120);
       }
     } catch (e) {
       console.error('Error verificando boleta', e);
