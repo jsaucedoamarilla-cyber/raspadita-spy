@@ -1,0 +1,40 @@
+name: Crear APK Raspadita Millonaria
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "raspadita-apk/www/millonaria/**"
+      - "raspadita-apk/millonaria-android-webview/**"
+      - ".github/workflows/millonaria-apk.yml"
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar código
+        uses: actions/checkout@v4
+      - name: Configurar Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - name: Configurar Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.2"
+      - name: Preparar juego dentro del APK
+        working-directory: raspadita-apk/millonaria-android-webview
+        run: |
+          mkdir -p app/src/main/assets/www
+          cp ../www/millonaria/index.html app/src/main/assets/www/index.html
+      - name: Compilar APK independiente
+        working-directory: raspadita-apk/millonaria-android-webview
+        run: gradle assembleDebug
+      - name: Guardar APK para descargar
+        uses: actions/upload-artifact@v4
+        with:
+          name: Raspadita-Millonaria-APK
+          path: raspadita-apk/millonaria-android-webview/app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
+          retention-days: 14
