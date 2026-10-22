@@ -1226,6 +1226,45 @@
       }
     }
 
+    function showSavedTicket(ticket, roulette) {
+      S.finished = true;
+      S.scratched = 9;
+      S.ruletaUsed = !!roulette;
+      S.spin = ticket.prize_kind === "roulette" && !roulette;
+      S.canvases.forEach((c, i) => {
+        c.revealed = true;
+        c.canvas.classList.add("hidden");
+        const cell = document.querySelector(`.cell[data-i="${i}"]`);
+        if (cell) cell.classList.add("revealed");
+      });
+      const info = matchInfo(S.grid);
+      document.getElementById("progress").style.width = "100%";
+      document.getElementById("progress-text").textContent = "Boleta raspada · resultado guardado";
+      document.getElementById("btn-all").disabled = true;
+      document.getElementById("btn-new").disabled = true;
+      document.getElementById("result").className = "result show " + (info.count >= 3 ? "win" : "lose");
+      document.getElementById("result-title").textContent = info.count >= 3 ? "¡BOLETA YA JUGADA! 🎉" : "BOLETA YA JUGADA";
+      document.querySelectorAll(".cell").forEach((cell, i) => {
+        if (info.count >= 3 && S.grid[i] === info.symbol) cell.classList.add("winner");
+      });
+      let prizeText = ticket.prize_label || (info.count >= 3 ? "Premio registrado" : "Sin premio");
+      if (ticket.prize_kind === "roulette") {
+        prizeText = roulette ? "🎡 Ruleta: " + roulette.outcome_label : "🎡 ¡Premio en la RULETA pendiente de girar!";
+      }
+      document.getElementById("result-prize").textContent = prizeText;
+      document.getElementById("result-msg").textContent = "Este es el resultado original guardado en el sistema. No se puede volver a raspar.";
+      document.getElementById("bonus-row").className = S.spin ? "bonus-row show" : "bonus-row";
+      document.getElementById("btn-girar").disabled = !!roulette;
+      if (roulette) {
+        const nb = document.getElementById("btn-notify");
+        if (CM && CM[3]) {
+          nb.style.display = "block";
+          nb.href = "https://wa.me/" + CM[3] + "?text=" + encodeURIComponent("¡Hola! Raspé mi boleta N° " + pad(DB_TICKET) + ": 🎡 Ruleta: " + roulette.outcome_label);
+        }
+      }
+      toast("Resultado recuperado: esta boleta ya fue raspada");
+    }
+
     // Start
     const GAME_BASE = location.href.split("?")[0];
     const URLP = new URLSearchParams(location.search);
@@ -1405,10 +1444,14 @@
       millonariaApi("status").then(payload => {
         const ticket = payload.ticket;
         if (!ticket) throw new Error("No se encontró esta boleta");
-        if (ticket.scratched) { toast("Esta boleta ya fue jugada"); document.getElementById("ticket-id").textContent = "BOLETA YA JUGADA"; return; }
-        const sym = symbolFromTicket(ticket);
-        startGame(generateGrid(!!sym, sym), String(DB_TICKET));
-        if (payload.ruleta) {
+        const savedGrid = Array.isArray(ticket.sticker_ids) && ticket.sticker_ids.length === 9
+          ? ticket.sticker_ids.map(id => CFG.symbols[Number(id) - 1])
+          : null;
+        if (!savedGrid || savedGrid.some(sym => !sym)) throw new Error("No se pudo cargar el resultado guardado de esta boleta");
+        startGame(savedGrid, String(DB_TICKET));
+        if (ticket.scratched) {
+          showSavedTicket(ticket, payload.ruleta || null);
+        } else if (payload.ruleta) {
           const nb = document.getElementById("btn-notify"); nb.style.display = "block";
         }
       }).catch(err => { toast("Error al cargar boleta: " + (err.message || "revisá el enlace")); document.getElementById("ticket-id").textContent = "ENLACE NO VÁLIDO"; });
