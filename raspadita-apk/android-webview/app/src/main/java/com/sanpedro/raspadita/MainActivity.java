@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         // Abrir la pantalla de vendedores incluida dentro de la APK.
-        webView.loadUrl("file:///android_asset/www/vendedora.html");
+        webView.loadUrl("file:///android_asset/www/index.html");
     }
 
     // Android WebView no resuelve automáticamente index.html al abrir una carpeta local.
