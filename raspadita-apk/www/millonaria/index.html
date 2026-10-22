@@ -1268,7 +1268,6 @@
     }
     function extraGrid() { let r = Math.random() * CAMP.total, sym = null; for (const p of CAMP.prizes) { r -= p.qty; if (r < 0) { sym = p.sym; break; } } return generateGrid(!!sym, sym); }
     function ruletaDone(item, text) {
-      if (item.type === "again") return;
       const pt = "🎡 Ruleta: " + text;
       if (P && !IS_CLIENT && S.curNum) { P.res[S.curNum] = pt; saveP(); }
       const nb = document.getElementById("btn-notify");
