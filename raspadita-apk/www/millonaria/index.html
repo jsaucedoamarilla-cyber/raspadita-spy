@@ -1040,7 +1040,7 @@
       recordResult(pt);
       const nb = document.getElementById("btn-notify");
       if (IS_CLIENT && CM[3]) { nb.style.display = "block"; nb.href = "https://wa.me/" + CM[3] + "?text=" + encodeURIComponent("¡Hola! Raspé mi boleta N° " + document.getElementById("ticket-id").textContent + ": " + pt); } else { nb.style.display = "none"; }
-      document.getElementById("btn-home").style.display = IS_CLIENT ? "none" : "";
+      document.getElementById("btn-home").style.display = SELLER_MODE ? "" : IS_CLIENT ? "none" : "";
       save();
     }
 
@@ -1252,7 +1252,7 @@
         prizeText = roulette ? "🎡 Ruleta: " + roulette.outcome_label : "🎡 ¡Premio en la RULETA pendiente de girar!";
       }
       document.getElementById("result-prize").textContent = prizeText;
-      document.getElementById("result-msg").textContent = "Este es el resultado original guardado en el sistema. No se puede volver a raspar.";
+      document.getElementById("result-msg").textContent = "Este es el resultado original guardado en el sistema. No se puede volver a raspar.";\n      document.getElementById("btn-home").style.display = SELLER_MODE ? "" : "none";
       document.getElementById("bonus-row").className = S.spin ? "bonus-row show" : "bonus-row";
       document.getElementById("btn-girar").disabled = !!roulette;
       if (roulette) {
@@ -1268,12 +1268,12 @@
     // Start
     const GAME_BASE = location.href.split("?")[0];
     const URLP = new URLSearchParams(location.search);
-    const DB_TICKET = Number(URLP.get("ticket") || 0);
-    const DB_TOKEN = (URLP.get("token") || "").trim().toUpperCase();
-    const CM = DB_TICKET >= 1 && DB_TICKET <= 5000 && /^[A-F0-9]{32}$/.test(DB_TOKEN)
+    let DB_TICKET = Number(URLP.get("ticket") || 0);
+    let DB_TOKEN = (URLP.get("token") || "").trim().toUpperCase();
+    let CM = DB_TICKET >= 1 && DB_TICKET <= 5000 && /^[A-F0-9]{32}$/.test(DB_TOKEN)
       ? [null, DB_TOKEN, String(DB_TICKET), ""] : location.hash.match(/^#t([a-z0-9]{4})-(\d{4})(?:-(\d{8,15}))?$/);
-    const IS_CONNECTED_CLIENT = DB_TICKET >= 1 && DB_TICKET <= 5000 && /^[A-F0-9]{32}$/.test(DB_TOKEN);
-    const IS_CLIENT = !!CM;
+    let IS_CONNECTED_CLIENT = DB_TICKET >= 1 && DB_TICKET <= 5000 && /^[A-F0-9]{32}$/.test(DB_TOKEN);
+    let IS_CLIENT = !!CM;\n    let SELLER_MODE = false, SELLER_PIN = "";\n    const MILLONARIA_BASE = "https://jsaucedoamarilla-cyber.github.io/raspadita-spy/millonaria/";
     const SB_URL = "https://bmoepjlepqmnkuzmfuvq.supabase.co";
     const SB_PUBLIC_KEY = "sb_publishable_SWI-q3Z_AIG4jRe43SfVIA_x8BgRFWG";
     const SPIN_URL = SB_URL + "/functions/v1/millonaria-ruleta";
@@ -1287,6 +1287,15 @@
       if (!response.ok) throw new Error(data.error || "No se pudo conectar con el servidor");
       return data;
     }
+    async function sellerApi(action, extra={}) {
+      const response=await fetch(SB_URL+"/functions/v1/millonaria-admin",{
+        method:"POST",headers:{"Content-Type":"application/json","apikey":SB_PUBLIC_KEY},
+        body:JSON.stringify({action,...extra})
+      });
+      const data=await response.json().catch(()=>({}));
+      if(!response.ok||!data.ok)throw new Error(({acceso_vendedora_invalido:"ID o PIN incorrecto, o usuario desactivado.",boleta_no_asignada:"Esta boleta no pertenece a tu cuenta.",boleta_ya_entregada:"Esta boleta ya fue entregada."})[data.error]||"No se pudo conectar con el panel.");
+      return data;
+    }
     function symbolFromTicket(ticket) {
       const label = String(ticket?.prize_label || "").toLowerCase();
       if (label.includes("ruleta")) return "🐆";
@@ -1298,8 +1307,8 @@
     let P = null, outArm = false, ADM = false;
     const pad = n => String(n).padStart(4, "0");
     const esc = t => String(t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-    function loadP() { try { P = JSON.parse(localStorage.getItem("rm_seller2") || "null"); } catch (e) { P = null; } }
-    function saveP() { try { localStorage.setItem("rm_seller2", JSON.stringify(P)); } catch (e) {} }
+    function loadP() { P = null; try { localStorage.removeItem("rm_seller2"); } catch(e) {} }
+    function saveP() { /* Los usuarios y boletas se administran en el servidor. */ }
     function hashSeed(str) { let h = 2166136261; for (let i = 0; i < str.length; i++) h = Math.imul(h ^ str.charCodeAt(i), 16777619); return h >>> 0; }
     function ticketGrid(n) {
       const orig = Math.random; Math.random = rng(hashSeed("g" + CAMP.seed + n));
@@ -1332,77 +1341,92 @@
       beep(500, 0.07, "triangle", 0.1);
       window.scrollTo(0, 0);
     }
-    function playNum(n) {
-      if (P.res[n]) { toast("Esa boleta ya fue raspada"); return; }
-      if (P.sent[n]) { toast("Ya se la enviaste al cliente"); return; }
-      S.curNum = n; S.free = 0; S.streak = 0; S.rseed = n;
-      startGame(ticketGrid(+n), n);
+    async function playNum(n) {
+      const row=(P?.tickets||[]).find(t=>Number(t.ticket_number)===Number(n));
+      if(!row || !row.token){toast("No se encontró esta boleta asignada");return;}
+      DB_TICKET=Number(n); DB_TOKEN=String(row.token).toUpperCase(); CM=[null,DB_TOKEN,String(n),String(P.phone||"")];
+      IS_CONNECTED_CLIENT=true; IS_CLIENT=true; SELLER_MODE=true;
+      S.curNum=null; S.free=0; S.streak=0; S.rseed=Number(n);
+      try {
+        const payload=await millonariaApi("status"), ticket=payload.ticket;
+        if(!ticket || !Array.isArray(ticket.sticker_ids))throw new Error("No se pudo cargar la boleta");
+        const grid=ticket.sticker_ids.map(id=>CFG.symbols[Number(id)-1]);
+        startGame(grid,String(n));
+        if(ticket.scratched)showSavedTicket(ticket,payload.ruleta||null);
+      } catch(e) { toast("Error al abrir boleta: "+(e.message||"intentá otra vez")); }
     }
     function playExtra() { S.curNum = null; S.rseed = null; startGame(extraGrid(), "EXTRA"); }
-    function shareNum(n) {
-      if (P.res[n]) { toast("Esa boleta ya fue raspada"); return; }
-      S.sel = n;
-      document.getElementById("sheet-num").textContent = "Boleta N.º " + n;
-      document.getElementById("wa-num").value = "";
-      updateWa();
-      document.getElementById("tk-sheet").style.display = "flex";
+    async function shareNum(n) {
+      try {
+        const d=await sellerApi("seller_issue",{ticket_number:Number(n)});
+        P.lastShareUrl=MILLONARIA_BASE+"?ticket="+d.ticket_number+"&token="+encodeURIComponent(d.token);
+        const row=(P.tickets||[]).find(t=>Number(t.ticket_number)===Number(n)); if(row){row.issued=true;row.sold=true;}
+        S.sel=String(n);
+        document.getElementById("sheet-num").textContent="Boleta N.º "+pad(n);
+        document.getElementById("wa-num").value="";
+        updateWa();
+        document.getElementById("tk-sheet").style.display="flex";
+        renderPanel();
+      } catch(e) { toast(e.message||"No se pudo preparar el enlace"); }
     }
-    function sentSel() { P.sent[S.sel] = true; saveP(); closeSheet(); renderPanel(); }
+    function sentSel() { closeSheet(); renderPanel(); }
     function closeSheet() { document.getElementById("tk-sheet").style.display = "none"; }
-    function markSold(n) { P.sold[n] = true; saveP(); renderPanel(); toast("✔ Boleta " + n + " vendida"); }
-    function addPaid() { const v = Math.round(+document.getElementById("rd-amt").value); if (!v) { toast("Escribí un monto"); return; } P.paid = Math.max(0, (P.paid || 0) + v); saveP(); renderPanel(); toast("💵 Rendición registrada"); }
+    function markSold(n) { toast("Las ventas se registran al compartir el enlace de la boleta."); }
+    function addPaid() { toast("La rendición se administra desde el panel web."); }
     function recordResult(t) { if (!IS_CLIENT && P && S.curNum) { P.res[S.curNum] = t; saveP(); } }
-    function setupSeller() {
-      const name = document.getElementById("sl-name").value.trim();
-      const from = Math.max(1, Math.min(CAMP.total, Math.round(+document.getElementById("sl-from").value) || 1));
-      const total = Math.max(1, Math.min(CAMP.total - from + 1, Math.round(+document.getElementById("sl-total").value) || 40));
-      if (!name) { toast("Escribí tu nombre"); return; }
-      let ph = document.getElementById("sl-phone").value.replace(/\D/g, ""); if (ph.startsWith("0")) ph = ph.slice(1); if (ph && !ph.startsWith("595")) ph = "595" + ph;
-      P = { name, from, code: (Math.random().toString(36) + "0000").slice(2, 6), total, phone: ph.length >= 8 && ph.length <= 15 ? ph : "", paid: 0, sold: {}, sent: {}, res: {} };
-      saveP(); renderPanel();
+    async function setupSeller() {
+      const id=Number(document.getElementById("sl-id").value), pin=document.getElementById("sl-pin").value.trim();
+      if(!Number.isInteger(id)||id<1||pin.length<4){toast("Ingresá el ID y el PIN que te dio el administrador");return;}
+      try {
+        const login=await sellerApi("seller_login",{seller_id:id,pin});
+        const list=await sellerApi("seller_tickets",{seller_id:id,pin});
+        SELLER_PIN=pin; SELLER_MODE=true;
+        P={id:login.seller.id,name:login.seller.name,phone:login.seller.phone||"",tickets:list.tickets||[],lastShareUrl:""};
+        renderPanel();
+      } catch(e) { toast(e.message||"ID o PIN incorrecto"); }
     }
     function logoutSeller() {
-      if (!outArm) { outArm = true; toast("Tocá Salir otra vez para borrar tus datos"); setTimeout(() => outArm = false, 4000); return; }
-      outArm = false; P = null;
-      try { localStorage.removeItem("rm_seller2"); } catch (e) {}
+      P=null; SELLER_PIN=""; SELLER_MODE=false; IS_CONNECTED_CLIENT=false; IS_CLIENT=false; DB_TICKET=0; DB_TOKEN=""; CM=null;
+      try { localStorage.removeItem("rm_seller2"); } catch(e) {}
       renderPanel();
     }
     function renderPanel() {
       const el = document.getElementById("panel");
       if (ADM) return renderAdmin();
       if (!P) {
-        el.innerHTML = `<h2>🎫 Raspadita Millonaria</h2><p>Acceso de vendedoras</p><input id="sl-name" placeholder="Tu nombre"><p>Primera boleta que recibiste (N.º)</p><input id="sl-from" type="number" inputmode="numeric" value="1"><p>Cantidad de boletas que recibiste</p><input id="sl-total" type="number" inputmode="numeric" value="40"><p>Tu WhatsApp (para que el cliente te avise su premio)</p><input id="sl-phone" type="tel" inputmode="tel" placeholder="ej. 0981 123 456"><button class="st-btn" onclick="setupSeller()">Entrar</button><button class="st-btn ghost" onclick="adminLogin()">🔐 Administrador</button>`;
+        el.innerHTML = `<h2>🎫 Raspadita Millonaria</h2><p>Acceso privado de vendedoras</p>
+          <p>ID de usuario creado por el administrador</p><input id="sl-id" type="number" inputmode="numeric" placeholder="ID de vendedora">
+          <p>PIN entregado por el administrador</p><input id="sl-pin" type="password" inputmode="numeric" placeholder="PIN privado">
+          <button class="st-btn" onclick="setupSeller()">🔐 Entrar</button>
+          <p style="font-size:.75rem;color:var(--muted)">Si no tenés usuario, pedíselo al administrador. No se permite crear cuentas desde el APK.</p>`;
         return;
       }
-      const nums = Array.from({ length: P.total }, (_, i) => pad(i + (P.from || 1)));
-      const sold = nums.filter(n => P.sold[n]).length;
-      const avail = nums.filter(n => !P.sold[n] && !P.sent[n]);
-      const card = n => {
-        const r = P.res[n], sent = P.sent[n];
-        return `<div class="pn-t"><div class="pn-th"><b>🎫 Boleta N.º ${n}</b><span>${P.sold[n] ? "Vendida" : sent ? "Enviada" : "Disponible"}</span></div>
-          <p>Raspado: <b>${r ? "Raspada" : sent ? "Con el cliente" : "Sin raspar"}</b><br>Premio: <b>${r || (sent ? "Lo ve el cliente" : "Pendiente de raspar")}</b></p>
-          <button class="st-btn" style="background:#f6d56e;color:#241545" onclick="playNum('${n}')">🎮 JUGAR BOLETA</button>
-          <button class="st-btn wa" onclick="shareNum('${n}')">📲 COMPARTIR CON EL CLIENTE POR WHATSAPP</button>
-          ${P.sold[n] ? "" : `<button class="st-btn ghost" onclick="markSold('${n}')">Marcar como vendida</button>`}</div>`;
+      const nums = (P.tickets || []).map(t => String(t.ticket_number));
+      const sold = (P.tickets || []).filter(t => t.sold).length;
+      const available = (P.tickets || []).filter(t => !t.issued && !t.scratched);
+      const card = t => {
+        const n=String(t.ticket_number), status=t.scratched?"Raspada":t.issued?"Enlace enviado":"Disponible";
+        const result=t.scratched?(t.prize_label||"Resultado guardado"):"Pendiente de raspar";
+        return `<div class="pn-t"><div class="pn-th"><b>🎫 Boleta N.º ${pad(n)}</b><span>${status}</span></div>
+          <p>Resultado: <b>${esc(result)}</b></p>
+          <button class="st-btn" style="background:#f6d56e;color:#241545" onclick="playNum('${n}')">🎮 VER / JUGAR BOLETA</button>
+          <button class="st-btn wa" onclick="shareNum('${n}')">📲 COMPARTIR POR WHATSAPP</button>
+        </div>`;
       };
-      el.innerHTML = `<div class="pn-head"><div><h2>Hola, ${esc(P.name)} 👋</h2><p>Solo ves las boletas de tu cuenta.</p></div><button class="pn-out" onclick="logoutSeller()">Salir</button></div>
+      el.innerHTML = `<div class="pn-head"><div><h2>Hola, ${esc(P.name)} 👋</h2><p>Usuario N.º ${P.id} · Solo ves las boletas asignadas a tu cuenta.</p></div><button class="pn-out" onclick="logoutSeller()">Salir</button></div>
         <div class="pn-stats">
-          <div class="pn-c"><span>Boletas recibidas</span><b>${P.total}</b></div>
-          <div class="pn-c"><span>Boletas vendidas</span><b>${sold}</b></div>
-          <div class="pn-c"><span>Te quedan</span><b>${P.total - sold}</b></div>
-          <div class="pn-c"><span>Dinero de ventas</span><b>₲ ${fmt(sold * PRICE)}</b></div>
-          <div class="pn-c"><span>Ya rendiste</span><b>₲ ${fmt(P.paid || 0)}</b></div>
-          <div class="pn-c"><span>Saldo pendiente</span><b>₲ ${fmt(Math.max(0, sold * PRICE - (P.paid || 0)))}</b></div>
+          <div class="pn-c"><span>Boletas asignadas</span><b>${P.tickets.length}</b></div>
+          <div class="pn-c"><span>Enlaces enviados</span><b>${P.tickets.filter(t=>t.issued).length}</b></div>
+          <div class="pn-c"><span>Boletas raspadas</span><b>${P.tickets.filter(t=>t.scratched).length}</b></div>
+          <div class="pn-c"><span>Boletas pendientes</span><b>${P.tickets.filter(t=>!t.scratched).length}</b></div>
         </div>
-        <h3>💵 Rendición</h3><p>Anotá lo que le entregaste a la organización. Para corregir, poné un monto negativo.</p><input id="rd-amt" type="number" inputmode="numeric" placeholder="Monto ₲ (ej. 10000)"><button class="st-btn ghost" onclick="addPaid()">Registrar rendición</button>
-        <h3>📸 Números disponibles</h3><p>Sacá una captura y enviásela al cliente para que elija. Después tocá COMPARTIR en esa boleta.</p>
-        <div class="pn-nums">${avail.map(n => `<div>${n}</div>`).join("") || "Sin boletas disponibles"}</div>
-        <h3>🎫 Mis boletas</h3>${nums.map(card).join("")}`;
+        <h3>🎫 Mis boletas asignadas</h3>${P.tickets.map(card).join("") || "<p>El administrador todavía no te asignó boletas.</p>"}
+      `;
     }
     function adminLogin() {
       document.getElementById("panel").innerHTML = `<h2>🔐 Administrador</h2><p>Ingresá el PIN</p><input id="ad-pin" type="password" inputmode="numeric" placeholder="PIN"><button class="st-btn" onclick="adminEnter()">Entrar</button><button class="st-btn ghost" onclick="renderPanel()">⬅ Volver</button>`;
     }
-    function adminEnter() { if (document.getElementById("ad-pin").value === ADMIN_PIN) { ADM = true; renderPanel(); } else toast("PIN incorrecto"); }
+    function adminEnter() { toast("La administración de usuarios se realiza únicamente desde el panel web privado."); }
     function adminExit() { ADM = false; renderPanel(); }
     function ticketsOf(sym) { const out = []; pool().forEach((x, i) => { if (x === sym) out.push(pad(i + 1)); }); return out; }
     function adminCheck() {
