@@ -1358,7 +1358,7 @@
     function playExtra() { S.curNum = null; S.rseed = null; startGame(extraGrid(), "EXTRA"); }
     async function shareNum(n) {
       try {
-        const d=await sellerApi("seller_issue",{ticket_number:Number(n)});
+        const d=await sellerApi("seller_issue",{seller_id:P.id,pin:SELLER_PIN,ticket_number:Number(n)});
         P.lastShareUrl=MILLONARIA_BASE+"?ticket="+d.ticket_number+"&token="+encodeURIComponent(d.token);
         const row=(P.tickets||[]).find(t=>Number(t.ticket_number)===Number(n)); if(row){row.issued=true;row.sold=true;}
         S.sel=String(n);
