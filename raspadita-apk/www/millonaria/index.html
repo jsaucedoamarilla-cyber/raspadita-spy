@@ -1252,7 +1252,8 @@
         prizeText = roulette ? "🎡 Ruleta: " + roulette.outcome_label : "🎡 ¡Premio en la RULETA pendiente de girar!";
       }
       document.getElementById("result-prize").textContent = prizeText;
-      document.getElementById("result-msg").textContent = "Este es el resultado original guardado en el sistema. No se puede volver a raspar.";\n      document.getElementById("btn-home").style.display = SELLER_MODE ? "" : "none";
+      document.getElementById("result-msg").textContent = "Este es el resultado original guardado en el sistema. No se puede volver a raspar.";
+      document.getElementById("btn-home").style.display = SELLER_MODE ? "" : "none";
       document.getElementById("bonus-row").className = S.spin ? "bonus-row show" : "bonus-row";
       document.getElementById("btn-girar").disabled = !!roulette;
       if (roulette) {
@@ -1273,7 +1274,9 @@
     let CM = DB_TICKET >= 1 && DB_TICKET <= 5000 && /^[A-F0-9]{32}$/.test(DB_TOKEN)
       ? [null, DB_TOKEN, String(DB_TICKET), ""] : location.hash.match(/^#t([a-z0-9]{4})-(\d{4})(?:-(\d{8,15}))?$/);
     let IS_CONNECTED_CLIENT = DB_TICKET >= 1 && DB_TICKET <= 5000 && /^[A-F0-9]{32}$/.test(DB_TOKEN);
-    let IS_CLIENT = !!CM;\n    let SELLER_MODE = false, SELLER_PIN = "";\n    const MILLONARIA_BASE = "https://jsaucedoamarilla-cyber.github.io/raspadita-spy/millonaria/";
+    let IS_CLIENT = !!CM;
+    let SELLER_MODE = false, SELLER_PIN = "";
+    const MILLONARIA_BASE = "https://jsaucedoamarilla-cyber.github.io/raspadita-spy/millonaria/";
     const SB_URL = "https://bmoepjlepqmnkuzmfuvq.supabase.co";
     const SB_PUBLIC_KEY = "sb_publishable_SWI-q3Z_AIG4jRe43SfVIA_x8BgRFWG";
     const SPIN_URL = SB_URL + "/functions/v1/millonaria-ruleta";
