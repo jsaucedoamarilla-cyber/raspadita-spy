@@ -967,8 +967,12 @@
     }
 
     // ===================== FINISH =====================
-    function finish() {
+    async function finish() {
       S.finished = true;
+      if (IS_CONNECTED_CLIENT) {
+        try { await millonariaApi("scratch"); }
+        catch (err) { toast("Aviso: no se pudo guardar el estado de la boleta en el servidor."); }
+      }
       document.getElementById("btn-new").disabled = false;
       document.getElementById("btn-all").disabled = true;
 
