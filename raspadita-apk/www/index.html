@@ -3,1877 +3,1491 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <meta name="theme-color" content="#2a1a45" />
-  <meta name="description" content="Raspadita San Pedro del Ycuamandyyú - Raspa y Gana con premios al instante" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="Raspadita SPY" />
-
-  <title>Raspadita San Pedro del Ycuamandyyú</title>
-  <link rel="manifest" href="manifest.webmanifest" />
-  <link rel="apple-touch-icon" href="icons/icon-192.png" />
-
-  <style>:root {
-  --bg-dark: #0c0818;
-  --bg-card: #160e28;
-  --purple: #2a1a45;
-  --purple-light: #3d2a5c;
-  --gold: #ffc107;
-  --gold-bright: #ffe082;
-  --gold-dark: #e6a800;
-  --accent: #ff5722;
-  --success: #00e676;
-  --text: #f8f4ff;
-  --text-muted: #b8a9d4;
-  --radius: 18px;
-  --shadow: 0 12px 40px rgba(0,0,0,0.45);
-  --glow-gold: 0 0 24px rgba(255,193,7,0.35);
-}
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-/* Ocultar opciones que no se usan en la versión web */
-.qty-row, #installBanner { display: none !important; }
-
-html, body {
-  height: 100%;
-  font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  background: var(--bg-dark);
-  color: var(--text);
-  overflow-x: hidden;
-  -webkit-font-smoothing: antialiased;
-}
-
-body {
-  background: 
-    radial-gradient(ellipse 80% 50% at 15% 10%, rgba(255,193,7,0.09) 0%, transparent 55%),
-    radial-gradient(ellipse 70% 60% at 85% 90%, rgba(156,39,176,0.14) 0%, transparent 55%),
-    radial-gradient(ellipse 50% 40% at 50% 50%, rgba(42,26,69,0.4) 0%, transparent 70%),
-    linear-gradient(165deg, #0c0818 0%, #160e28 45%, #0c0818 100%);
-  min-height: 100vh;
-  position: relative;
-}
-
-/* Floating particles background */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image: 
-    radial-gradient(2px 2px at 20% 30%, rgba(255,193,7,0.35), transparent),
-    radial-gradient(2px 2px at 40% 70%, rgba(255,255,255,0.15), transparent),
-    radial-gradient(1.5px 1.5px at 70% 20%, rgba(255,193,7,0.25), transparent),
-    radial-gradient(2px 2px at 90% 50%, rgba(255,255,255,0.12), transparent),
-    radial-gradient(1.5px 1.5px at 10% 80%, rgba(255,193,7,0.2), transparent);
-  background-size: 100% 100%;
-  animation: twinkle 8s ease-in-out infinite alternate;
-  pointer-events: none;
-  z-index: 0;
-}
-
-@keyframes twinkle {
-  0% { opacity: 0.6; }
-  100% { opacity: 1; }
-}
-
-/* ========== HEADER ========== */
-.header {
-  padding: 14px 18px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: rgba(22, 14, 40, 0.88);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba(255,193,7,0.18);
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  animation: slideDown 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-@keyframes slideDown {
-  from { transform: translateY(-100%); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
-
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.logo-icon {
-  width: 46px;
-  height: 46px;
-  background: linear-gradient(145deg, var(--gold-bright), var(--gold), var(--gold-dark));
-  border-radius: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 900;
-  font-size: 22px;
-  color: #1a0f2e;
-  box-shadow: var(--glow-gold), 0 4px 14px rgba(0,0,0,0.3);
-  animation: pulseGlow 2.8s ease-in-out infinite;
-}
-
-@keyframes pulseGlow {
-  0%, 100% { box-shadow: 0 0 18px rgba(255,193,7,0.35), 0 4px 14px rgba(0,0,0,0.3); }
-  50% { box-shadow: 0 0 32px rgba(255,193,7,0.55), 0 4px 18px rgba(0,0,0,0.3); }
-}
-
-.logo-text {
-  font-size: 15px;
-  font-weight: 800;
-  line-height: 1.25;
-  letter-spacing: 0.2px;
-}
-
-.logo-text small {
-  display: block;
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--text-muted);
-  letter-spacing: 0.3px;
-}
-
-/* ========== HERO ========== */
-.hero {
-  text-align: center;
-  padding: 32px 20px 12px;
-  position: relative;
-  z-index: 1;
-  animation: fadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both;
-}
-
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(24px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.hero h1 {
-  font-size: 2.1rem;
-  font-weight: 900;
-  background: linear-gradient(135deg, #fff 10%, var(--gold-bright) 45%, var(--gold) 70%, #fff 100%);
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  margin-bottom: 8px;
-  animation: shimmer 4s linear infinite;
-  letter-spacing: -0.5px;
-}
-
-@keyframes shimmer {
-  to { background-position: 200% center; }
-}
-
-.hero p {
-  color: var(--text-muted);
-  font-size: 0.98rem;
-  font-weight: 500;
-}
-
-/* ========== MAIN CARD ========== */
-.main-card {
-  max-width: 420px;
-  margin: 18px auto;
-  padding: 0 16px;
-  position: relative;
-  z-index: 1;
-  animation: fadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.28s both;
-}
-
-.scratch-container {
-  background: linear-gradient(160deg, rgba(61,42,92,0.9), rgba(22,14,40,0.95));
-  border-radius: 26px;
-  padding: 22px;
-  box-shadow: var(--shadow), 0 0 0 1px rgba(255,193,7,0.12), inset 0 1px 0 rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,193,7,0.18);
-  position: relative;
-  overflow: hidden;
-}
-
-.scratch-container::before {
-  content: '';
-  position: absolute;
-  top: -60%;
-  left: -40%;
-  width: 180%;
-  height: 180%;
-  background: radial-gradient(circle at 30% 30%, rgba(255,193,7,0.07) 0%, transparent 50%);
-  pointer-events: none;
-  animation: rotateGlow 18s linear infinite;
-}
-
-@keyframes rotateGlow {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-.card-title {
-  text-align: center;
-  font-size: 1.2rem;
-  font-weight: 800;
-  margin-bottom: 4px;
-  color: var(--gold);
-  text-shadow: 0 0 20px rgba(255,193,7,0.3);
-}
-
-.card-subtitle {
-  text-align: center;
-  font-size: 0.86rem;
-  color: var(--text-muted);
-  margin-bottom: 18px;
-}
-
-/* Instrucciones compactas y barras de resultado */
-.how-to-win {
-  margin: 0 0 10px; padding: 8px 9px; border: 1px solid rgba(255,193,7,.34);
-  border-radius: 12px; background: rgba(255,255,255,.035); text-align: center;
-}
-.how-to-win h3 { color: var(--gold-bright); font-size: .76rem; line-height: 1.2; font-weight: 900; margin: 0 0 4px; }
-.how-to-win .rule { color: var(--text); font-size: .72rem; line-height: 1.2; font-weight: 800; margin: 0 0 6px; }
-.how-to-win .result-bar { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 5px 8px; border-radius: 8px; font-size: .92rem; line-height: 1.1; font-weight: 900; margin: 4px 0; }
-.how-to-win .win-bar { background: linear-gradient(90deg, #087f3e, #16a34a); color: #fff; border: 1px solid #4ade80; }
-.how-to-win .lose-bar { background: linear-gradient(90deg, #991b1b, #dc2626); color: #fff; border: 1px solid #f87171; }
-.how-to-win .animals { font-size: 1.12rem; letter-spacing: 1px; white-space: nowrap; }
-@media (max-width: 360px) { .how-to-win { padding: 7px; } .how-to-win h3 { font-size: .71rem; } .how-to-win .rule { font-size: .68rem; } .how-to-win .result-bar { font-size: .84rem; padding: 5px; } }
-
-/* Scratch area */
-.scratch-wrapper {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 1 / 0.88;
-  border-radius: 18px;
-  overflow: hidden;
-  background: linear-gradient(145deg, #2d1b4e, #1a0f2e);
-  border: 2px solid rgba(255,193,7,0.35);
-  cursor: crosshair;
-  touch-action: none;
-  user-select: none;
-  box-shadow: inset 0 0 30px rgba(0,0,0,0.35), 0 0 20px rgba(255,193,7,0.08);
-  transition: box-shadow 0.3s ease, border-color 0.3s ease;
-}
-
-.scratch-wrapper:active {
-  border-color: rgba(255,193,7,0.6);
-  box-shadow: inset 0 0 30px rgba(0,0,0,0.35), 0 0 28px rgba(255,193,7,0.2);
-}
-
-#prizeLayer {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  z-index: 1;
-  padding: 16px;
-  text-align: center;
-  animation: prizePulse 3s ease-in-out infinite;
-}
-
-@keyframes prizePulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.03); }
-}
-
-.prize-icon {
-  font-size: 3.4rem;
-  line-height: 1;
-  filter: drop-shadow(0 6px 12px rgba(0,0,0,0.4));
-  animation: floatIcon 2.5s ease-in-out infinite;
-}
-
-@keyframes floatIcon {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
-}
-
-.prize-label {
-  font-size: 1.45rem;
-  font-weight: 900;
-  color: var(--gold-bright);
-  text-shadow: 0 2px 12px rgba(0,0,0,0.5), 0 0 20px rgba(255,193,7,0.25);
-  letter-spacing: -0.3px;
-}
-
-.prize-sub {
-  font-size: 0.9rem;
-  color: var(--text-muted);
-  font-weight: 500;
-}
-
-.scratch-wrapper #prizeLayer{display:none!important}
-
-#scratchCanvas {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 2;
-  border-radius: 16px;
-}
-
-/* Instructions */
-.instructions {
-  text-align: center;
-  margin-top: 16px;
-  font-size: 0.9rem;
-  color: var(--text-muted);
-  animation: softBlink 2.2s ease-in-out infinite;
-}
-
-@keyframes softBlink {
-  0%, 100% { opacity: 0.75; }
-  50% { opacity: 1; }
-}
-
-.instructions strong {
-  color: var(--gold);
-  font-weight: 700;
-}
-
-/* Buttons */
-.actions {
-  display: flex;
-  gap: 12px;
-  margin-top: 18px;
-}
-
-.btn {
-  flex: 1;
-  padding: 15px 18px;
-  border: none;
-  border-radius: 16px;
-  font-size: 0.98rem;
-  font-weight: 800;
-  cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  position: relative;
-  overflow: hidden;
-}
-
-.btn::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.2) 50%, transparent 70%);
-  transform: translateX(-100%);
-  transition: transform 0.5s ease;
-}
-
-.btn:hover::after {
-  transform: translateX(100%);
-}
-
-.btn-primary {
-  background: linear-gradient(145deg, var(--gold-bright), var(--gold), var(--gold-dark));
-  color: #1a0f2e;
-  box-shadow: 0 8px 24px rgba(255,193,7,0.38), 0 2px 0 rgba(255,255,255,0.2) inset;
-}
-
-.btn-primary:hover {
-  transform: translateY(-3px) scale(1.02);
-  box-shadow: 0 12px 32px rgba(255,193,7,0.5), 0 2px 0 rgba(255,255,255,0.25) inset;
-}
-
-.btn-primary:active {
-  transform: translateY(0) scale(0.98);
-}
-
-.btn-secondary {
-  background: rgba(255,255,255,0.07);
-  color: var(--text);
-  border: 1px solid rgba(255,255,255,0.14);
-  backdrop-filter: blur(8px);
-}
-
-.btn-secondary:hover {
-  background: rgba(255,255,255,0.12);
-  border-color: rgba(255,193,7,0.3);
-  transform: translateY(-2px);
-}
-
-.btn-secondary:active {
-  transform: translateY(0) scale(0.98);
-}
-
-/* Stats */
-.info-bar {
-  display: flex;
-  justify-content: space-around;
-  margin-top: 20px;
-  padding: 16px;
-  background: rgba(255,255,255,0.04);
-  border-radius: 16px;
-  border: 1px solid rgba(255,255,255,0.06);
-  font-size: 0.85rem;
-}
-
-.info-item {
-  text-align: center;
-}
-
-.info-item span {
-  display: block;
-  font-size: 1.25rem;
-  font-weight: 900;
-  color: var(--gold);
-  text-shadow: 0 0 12px rgba(255,193,7,0.3);
-  transition: transform 0.3s ease;
-}
-
-.info-item span.pop {
-  animation: popStat 0.45s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-@keyframes popStat {
-  0% { transform: scale(1); }
-  40% { transform: scale(1.35); }
-  100% { transform: scale(1); }
-}
-
-/* ========== PRIZES SECTION ========== */
-.prizes-section {
-  max-width: 420px;
-  margin: 36px auto 40px;
-  padding: 0 16px;
-  position: relative;
-  z-index: 1;
-  animation: fadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.4s both;
-}
-
-.prizes-section h2 {
-  font-size: 1.25rem;
-  margin-bottom: 16px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-weight: 800;
-}
-
-.prize-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-}
-
-.prize-card {
-  background: linear-gradient(160deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 16px;
-  padding: 16px 12px;
-  text-align: center;
-  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-  position: relative;
-  overflow: hidden;
-}
-
-.prize-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255,193,7,0.4), transparent);
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-
-.prize-card:hover {
-  transform: translateY(-4px) scale(1.03);
-  border-color: rgba(255,193,7,0.35);
-  box-shadow: 0 10px 28px rgba(0,0,0,0.3), 0 0 20px rgba(255,193,7,0.1);
-  background: linear-gradient(160deg, rgba(255,193,7,0.1), rgba(255,255,255,0.04));
-}
-
-.prize-card:hover::before {
-  opacity: 1;
-}
-
-.prize-card .emoji {
-  font-size: 1.9rem;
-  margin-bottom: 8px;
-  display: inline-block;
-  transition: transform 0.3s ease;
-}
-
-.prize-card:hover .emoji {
-  transform: scale(1.15) rotate(-6deg);
-}
-
-.prize-card .name {
-  font-size: 0.88rem;
-  font-weight: 700;
-}
-
-.prize-card .value {
-  font-size: 0.75rem;
-  color: var(--text-muted);
-  margin-top: 3px;
-}
-
-/* ========== FOOTER ========== */
-.footer {
-  text-align: center;
-  padding: 28px 16px 50px;
-  font-size: 0.8rem;
-  color: var(--text-muted);
-  position: relative;
-  z-index: 1;
-  animation: fadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.5s both;
-}
-
-.footer p:first-child {
-  color: var(--text);
-  font-weight: 600;
-  margin-bottom: 4px;
-}
-
-.footer a {
-  color: var(--gold);
-  text-decoration: none;
-}
-
-/* ========== MODAL ========== */
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.78);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
-  padding: 20px;
-}
-
-.modal-overlay.active {
-  opacity: 1;
-  visibility: visible;
-}
-
-.modal {
-  background: linear-gradient(165deg, #3d2a5c, #1a0f2e 70%);
-  border-radius: 28px;
-  padding: 36px 28px;
-  max-width: 340px;
-  width: 100%;
-  text-align: center;
-  border: 1px solid rgba(255,193,7,0.35);
-  box-shadow: 0 25px 70px rgba(0,0,0,0.55), 0 0 40px rgba(255,193,7,0.12);
-  transform: scale(0.7) translateY(30px);
-  opacity: 0;
-  transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-  position: relative;
-  overflow: hidden;
-}
-
-.modal-overlay.active .modal {
-  transform: scale(1) translateY(0);
-  opacity: 1;
-}
-
-.modal::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(circle, rgba(255,193,7,0.08) 0%, transparent 55%);
-  animation: rotateGlow 12s linear infinite;
-  pointer-events: none;
-}
-
-.modal .big-emoji {
-  font-size: 4.4rem;
-  margin-bottom: 14px;
-  display: inline-block;
-  animation: bounceIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both;
-  filter: drop-shadow(0 8px 16px rgba(0,0,0,0.35));
-}
-
-@keyframes bounceIn {
-  0% { transform: scale(0); opacity: 0; }
-  60% { transform: scale(1.2); }
-  100% { transform: scale(1); opacity: 1; }
-}
-
-.modal h3 {
-  font-size: 1.55rem;
-  margin-bottom: 6px;
-  font-weight: 900;
-  animation: fadeUp 0.5s ease 0.25s both;
-}
-
-.modal p {
-  color: var(--text-muted);
-  margin-bottom: 8px;
-  font-size: 0.95rem;
-  animation: fadeUp 0.5s ease 0.35s both;
-}
-
-.modal .prize-won {
-  font-size: 1.7rem;
-  font-weight: 900;
-  color: var(--gold-bright);
-  margin: 12px 0 22px;
-  text-shadow: 0 0 24px rgba(255,193,7,0.4);
-  animation: fadeUp 0.5s ease 0.3s both, prizeGlow 1.8s ease-in-out infinite 0.6s;
-}
-
-@keyframes prizeGlow {
-  0%, 100% { text-shadow: 0 0 20px rgba(255,193,7,0.35); }
-  50% { text-shadow: 0 0 36px rgba(255,193,7,0.65); }
-}
-
-.modal .btn {
-  animation: fadeUp 0.5s ease 0.4s both;
-}
-
-/* Confetti */
-#confetti {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 999;
-}
-
-/* Los clientes con enlace individual solo juegan en la web; no mostrar instalar aplicación. */
-body.ticket .install-banner { display: none !important; }
-body.ticket #installBanner { display: none !important; }
-
-/* Install banner */
-.install-banner {
-  position: fixed;
-  bottom: 22px;
-  left: 50%;
-  transform: translateX(-50%) scale(0.8);
-  background: linear-gradient(145deg, var(--gold-bright), var(--gold), var(--gold-dark));
-  color: #1a0f2e;
-  padding: 14px 26px;
-  border-radius: 50px;
-  font-weight: 800;
-  font-size: 0.95rem;
-  box-shadow: 0 10px 36px rgba(255,193,7,0.45), 0 0 0 1px rgba(255,255,255,0.15) inset;
-  cursor: pointer;
-  z-index: 200;
-  display: none;
-  align-items: center;
-  gap: 10px;
-  opacity: 0;
-  transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.install-banner.show {
-  display: flex;
-  opacity: 1;
-  transform: translateX(-50%) scale(1);
-  animation: bannerBounce 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-@keyframes bannerBounce {
-  0% { transform: translateX(-50%) scale(0.5); opacity: 0; }
-  60% { transform: translateX(-50%) scale(1.08); }
-  100% { transform: translateX(-50%) scale(1); opacity: 1; }
-}
-
-.install-banner:hover {
-  transform: translateX(-50%) scale(1.05);
-  box-shadow: 0 14px 40px rgba(255,193,7,0.55);
-}
-
-/* Responsive */
-@media (max-width: 380px) {
-  .hero h1 { font-size: 1.7rem; }
-  .prize-grid { grid-template-columns: 1fr; }
-  .logo-text { font-size: 13px; }
-}
-
-/* Reveal flash effect */
-.scratch-wrapper.revealed {
-  animation: revealFlash 0.5s ease;
-}
-
-@keyframes revealFlash {
-  0% { box-shadow: inset 0 0 30px rgba(0,0,0,0.35), 0 0 0 rgba(255,193,7,0); }
-  40% { box-shadow: inset 0 0 30px rgba(0,0,0,0.35), 0 0 50px rgba(255,193,7,0.5); }
-  100% { box-shadow: inset 0 0 30px rgba(0,0,0,0.35), 0 0 20px rgba(255,193,7,0.08); }
-}
-
-/* Price tag */
-.price-tag {
-  text-align: center;
-  margin-top: 14px;
-  font-size: 0.95rem;
-  color: var(--text-muted);
-}
-
-.price-tag strong {
-  color: var(--gold);
-  font-size: 1.15rem;
-  font-weight: 900;
-}
-
-/* Info bar 4 columns */
-.info-bar {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 4px;
-}
-
-.info-item span {
-  font-size: 1.1rem;
-}
-
-@media (max-width: 360px) {
-  .info-bar {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-  }
-}
-
-.hdr-btns{display:flex;gap:8px;margin-left:auto}
-.mini-btn{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:var(--text);border-radius:50%;width:38px;height:38px;font-size:1rem;cursor:pointer}
-.qty-row{display:flex;align-items:center;gap:8px;justify-content:center;margin-top:12px;font-size:.85rem;color:var(--text-muted);flex-wrap:wrap}
-.qty{background:rgba(255,193,7,.15);border:1px solid var(--gold);color:var(--gold-bright);border-radius:10px;padding:6px 12px;font-weight:700;cursor:pointer}
-.history{max-width:480px;margin:0 auto;display:flex;flex-direction:column;gap:8px;padding:0 16px}
-.hist-empty{text-align:center;color:var(--text-muted)}
-.hist-item{display:flex;justify-content:space-between;align-items:center;background:var(--bg-card);border-radius:12px;padding:10px 14px;font-size:.9rem}
-.hist-item small{color:var(--text-muted);display:block}
-.hist-item.win{border:1px solid var(--gold)}
-.modal.jackpot{animation:jp 0.9s ease-in-out infinite alternate;box-shadow:0 0 60px rgba(255,193,7,.8)}
-.modal.jackpot .big-emoji{font-size:5rem}
-@keyframes jp{from{transform:scale(1)}to{transform:scale(1.05)}}
-body.light{--bg-dark:#f6f1ff;--bg-card:#fff;--purple:#e6dcf7;--purple-light:#d8c9f0;--text:#2a1a45;--text-muted:#6b5a8a;--gold-bright:#9a6b00;--shadow:0 8px 24px rgba(0,0,0,.15)}
-
-/* ===== Boleta por link ===== */
-.ticket-bar{text-align:center;font-size:1.05rem;margin-bottom:10px;color:var(--gold-bright)}
-.result-box{margin:14px 0;padding:16px;border-radius:16px;text-align:center;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.05)}
-.result-box.win{border-color:var(--gold);background:rgba(255,193,7,.12);box-shadow:0 0 24px rgba(255,193,7,.25)}
-.result-box h3{margin-bottom:8px}.result-box p{margin-bottom:12px}
-.ticket-animal-showcase{position:absolute;inset:0;margin:0;padding:10px;box-sizing:border-box;border-radius:16px;text-align:center;background:linear-gradient(145deg,#321653,#170d2b);border:0;box-shadow:inset 0 0 18px rgba(255,193,7,.12);z-index:1;display:flex;flex-direction:column;justify-content:center;gap:8px}
-.ticket-animal-title{font-weight:900;color:#ffe082;font-size:1.05rem;margin-bottom:6px;text-shadow:0 2px 8px rgba(255,193,7,.35)}
-.ticket-animal-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(3,minmax(0,1fr));gap:7px;max-width:380px;width:100%;height:100%;align-content:stretch;justify-content:stretch;margin:0 auto;min-height:0;flex:1}
-.ticket-animal{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-width:0;min-height:0;padding:5px 2px;border-radius:13px;line-height:1;background:linear-gradient(145deg,#fffde7,#ffd54f 58%,#ef6c00);border:2px solid #fff0a6;box-shadow:inset 0 3px 0 rgba(255,255,255,.75),0 3px 0 #78350f,0 5px 8px rgba(0,0,0,.28);overflow:hidden;}
-.ticket-animal{position:relative;isolation:isolate}.tile-scratch-canvas{position:absolute;inset:0;width:100%;height:100%;z-index:8;border-radius:11px;touch-action:none;cursor:crosshair;user-select:none;-webkit-user-select:none}.scratch-wrapper>#scratchCanvas{display:none!important}.ticket-animal.scratched-tile .tile-scratch-canvas{pointer-events:none}
-.sticker-animal{display:flex;align-items:center;justify-content:center;font-family:"Noto Color Emoji","Apple Color Emoji","Segoe UI Emoji",sans-serif;font-size:clamp(2rem,9vw,3.4rem);font-weight:400;line-height:1;min-height:0;min-width:0;flex:1 1 auto;width:100%;max-height:76%;overflow:visible;filter:none;transform:translateZ(0);text-rendering:geometricPrecision;-webkit-font-smoothing:antialiased}
-.sticker-value{display:block;flex:0 0 auto;position:relative;z-index:2;color:#000000;font-size:clamp(.58rem,2.5vw,.82rem);font-weight:1000;line-height:1.15;text-align:center;white-space:nowrap;text-shadow:0 1px 0 rgba(255,255,255,.95);-webkit-text-stroke:.15px #000;padding:1px 0 2px;max-width:100%}
-/* El fondo pertenece al animal, no a la posición: siempre conserva su color */
-.ticket-animal.animal-id-1{background:linear-gradient(135deg,#fff0b8,#ffdc75,#fff4c9);color:#4b2376;border:2px dashed #9a6500}
-.ticket-animal.animal-id-3{background:linear-gradient(145deg,#ffc5df,#f48fb1 58%,#ad1457)}
-.ticket-animal.animal-id-4{background:linear-gradient(145deg,#b9f0d2,#66c99b 58%,#176b50)}
-.ticket-animal.animal-id-5{background:linear-gradient(145deg,#d9c9ff,#a78bfa 58%,#5b21b6)}
-.ticket-animal.animal-id-6{background:linear-gradient(145deg,#fff4a8,#ffe066 58%,#c28a00)}
-.ticket-animal.animal-id-7{background:linear-gradient(145deg,#c9e89b,#8bc34a 58%,#33691e)}
-.ticket-animal.animal-id-8{background:linear-gradient(145deg,#ffc89c,#fb923c 58%,#9a3412)}
-.ticket-animal.animal-id-9{background:linear-gradient(145deg,#aee7f5,#38bdf8 58%,#075985)}
-.ticket-animal.animal-id-10{background:linear-gradient(145deg,#d8b7f4,#b084e8 58%,#6b21a8)}
-.ticket-animal .sticker-value{font-size:clamp(.55rem,2.2vw,.78rem);white-space:normal;overflow-wrap:anywhere}
-.ticket-animal .sticker-sub{font-size:clamp(.45rem,1.8vw,.65rem);font-weight:900;text-align:center;line-height:1.05;color:#4b2376;padding:0 2px}.ticket-animal.free-ticket-sticker .free-ticket-note{font-size:clamp(.34rem,1.25vw,.5rem);font-weight:800;line-height:1.02;color:#4b2376;padding:0 1px}
-@media(max-width:380px){.ticket-animal-grid{gap:4px}.ticket-animal{padding:2px 1px;border-radius:9px;gap:2px}.sticker-animal,.ticket-animal .sticker-animal{font-size:clamp(1.65rem,8.5vw,2.6rem);max-height:76%}.sticker-value,.ticket-animal .sticker-value{display:block;flex:0 0 auto;position:relative;z-index:3;color:#fff;font-size:clamp(.66rem,2.8vw,.9rem);font-weight:1000;line-height:1.15;text-align:center;white-space:nowrap;background:rgba(25,12,38,.94);border:1px solid rgba(255,255,255,.85);border-radius:999px;padding:3px 6px 4px;margin:1px 0 0;max-width:100%;box-sizing:border-box;text-shadow:0 1px 1px #000;box-shadow:0 2px 3px rgba(0,0,0,.25);letter-spacing:.1px}}
-body.ticket .hide-t,body.ticket .prizes-section:nth-of-type(1){display:none!important}
-</style>
+  <title>Raspadita Millonaria</title>
+  <meta name="theme-color" content="#0f0720" />
+  <style>
+    :root {
+      --bg: #0f0720;
+      --card: #1a0f32;
+      --gold: #ffd700;
+      --gold2: #ffb800;
+      --purple: #8b5cf6;
+      --purple-dark: #6d28d9;
+      --green: #10b981;
+      --pink: #f472b6;
+      --blue: #38bdf8;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --danger: #f87171;
+    }
+
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none; -webkit-user-select: none;
+    }
+
+    body {
+      min-height: 100dvh;
+      background: 
+        radial-gradient(ellipse at 20% 0%, #3b1d6e 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 100%, #1e3a5f 0%, transparent 40%),
+        var(--bg);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: max(10px, env(safe-area-inset-top, 0px)) 12px max(40px, env(safe-area-inset-bottom, 0px));
+      overflow-x: hidden;
+    }
+
+    /* ===== TOP BAR ===== */
+    .top-bar {
+      width: 100%; max-width: 420px;
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 12px; gap: 8px;
+    }
+    .logo {
+      display: flex; align-items: center; gap: 7px;
+      font-weight: 800; font-size: 1.1rem;
+    }
+    .logo-icon {
+      width: 34px; height: 34px; border-radius: 10px;
+      background: linear-gradient(135deg, #ffd700, #f59e0b);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; box-shadow: 0 4px 12px rgba(245,158,11,0.4);
+    }
+    .logo span {
+      background: linear-gradient(90deg, #ffd700, #ff9f1a);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .top-right {
+      display: flex; gap: 8px; align-items: center;
+    }
+    .pill {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,215,0,0.2);
+      padding: 6px 11px; border-radius: 20px;
+      font-size: 0.85rem; font-weight: 600;
+      display: flex; align-items: center; gap: 5px;
+    }
+    .pill.streak { border-color: rgba(244,114,182,0.4); }
+
+    .top-right { display: none !important; }
+    .stats, .footer, .btn-share, .btn-new, button[onclick="openAlbum()"] { display: none !important; }
+    #btn-all { flex: 1 !important; }
+    #result { cursor: pointer; }
+    #start-screen { position:fixed; inset:0; z-index:30; display:flex; align-items:center; justify-content:center; overflow-y:auto;
+      padding:max(20px,env(safe-area-inset-top,0px)) 18px max(20px,env(safe-area-inset-bottom,0px));
+      background:radial-gradient(ellipse at 20% 0%,#3b1d6e 0%,transparent 50%),radial-gradient(ellipse at 80% 100%,#1e3a5f 0%,transparent 40%),var(--bg); }
+    .st-card { width:100%; max-width:380px; text-align:center; }
+    .st-logo { font-size:3.2rem; }
+    .st-card h1 { font-size:2rem; line-height:1.05; font-weight:900; margin:6px 0 8px; background:linear-gradient(90deg,#ffd700,#ff9f1a); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+    .st-card p { color:var(--muted); margin-bottom:18px; }
+    .st-btn { display:block; width:100%; padding:16px; margin-bottom:12px; border:0; border-radius:16px; font-size:1.05rem; font-weight:800; color:#fff; text-decoration:none; cursor:pointer; font-family:inherit; background:linear-gradient(135deg,#8b5cf6,#6d28d9); }
+    .st-btn.wa { background:linear-gradient(135deg,#25d366,#128c7e); }
+    .st-btn.ghost { background:rgba(255,255,255,.1); font-size:.95rem; }
+    #wa-num { width:100%; padding:14px; border-radius:14px; border:1px solid rgba(255,215,0,.35); background:rgba(0,0,0,.35); color:#fff; font-size:1rem; margin-bottom:12px; text-align:center; user-select:text; -webkit-user-select:text; font-family:inherit; }
+    #wa-panel small { display:block; color:var(--muted); font-size:.78rem; }
+    #picker { position:fixed; inset:0; z-index:31; display:none; flex-direction:column; align-items:center; overflow-y:auto;
+      padding:max(16px,env(safe-area-inset-top,0px)) 14px max(24px,env(safe-area-inset-bottom,0px));
+      background:radial-gradient(ellipse at 20% 0%,#3b1d6e 0%,transparent 50%),radial-gradient(ellipse at 80% 100%,#1e3a5f 0%,transparent 40%),var(--bg); }
+    #picker h2 { font-size:1.5rem; font-weight:900; color:var(--gold); margin-bottom:2px; text-align:center; }
+    #picker p { color:var(--muted); font-size:.85rem; margin-bottom:14px; text-align:center; }
+    .tk-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; width:100%; max-width:400px; }
+    .tk { aspect-ratio:3/4; border-radius:12px; color:#fff; font-family:inherit; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px;
+      background:linear-gradient(160deg,#a78bfa,#6d28d9 55%,#4c1d95); border:2px solid rgba(255,215,0,.55); box-shadow:0 6px 14px rgba(0,0,0,.4); cursor:pointer; }
+    .tk:active { transform:scale(.95); }
+    .tk .em { font-size:1.7rem; }
+    .tk b { font-size:.62rem; color:var(--gold); }
+    .tk small { font-size:.6rem; opacity:.85; }
+    .tk.used { opacity:.3; pointer-events:none; filter:grayscale(.6); }
+    #tk-sheet { position:fixed; inset:0; z-index:40; display:none; align-items:center; justify-content:center; overflow-y:auto; padding:16px; background:rgba(8,4,18,.88); backdrop-filter:blur(6px); }
+    .sheet-card { width:100%; max-width:360px; text-align:center; background:linear-gradient(165deg,#241545,#150b2a); border:2px solid rgba(255,215,0,.45); border-radius:22px; padding:20px 16px 12px; animation:popIn .35s cubic-bezier(.34,1.56,.64,1); }
+    .sheet-card h2 { color:var(--gold); font-size:1.6rem; font-weight:900; margin:4px 0; }
+    .sheet-card p { color:var(--muted); margin-bottom:16px; }
+    #panel h2 { color:var(--gold); font-size:1.3rem; font-weight:900; }
+    #panel h3 { color:var(--gold); margin:18px 0 6px; }
+    #panel p { color:var(--muted); font-size:.85rem; margin:4px 0 10px; }
+    .pn-head { display:flex; justify-content:space-between; align-items:flex-start; gap:8px; }
+    .pn-out { background:rgba(255,255,255,.1); color:#fff; border:0; border-radius:12px; padding:10px 14px; font-weight:700; font-family:inherit; }
+    .pn-stats { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:12px 0; }
+    .pn-c { background:#150b2a; border:1px solid rgba(255,255,255,.12); border-radius:16px; padding:12px; }
+    .pn-c span { display:block; color:var(--muted); font-size:.8rem; }
+    .pn-c b { font-size:1.45rem; color:var(--gold); }
+    .pn-nums { display:grid; grid-template-columns:repeat(5,1fr); gap:6px; background:#fff; border-radius:14px; padding:10px; }
+    .pn-nums div { background:#efe9ff; color:#3b1d6e; font-weight:800; font-size:.8rem; text-align:center; border-radius:8px; padding:8px 0; }
+    .pn-t { background:#150b2a; border:1px solid rgba(255,255,255,.12); border-radius:16px; padding:14px; margin-bottom:12px; }
+    .pn-th { display:flex; justify-content:space-between; align-items:center; }
+    .pn-th b { color:var(--gold); font-size:1.1rem; }
+    .pn-th span { color:var(--muted); font-size:.85rem; }
+    .pn-t p { margin:8px 0 12px !important; }
+    #panel input { width:100%; padding:14px; border-radius:14px; border:1px solid rgba(255,215,0,.35); background:rgba(0,0,0,.35); color:#fff; font-size:1rem; margin-bottom:10px; font-family:inherit; user-select:text; -webkit-user-select:text; }
+    .top-bar { justify-content: center; }
+    .ad-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.08);font-size:.9rem}
+    .ad-row b{color:var(--gold)}
+    #panel details{margin:6px 0}#panel summary{padding:8px 0;font-weight:700}
+    .ad-nums{display:flex;flex-wrap:wrap;gap:5px;margin:6px 0 10px}
+    .ad-nums span{background:#efe9ff;color:#3b1d6e;font-weight:800;font-size:.75rem;border-radius:7px;padding:5px 7px}
+    .logo span { letter-spacing: 0.3px; }
+    /* ===== MAIN CARD ===== */
+    .main-card {
+      width: 100%; max-width: 420px;
+      background: linear-gradient(165deg, #241545 0%, #150b2a 100%);
+      border-radius: 26px;
+      border: 1px solid rgba(255,215,0,0.12);
+      box-shadow: 0 25px 60px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.04);
+      padding: 16px 14px 20px;
+      position: relative; overflow: hidden;
+    }
+    .main-card::before {
+      content: ""; position: absolute; top: -40%; left: -30%;
+      width: 160%; height: 160%;
+      background: radial-gradient(circle at 30% 20%, rgba(139,92,246,0.18), transparent 55%);
+      pointer-events: none;
+    }
+
+    .ticket-row {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 8px; position: relative; z-index: 2;
+    }
+    .ticket-id { font-size: 0.78rem; color: var(--muted); }
+    .ticket-id strong { color: var(--gold); }
+    .badge {
+      background: linear-gradient(135deg, var(--purple), var(--purple-dark));
+      font-size: 0.68rem; padding: 3px 9px; border-radius: 20px; font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+
+    h1.title {
+      text-align: center; font-size: 1.4rem; font-weight: 800;
+      margin-bottom: 2px; position: relative; z-index: 2;
+    }
+    h1.title span {
+      background: linear-gradient(90deg, #ffd700, #ff9f1a);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .subtitle {
+      text-align: center; font-size: 0.8rem; color: var(--muted);
+      margin-bottom: 12px; position: relative; z-index: 2;
+    }
+
+    /* Rules */
+    .rules {
+      background: rgba(0,0,0,0.28);
+      border-radius: 12px; padding: 9px 12px;
+      margin-bottom: 12px; border-left: 3px solid var(--gold);
+      font-size: 0.78rem; line-height: 1.4; position: relative; z-index: 2;
+    }
+    .rules strong { color: var(--gold); }
+
+    /* Progress */
+    .progress-wrap { position: relative; z-index: 2; margin-bottom: 10px; }
+    .progress-bar {
+      height: 7px; background: rgba(255,255,255,0.08);
+      border-radius: 10px; overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%; width: 0%;
+      background: linear-gradient(90deg, var(--purple), var(--gold));
+      border-radius: 10px; transition: width 0.25s ease;
+    }
+    .progress-text {
+      font-size: 0.72rem; color: var(--muted);
+      text-align: center; margin-top: 4px;
+    }
+
+    /* GRID */
+    .grid-wrap {
+      position: relative; width: 100%; aspect-ratio: 1;
+      margin-bottom: 12px; z-index: 2;
+    }
+    .grid {
+      display: grid; grid-template-columns: repeat(3,1fr); grid-template-rows: repeat(3,1fr);
+      gap: 7px; width: 100%; height: 100%;
+    }
+    .cell {
+      position: relative;
+      background: linear-gradient(145deg, #342456, #22163a);
+      border-radius: 14px;
+      border: 2px solid rgba(255,215,0,0.38);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.5rem; overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.35);
+      transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+    }
+    .cell .symbol {
+      opacity: 0; transform: scale(0.4);
+      transition: all 0.45s cubic-bezier(0.34,1.56,0.64,1);
+      filter: drop-shadow(0 3px 5px rgba(0,0,0,0.45));
+    }
+    .cell.revealed .symbol { opacity: 1; transform: scale(1); }
+    .cell.winner {
+      border-color: #34d399;
+      box-shadow: 0 0 22px rgba(16,185,129,0.55);
+      animation: pulseWin 1.1s ease infinite;
+    }
+    @keyframes pulseWin {
+      0%,100% { transform: scale(1); }
+      50% { transform: scale(1.045); }
+    }
+
+    .scratch-canvas {
+      position: absolute; inset: 0; width: 100%; height: 100%; border-radius: 12px;
+      cursor: crosshair; touch-action: none; z-index: 5;
+    }
+    .scratch-canvas.hidden {
+      opacity: 0; pointer-events: none; transition: opacity 0.35s;
+    }
+
+    /* Result */
+    .result {
+      display: none; text-align: center; padding: 14px 12px;
+      border-radius: 16px; margin-bottom: 12px;
+      position: relative; z-index: 2;
+      animation: resultIn 0.5s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .result.show { display: block; }
+    .result.win {
+      background: linear-gradient(135deg, #064e3b, #065f46);
+      border: 2px solid #34d399;
+      box-shadow: 0 0 28px rgba(16,185,129,0.3);
+    }
+    .result.lose {
+      background: linear-gradient(135deg, #3f1515, #4c1d1d);
+      border: 2px solid #f87171;
+    }
+    .result h2 { font-size: 1.35rem; margin-bottom: 2px; }
+    .result .prize {
+      font-size: 1.7rem; font-weight: 800; color: var(--gold); margin: 4px 0;
+    }
+    .result p { font-size: 0.85rem; opacity: 0.95; }
+    @keyframes resultIn {
+      from { opacity: 0; transform: translateY(18px) scale(0.94); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* Bonus buttons after win/lose */
+    .bonus-row {
+      display: none; gap: 8px; margin-bottom: 12px; position: relative; z-index: 2;
+    }
+    .bonus-row.show { display: flex; }
+    .bonus-btn {
+      flex: 1; padding: 11px 6px; border-radius: 12px; border: none;
+      font-size: 0.82rem; font-weight: 700; cursor: pointer;
+      display: flex; flex-direction: column; align-items: center; gap: 2px;
+      transition: transform 0.15s;
+    }
+    .bonus-btn:active { transform: scale(0.96); }
+    .bonus-btn.ruleta {
+      background: linear-gradient(135deg, #7c3aed, #5b21b6); color: white;
+    }
+    .bonus-btn.caja {
+      background: linear-gradient(135deg, #f59e0b, #d97706); color: #1a0b2e;
+    }
+    .bonus-btn small { font-size: 0.68rem; opacity: 0.85; font-weight: 500; }
+
+    /* Actions */
+    .actions {
+      display: flex; gap: 8px; position: relative; z-index: 2;
+    }
+    button.main-btn {
+      flex: 1; padding: 13px 8px; border: none; border-radius: 13px;
+      font-size: 0.92rem; font-weight: 700; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      transition: transform 0.15s, filter 0.15s;
+    }
+    button.main-btn:active { transform: scale(0.96); }
+    button.main-btn:disabled { opacity: 0.45; pointer-events: none; }
+    .btn-new {
+      background: linear-gradient(135deg, var(--purple), var(--purple-dark));
+      color: white; box-shadow: 0 4px 14px rgba(139,92,246,0.4);
+    }
+    .btn-share {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #1a0b2e; box-shadow: 0 4px 14px rgba(245,158,11,0.3);
+    }
+    .btn-all {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: var(--text); flex: 0.7;
+    }
+
+    /* Stats */
+    .stats {
+      display: flex; justify-content: space-around;
+      width: 100%; max-width: 420px;
+      margin-top: 16px; padding-top: 12px;
+      border-top: 1px solid rgba(255,255,255,0.07);
+      font-size: 0.78rem; color: var(--muted);
+    }
+    .stat { text-align: center; }
+    .stat strong {
+      display: block; font-size: 1.05rem; color: var(--text); margin-bottom: 1px;
+    }
+
+    /* FOOTER */
+    .footer {
+      margin-top: 18px; font-size: 0.7rem; color: var(--muted);
+      text-align: center; max-width: 360px; line-height: 1.4;
+    }
+
+    /* ===== MODALS (Ruleta + Caja) ===== */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(8,4,18,0.85);
+      backdrop-filter: blur(6px);
+      display: none; align-items: center; justify-content: center;
+      z-index: 100; padding: 16px;
+    }
+    .modal-overlay.show { display: flex; }
+
+    .modal {
+      background: linear-gradient(165deg, #241545, #150b2a);
+      border-radius: 22px; border: 1px solid rgba(255,215,0,0.15);
+      width: 100%; max-width: 360px; padding: 20px 16px;
+      position: relative; animation: modalIn 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    @keyframes modalIn {
+      from { opacity: 0; transform: scale(0.9) translateY(20px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .modal h2 {
+      text-align: center; font-size: 1.25rem; margin-bottom: 4px;
+    }
+    .modal .sub { text-align: center; font-size: 0.8rem; color: var(--muted); margin-bottom: 16px; }
+
+    /* Ruleta */
+    .wheel-wrap {
+      position: relative; width: 270px; height: 270px; margin: 14px auto 26px;
+    }
+    .wheel-wrap::before {
+      content: ""; position: absolute; inset: -12px; border-radius: 50%;
+      background: repeating-conic-gradient(#ffd700 0 5deg, #7c3aed 5deg 15deg);
+      -webkit-mask: radial-gradient(circle closest-side, transparent 92%, #000 93%);
+      mask: radial-gradient(circle closest-side, transparent 92%, #000 93%);
+      animation: bulbs 0.9s steps(2) infinite;
+    }
+    @keyframes bulbs { 50% { filter: brightness(0.55) hue-rotate(25deg); } }
+    .modal-result.pop { animation: popIn 0.5s cubic-bezier(0.34,1.56,0.64,1); }
+    @keyframes popIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .wheel {
+      width: 100%; height: 100%; border-radius: 50%;
+      border: 6px solid var(--gold);
+      box-shadow: 0 0 30px rgba(255,215,0,0.25), inset 0 0 20px rgba(0,0,0,0.4);
+      transition: transform 4.5s cubic-bezier(0.15, 0.7, 0.2, 1);
+      position: relative; overflow: hidden;
+    }
+    .wheel-segment {
+      position: absolute; width: 64px; height: 50%; top: 0; left: calc(50% - 32px);
+      transform-origin: 50% 100%;
+      display: flex; flex-direction: column; align-items: center;
+      padding-top: 10px; font-size: 0.7rem; font-weight: 800; line-height: 1.1; text-align: center;
+      color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+    }
+    .wheel-segment b { display: block; font-size: 1.35rem; font-weight: 400; }
+    .wheel-center {
+      position: absolute; top: 50%; left: 50%;
+      width: 48px; height: 48px; border-radius: 50%;
+      background: linear-gradient(135deg, #ffd700, #f59e0b);
+      transform: translate(-50%,-50%);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      z-index: 5; display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem;
+    }
+    .wheel-pointer {
+      position: absolute; top: -8px; left: 50%;
+      transform: translateX(-50%);
+      width: 0; height: 0;
+      border-left: 12px solid transparent;
+      border-right: 12px solid transparent;
+      border-top: 22px solid #ffd700;
+      z-index: 6; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.4));
+    }
+
+    /* Caja */
+    .box-visual {
+      font-size: 5.5rem; text-align: center; margin: 10px 0 16px;
+      transition: transform 0.6s cubic-bezier(0.34,1.56,0.64,1);
+      filter: drop-shadow(0 8px 16px rgba(0,0,0,0.4));
+    }
+    .box-visual.open { transform: scale(1.15) rotate(-6deg); }
+
+    .modal-actions { display: flex; gap: 8px; margin-top: 8px; }
+    .modal-btn {
+      flex: 1; padding: 12px; border: none; border-radius: 12px;
+      font-weight: 700; font-size: 0.9rem; cursor: pointer;
+    }
+    .modal-btn.primary {
+      background: linear-gradient(135deg, var(--purple), var(--purple-dark)); color: white;
+    }
+    .modal-btn.secondary {
+      background: rgba(255,255,255,0.08); color: var(--text);
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+    .modal-result {
+      text-align: center; margin: 12px 0; font-size: 1.1rem; font-weight: 700;
+      min-height: 28px;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed; bottom: 28px; left: 50%;
+      transform: translateX(-50%) translateY(120px);
+      background: rgba(26,15,50,0.96);
+      border: 1px solid rgba(255,215,0,0.3);
+      padding: 11px 18px; border-radius: 12px;
+      font-size: 0.88rem; z-index: 200;
+      transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+      pointer-events: none; white-space: nowrap;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* Confetti */
+    .confetti {
+      position: fixed; top: -15px; width: 8px; height: 8px;
+      z-index: 150; pointer-events: none; border-radius: 2px;
+      animation: fall 2.7s linear forwards;
+    }
+    @keyframes fall {
+      to { transform: translateY(105vh) rotate(880deg); opacity: 0; }
+    }
+
+    /* First time tip */
+    .tip {
+      position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
+      background: rgba(139,92,246,0.95); color: white;
+      padding: 10px 16px; border-radius: 12px; font-size: 0.82rem;
+      z-index: 90; max-width: 280px; text-align: center;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+      animation: tipIn 0.5s ease;
+    }
+    @keyframes tipIn {
+      from { opacity: 0; transform: translateX(-50%) translateY(15px); }
+      to { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+
+    .symbol { display:flex; flex-direction:column; align-items:center; line-height:1; }
+    .symbol small { font-size:.58rem; font-weight:700; color:var(--muted); margin-top:3px; text-align:center; }
+    .btn-share { flex:.5 !important; }
+    .album { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; }
+    .slot { background:rgba(255,255,255,.06); border:1px solid rgba(255,215,0,.2); border-radius:12px; padding:8px 2px; text-align:center; font-size:1.7rem; }
+    .slot small { display:block; font-size:.56rem; color:var(--muted); margin-top:2px; }
+    .slot.lock .e { filter:brightness(0) opacity(.35); }
+    @media (max-width: 360px) {
+      .cell { font-size: 2.15rem; }
+      h1.title { font-size: 1.25rem; }
+    }
+  </style>
 </head>
 <body>
-  <div id="hostWarn" style="display:none;background:#ff5722;color:#fff;padding:10px 14px;text-align:center;font-size:0.85rem;font-weight:600;position:relative;z-index:250">
-    ⚠️ Este archivo se abrió en el celular (no en internet).<br>
-    Para que el cliente pueda jugar por WhatsApp, <b>subí el HTML a un hosting HTTPS</b> y compartí ese link.
-  </div>
-<!-- Header -->
-  <header class="header">
+  <!-- TOP -->
+  <div class="top-bar">
     <div class="logo">
-      <div class="logo-icon" id="logoIcon">R</div>
-      <div class="logo-text">
-        Raspadita
-        <small>San Pedro del Ycuamandyyú</small>
-      </div>
+      <div class="logo-icon">🐆</div>
+      <span>RASPADITA MILLONARIA</span>
     </div>
-    <div class="hdr-btns"><button class="mini-btn" onclick="toggleTheme()" aria-label="Tema">🌓</button><button class="mini-btn" onclick="openModal('howModal')" aria-label="Cómo jugar">❓</button></div>
-  </header>
-
-  <!-- Hero -->
-  <section class="hero">
-    <h1>¡Raspa y Gana!</h1>
-    <p>Premios al instante en San Pedro del Ycuamandyyú</p>
-  </section>
-
-  <!-- Scratch Card -->
-  <main class="main-card">
-    <div class="scratch-container">
-      <div class="card-title">🎟️ Cartón Digital</div>
-      <div class="card-subtitle">Raspá cada cuadrado por separado y descubrí las 9 casillas</div>
-
-      <div class="how-to-win" aria-label="Reglas para ganar">
-        <h3>🎟️ RASPADITA SAN PEDRO DEL YCUAMANDYYÚ</h3>
-        <div class="rule">¿CÓMO GANAR? PARA GANAR DEBES TENER 3 IMÁGENES IGUALES</div>
-        <div class="result-bar win-bar"><span class="animals">🐖 🐖 🐖</span><span>¡GANASTE!</span></div>
-      </div>
-
-      <div id="ticketBar" class="ticket-bar"></div>
-      <div class="scratch-wrapper">
-      <div id="ticketAnimalShowcase" class="ticket-animal-showcase" aria-label="Nueve casillas de animales con sus valores">
-        <div class="ticket-animal-title">🐾 ¡Rasca y descubrí! 🐾</div>
-        <div id="ticketAnimalGrid" class="ticket-animal-grid" aria-live="polite"></div>
-      </div>
- 
-        <!-- Premio debajo -->
-        <div id="prizeLayer">
-          <div class="prize-icon" id="prizeEmoji">💰</div>
-          <div class="prize-label" id="prizeLabel">₲ 50.000</div>
-          <div class="prize-sub" id="prizeSub">Efectivo</div>
-        </div>
-        <!-- Capa para raspar -->
-        <canvas id="scratchCanvas"></canvas>
-      </div>
-
-     <div id="resultBox" class="result-box" style="display:none"></div>
-      <div class="instructions hide-r">
-        <strong>Raspá los 9 cuadrados</strong> para confirmar el resultado de tu boleta
-      </div>
-
-      <div class="price-tag hide-t">
-        Precio por boleta: <strong id="priceLabel">₲ 5.000</strong>
-      </div>
-
-      <div class="actions hide-t">
-        <button class="btn btn-secondary" onclick="shareGame()">📤 Compartir por WhatsApp</button>
-        <button class="btn btn-primary" onclick="playSellerTicket()">🎟️ Jugar en este celular</button>
-        
-      </div>
-      <div class="qty-row hide-t">
-        <span>Comprar varias boletas:</span>
-        <button class="qty" onclick="buyMany(3)">3</button><button class="qty" onclick="buyMany(5)">5</button><button class="qty" onclick="buyMany(10)">10</button><button class="qty" onclick="buyMany(20)">20</button>
-      </div>
-      <div class="actions" style="margin-top:10px">
-        <button class="btn btn-secondary" style="flex:1;background:rgba(37,211,102,0.15);border-color:rgba(37,211,102,0.4)" onclick="openWhatsApp()">💬 Contactar 0984 363 598</button>
-      </div>
-
-      <div class="info-bar" style="display:none">
-        <div class="info-item">
-          <span id="stat-remain">5000</span>
-          Boletas
-        </div>
-        <div class="info-item">
-          <span id="stat-plays">0</span>
-          Jugadas
-        </div>
-        <div class="info-item">
-          <span id="stat-wins">0</span>
-          Premios
-        </div>
-        <div class="info-item">
-          <span id="stat-free">0</span>
-          Gratis
-        </div>
-      </div>
+    <div class="top-right">
+      <div class="pill streak" id="streak-pill">🔥 0</div>
+      <div class="pill" id="balance-pill">💰 2.500</div>
     </div>
-  </main>
+  </div>
 
-  <section class="prizes-section">
-    <h2>🕒 Tus últimas jugadas</h2>
-    <div id="history" class="history"><div class="hist-empty">Todavía no jugaste.</div></div>
-  </section>
-
-  <!-- Lista de premios -->
-  <section class="prizes-section">
-    <h2>🏆 Premios</h2>
-    <div class="prize-grid">
-      <div class="prize-card">
-        <div class="emoji">🎟️</div>
-        <div class="name">¡GANASTE UNA BOLETA!</div>
-        <div class="value">¡Volvé a jugar gratis!</div>
-      </div>
-      <div class="prize-card"><div class="emoji">🐖</div><div class="name">₲ 10.000</div></div>
-      <div class="prize-card"><div class="emoji">🐎</div><div class="name">₲ 20.000</div></div>
-      <div class="prize-card"><div class="emoji">🐘</div><div class="name">₲ 50.000</div></div>
-      <div class="prize-card"><div class="emoji">🐥</div><div class="name">₲ 100.000</div></div>
-      <div class="prize-card"><div class="emoji">🐄</div><div class="name">₲ 200.000</div></div>
-      <div class="prize-card"><div class="emoji">🐅</div><div class="name">₲ 500.000</div></div>
-      <div class="prize-card"><div class="emoji">🐳</div><div class="name">₲ 1.000.000</div></div>
-      <div class="prize-card"><div class="emoji">🦜</div><div class="name">₲ 2.000.000</div></div>
+  <!-- MAIN -->
+  <div class="main-card">
+    <div class="ticket-row">
+      <div class="ticket-id">Boleta N° <strong id="ticket-id">0000</strong></div>
+      <div class="badge">ULTIMATE</div>
     </div>
-  </section>
 
-  <!-- Footer -->
-  <footer class="footer">
-    <p><strong>Raspadita San Pedro del Ycuamandyyú</strong></p>
-    <p>Solo para mayores de 18 años · Juego responsable</p>
-    <p style="margin-top:10px">
-      <a href="#" onclick="openWhatsApp();return false;" style="display:inline-flex;align-items:center;gap:6px;background:#25D366;color:#fff;padding:10px 18px;border-radius:50px;font-weight:700;text-decoration:none;font-size:0.9rem;">
-        💬 WhatsApp 0984 363 598
-      </a>
-    </p>
-    <p style="margin-top:12px">© 2026 · Hecho con ❤️ para San Pedro</p>
-  </footer>
+    <h1 class="title">¡Raspa y <span>Ganá!</span></h1>
+    <p class="subtitle">3 animales iguales = premio</p>
 
-  <!-- Modal resultado -->
-  <div class="modal-overlay" id="resultModal">
+    <div class="rules">
+      <strong>Regla:</strong> Conseguí <strong>3 animales iguales</strong> en cualquier posición.<br>
+      <strong>Una sola jugada por boleta.</strong> Cada animal tiene su premio: 🐢 Boleta más · 🐒 ₲10.000 · 🦜 20.000 · 🦌 50.000 · 🦫 100.000 · 🐊 200.000 · 🦅 500.000 · 🐺 1.000.000 · 🦩 <strong>₲2.000.000</strong> · 🐆 <strong>¡Ruleta!</strong>
+    </div>
+
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+      <div class="progress-text" id="progress-text">Raspá las casillas · 0/9</div>
+    </div>
+
+    <div class="grid-wrap">
+      <div class="grid" id="grid"></div>
+    </div>
+
+    <div class="result" id="result">
+      <h2 id="result-title"></h2>
+      <div class="prize" id="result-prize"></div>
+      <p id="result-msg"></p>
+      <p id="result-hint" style="font-size:.85rem;font-weight:700;color:var(--gold);margin-top:8px;display:none"></p>
+      <button id="btn-home" onclick="event.stopPropagation();showStart()" style="display:none;margin-top:10px;padding:10px 16px;border:0;border-radius:12px;background:rgba(255,255,255,.14);color:#fff;font-weight:700;font-size:.9rem;font-family:inherit">⬅ Mis boletas</button>
+      <a id="btn-notify" class="st-btn wa" target="_blank" rel="noopener" href="#" onclick="event.stopPropagation()" style="display:none;margin-top:10px">📲 Avisar a la vendedora por WhatsApp</a>
+    </div>
+
+    <div class="bonus-row" id="bonus-row">
+      <button class="bonus-btn ruleta" onclick="openRuleta()">
+        🎡 Ruleta
+        <small>¡Premio especial!</small>
+      </button>
+    </div>
+
+    <div class="actions">
+      <button class="main-btn btn-all" id="btn-all" onclick="rasparTodo()" disabled>⚡ Todo</button>
+      <button class="main-btn btn-new" id="btn-new" style="flex-direction:column;gap:0" onclick="nuevaBoleta()"><span>🔄 Nueva</span><small style="font-size:.65rem;opacity:.85">₲5.000</small></button>
+      <button class="main-btn btn-share" onclick="compartir()">📤</button>
+      <button class="main-btn btn-all" onclick="openAlbum()">📖 <span id="album-count">0/14</span></button>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat"><strong id="stat-played">0</strong>Jugadas</div>
+    <div class="stat"><strong id="stat-wins">0</strong>Ganadas</div>
+    <div class="stat"><strong id="stat-best">—</strong>Mejor</div>
+    <div class="stat"><strong id="stat-streak">0</strong>Racha</div>
+  </div>
+
+  <div class="footer">
+    Prototipo Ultimate · Solo entretenimiento · +18<br>
+    Jugá con responsabilidad. Este es el inicio del proyecto juntos.
+  </div>
+
+  <!-- MODAL RULETA -->
+  <div class="modal-overlay" id="modal-ruleta">
     <div class="modal">
-      <div class="big-emoji" id="modalEmoji">🎉</div>
-      <h3 id="modalTitle">¡Felicitaciones!</h3>
-      <div class="prize-won" id="modalPrize">₲ 50.000</div>
-      <p id="modalSub">Efectivo · San Pedro del Ycuamandyyú</p>
-      <button class="btn btn-primary" id="claimBtn" style="width:100%;margin-bottom:10px;background:linear-gradient(145deg,#25D366,#128C7E);color:#fff;display:none" onclick="claimPrize()">💬 Avisar por WhatsApp y reclamar</button>
-      <button class="btn btn-secondary" style="width:100%" onclick="newGame()">Jugar de nuevo</button>
+      <h2>🎡 Ruleta de la Suerte</h2>
+      <p class="sub">¡Girá! Pozo 💎 ₲500.000: 1 de cada 50 giros</p>
+      <div class="wheel-wrap">
+        <div class="wheel-pointer"></div>
+        <div class="wheel" id="wheel"></div>
+        <div class="wheel-center">🐆</div>
+      </div>
+      <div class="modal-result" id="ruleta-result"></div>
+      <div class="modal-actions">
+        <button class="modal-btn secondary" onclick="closeModal('ruleta')">Cerrar</button>
+        <button class="modal-btn primary" id="btn-girar" onclick="girarRuleta()">GIRAR</button>
+      </div>
     </div>
   </div>
 
-  <div class="modal-overlay" id="howModal"><div class="modal">
-    <div class="big-emoji">🎟️</div><h3>Cómo jugar</h3>
-    <p style="text-align:left;line-height:1.6">1. Comprá tu boleta (₲ 5.000) por WhatsApp y recibís tu <b>link personal</b> (ejemplo: sitio.com/?t=ABC123).<br>2. Abrí el link en el navegador y raspá el cartón: sin registrarte.<br>3. Si ganás, tocá <b>Reclamar</b> y mostrá tu <b>código</b>. Tu resultado queda guardado en el mismo link.<br>4. "Jugada más" te da otra boleta gratis.<br>Solo mayores de 18 años. Juego responsable.</p>
-    <button class="btn btn-secondary" style="width:100%;margin-top:12px" onclick="closeModal('howModal')">Entendido</button></div></div>
-
-  <div class="modal-overlay" id="adminModal"><div class="modal">
-    <h3>📊 Panel (este dispositivo)</h3><div id="adminBody" style="text-align:left;font-size:.9rem;line-height:1.7"></div>
-    <button class="btn btn-secondary" style="width:100%;margin-top:12px" onclick="resetPool()">♻️ Reiniciar pozo</button>
-    <button class="btn btn-secondary" style="width:100%;margin-top:8px" onclick="closeModal('adminModal')">Cerrar</button></div></div>
-
-  <div class="modal-overlay" id="waModal"><div class="modal">
-    <div class="big-emoji">💬</div><h3>Abrir WhatsApp</h3>
-    <p>Tu navegador bloqueó la apertura automática. Tocá el botón:</p>
-    <a id="waLink" href="#" target="_blank" rel="noopener" class="btn btn-primary" style="display:block;text-decoration:none;margin:10px 0;background:linear-gradient(145deg,#25D366,#128C7E);color:#fff">💬 Abrir WhatsApp</a>
-    <button class="btn btn-secondary" id="waCopy" style="width:100%;margin-bottom:8px" onclick="copyWa()">📋 Copiar enlace</button>
-    <button class="btn btn-secondary" style="width:100%" onclick="closeModal('waModal')">Cerrar</button></div></div>
-
-  <!-- Confetti -->
-  <canvas id="confetti"></canvas>
-
-  <!-- Install banner -->
-  <div class="install-banner" id="installBanner" onclick="installApp()">
-    📲 Instalar aplicación
+  <div class="modal-overlay" id="modal-album">
+    <div class="modal">
+      <h2>📖 Álbum de la Selva</h2>
+      <p class="sub">Ganá con cada animal para descubrirlo (+₲5.000 el primero)</p>
+      <div class="album" id="album-grid"></div>
+      <div class="modal-actions"><button class="modal-btn secondary" onclick="closeModal('album')">Cerrar</button></div>
+    </div>
   </div>
 
-  <script>// ===== Configuración del pozo =====
-const TICKET_PRICE = 5000;
-const TOTAL_TICKETS = 5000;
-const WHATSAPP = '595984363598'; // 0984 363 598 (Paraguay)
+  <div id="tk-sheet">
+    <div class="sheet-card">
+      <div class="st-logo">📲</div>
+      <h2 id="sheet-num"></h2>
+      <p>Enviá esta boleta al cliente por WhatsApp</p>
+      <input id="wa-num" type="tel" inputmode="tel" placeholder="Celular del cliente (ej. 0981 123 456)" oninput="updateWa()">
+      <a id="wa-link" class="st-btn wa" target="_blank" rel="noopener" href="#" onclick="sentSel()">💬 Abrir WhatsApp</a>
+      <button class="st-btn ghost" onclick="copyLink()">📋 Copiar mensaje</button>
+      <small style="display:block;color:var(--muted);font-size:.78rem;margin-bottom:10px">Sin número, WhatsApp te deja elegir el contacto. El cliente juega esta misma boleta en su celular.</small>
+      <button class="st-btn ghost" onclick="closeSheet()">⬅ Volver</button>
+    </div>
+  </div>
 
-// ★ IMPORTANTE: URL pública HTTPS donde está subido este HTML (sin / al final).
-// Ejemplo: 'https://tu-usuario.github.io/raspadita' o 'https://raspadita.netlify.app'
-// Si queda vacío, se usa la URL del navegador solo si es http/https (nunca file:// ni content://).
-const PUBLIC_BASE_URL = 'https://jsaucedoamarilla-cyber.github.io/raspadita-spy/index.html';
-// Los enlaces individuales deben abrir esta web HTTPS, nunca la descarga de la APK.
+  <div id="picker"><div id="panel" style="width:100%;max-width:420px"></div></div>
 
-// Catálogo visual de premios. Las cantidades y la distribución permanecen solo en el servidor.
-const PRIZE_CONFIG = [
-  { id: 1,  emoji: '🎟️', label: '¡GANASTE UNA BOLETA!', sub: '¡Volvé a jugar gratis!' },
-  { id: 3,  emoji: '🐖', label: '₲ 10.000',    sub: 'Premio en efectivo' },
-  { id: 4,  emoji: '🐎', label: '₲ 20.000',    sub: 'Premio en efectivo' },
-  { id: 5,  emoji: '🐘', label: '₲ 50.000',    sub: 'Premio en efectivo' },
-  { id: 6,  emoji: '🐥', label: '₲ 100.000',   sub: 'Premio en efectivo' },
-  { id: 7,  emoji: '🐄', label: '₲ 200.000',   sub: 'Premio en efectivo' },
-  { id: 8,  emoji: '🐅', label: '₲ 500.000',   sub: 'Premio en efectivo' },
-  { id: 9,  emoji: '🐳', label: '₲ 1.000.000', sub: 'Premio en efectivo' },
-  { id: 10, emoji: '🦜', label: '₲ 2.000.000', sub: 'Premio en efectivo' },
-  { id: 11, emoji: '😢', label: 'Seguí participando', sub: '¡Gracias por participar!' }
-];
+  <div class="toast" id="toast"></div>
 
-// ===== Estado =====
-let pool = [];
-let currentPrize = null;
-let currentCode = '';
-let isScratching = false;
-let scratchedPercent = 0;
-let canvas, ctx;
-let isRevealed = false;
-let lastScratchPos = null;
-let plays = 0;
-let wins = 0;
-let freePlays = 0;
-
-const STORAGE_KEY = 'spy_pool_v2';
-let history = [];
-let theme = 'dark';
-let audioCtx = null;
-
-function initPool() {
-  const saved = localStorage.getItem(STORAGE_KEY);
-  if (saved) {
-    try {
-      const data = JSON.parse(saved);
-      pool = data.pool || [];
-      plays = data.plays || 0;
-      wins = data.wins || 0;
-      freePlays = data.freePlays || 0;
-      history = data.history || [];
-      theme = data.theme || 'dark';
-      return;
-    } catch (e) {}
-  }
-  pool = [];
-  PRIZE_CONFIG.forEach(p => {
-    for (let i = 0; i < p.count; i++) pool.push(p.id);
-  });
-  for (let i = pool.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [pool[i], pool[j]] = [pool[j], pool[i]];
-  }
-  saveState();
-}
-
-function saveState() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify({ pool, plays, wins, freePlays, history, theme }));
-}
-
-function setPrizeStickers(prize, serverStickerIds) {
-  const animals = [
-    { icon: '🎟️', id: 1, value: '¡GANASTE<br>UNA BOLETA!', sub: '¡Volvé a jugar gratis!' },
-    { icon: '🎟️', id: 2, value: 'GANASTE<br>UNA JUGADA GRATIS' },
-    { icon: '🐖', id: 3, value: '₲ 10.000' },
-    { icon: '🐎', id: 4, value: '₲ 20.000' },
-    { icon: '🐘', id: 5, value: '₲ 50.000' },
-    { icon: '🐥', id: 6, value: '₲ 100.000' },
-    { icon: '🐄', id: 7, value: '₲ 200.000' },
-    { icon: '🐅', id: 8, value: '₲ 500.000' },
-    { icon: '🐳', id: 9, value: '₲ 1.000.000' },
-    { icon: '🦜', id: 10, value: '₲ 2.000.000' }
-  ];
-  const params = new URLSearchParams(window.location.search);
-  let token = params.get('t') || '';
-  if (!token && window.location.hash) {
-    const match = window.location.hash.match(/[?&#]?t=([^&]+)/i) || window.location.hash.match(/t=([^&]+)/i);
-    if (match) token = decodeURIComponent(match[1]);
-  }
-  const layoutKey = token ? 'raspadita_layout_v2_' + token.toUpperCase() : '';
-  const byId = id => animals.find(a => a.id === Number(id));
-  let stickers = null;
-
-  // El servidor manda el diseño guardado en la base de datos: es igual para todos los teléfonos.
-  if (Array.isArray(serverStickerIds) && serverStickerIds.length === 9 &&
-      serverStickerIds.every(id => byId(id))) {
-    stickers = serverStickerIds.map(byId);
-    if (layoutKey) {
-      try { localStorage.setItem(layoutKey, JSON.stringify(serverStickerIds.map(Number))); } catch (e) {}
-    }
-  }
-
-  // Respaldo para la vista sin conexión/en modo de demostración. El servidor reemplaza
-  // esta disposición por la oficial al verificar una boleta individual.
-  if (!stickers && layoutKey) {
-    try {
-      const saved = JSON.parse(localStorage.getItem(layoutKey) || 'null');
-      if (Array.isArray(saved) && saved.length === 9 && saved.every(id => byId(id))) stickers = saved.map(byId);
-    } catch (e) {}
-  }
-  if (!stickers) {
-    const seedText = (token || 'demo') + (prize ? ':' + prize.id : ':pending');
-    let seed = 0;
-    for (let i = 0; i < seedText.length; i++) seed = (Math.imul(seed, 31) + seedText.charCodeAt(i)) >>> 0;
-    if (!seed) seed = 123456789;
-    const random = () => { seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0; return seed / 4294967296; };
-    const shuffled = list => {
-      const result = list.slice();
-      for (let i = result.length - 1; i > 0; i--) {
-        const j = Math.floor(random() * (i + 1));
-        [result[i], result[j]] = [result[j], result[i]];
-      }
-      return result;
+  <script>
+    // ===================== CONFIG =====================
+    const CFG = {
+      symbols: ["🐆","🐊","🦜","🦌","🦫","🐒","🦅","🐺","🐢","🦩"],
+      prizeOf: { "🐢":"free", "🐒":10000, "🦜":20000, "🦌":50000, "🦫":100000, "🐊":200000, "🦅":500000, "🐺":1000000, "🦩":2000000, "🐆":"ruleta" },
+      winW: { "🐢":38, "🐒":27, "🦜":13.5, "🦌":7, "🦫":3, "🐊":1, "🦅":0.3, "🐺":0.1, "🦩":0.03, "🐆":10.07 },
+      cost: 5000, winChance: 0.16,
+      names: { "🐆":"Yaguareté","🐊":"Yacaré","🦜":"Guacamayo","🐍":"Boa","🦌":"Venado","🐗":"Pecarí","🐺":"Aguará guazú","🦫":"Carpincho","🐒":"Mono","🦅":"Águila","🐢":"Tortuga","🦩":"Flamenco","🦦":"Lobito de río","🦎":"Teyú" },
+      brush: 36,
+      threshold: 0.4,
+      ruleta: [
+        { label: "<b>🔥</b>Nada", color: "#475569", type: "none", value: 0, w: 1 },
+        { label: "<b>🐕</b>Otra<br>jugada", color: "#0d9488", type: "again", value: 0, w: 1 },
+        { label: "<b>🐄</b>10.000", color: "#7c3aed", type: "coins", value: 10000, w: 1 },
+        { label: "<b>🦜</b>20.000", color: "#db2777", type: "coins", value: 20000, w: 1 },
+        { label: "<b>🐖</b>50.000", color: "#059669", type: "coins", value: 50000, w: 1 },
+        { label: "<b>🐎</b>100.000", color: "#d97706", type: "coins", value: 100000, w: 1 },
+        { label: "<b>🐆</b>150.000", color: "#ea580c", type: "coins", value: 150000, w: 1 },
+        { label: "<b>🦧</b>200.000", color: "#0284c7", type: "coins", value: 200000, w: 1 },
+        { label: "<b>🦒</b>300.000", color: "#65a30d", type: "coins", value: 300000, w: 1 },
+        { label: "<b>💎</b>Pozo<br>500.000", color: "#dc2626", type: "jackpot", value: 500000, w: 1 }
+      ],
+      cajaRewards: [
+        { emoji: "🐆", text: "+₲100", coins: 100, weight: 34 },
+        { emoji: "⭐", text: "+₲300", coins: 300, weight: 18 },
+        { emoji: "💰", text: "+₲600", coins: 600, weight: 8 },
+        { emoji: "💎", text: "+₲1.500", coins: 1500, weight: 4 },
+        { emoji: "🍀", text: "¡Racha +2!", coins: 0, streak: 2, weight: 12 },
+        { emoji: "🎟️", text: "Boleta gratis", coins: 0, free: true, weight: 10 },
+        { emoji: "😢", text: "Estaba vacía...", coins: 0, weight: 14 }
+      ]
     };
-    if (prize && prize.id >= 1 && prize.id <= 10) {
-      const winner = byId(prize.id);
-      stickers = [winner, winner, winner, ...shuffled(animals.filter(a => a.id !== prize.id)).slice(0, 6)];
-    } else {
-      const chosen = shuffled(animals.filter(a => a.id !== 1)).slice(0, 5);
-      stickers = [chosen[0], chosen[0], chosen[1], chosen[1], chosen[2], chosen[2], chosen[3], chosen[3], chosen[4]];
-    }
-    stickers = shuffled(stickers);
-  }
 
-  const grid = document.getElementById('ticketAnimalGrid');
-  if (grid) {
-    grid.innerHTML = stickers.map(a => {
-      if (a.id === 1) {
-        return '<span class="ticket-animal animal-id-1 free-ticket-sticker"><span class="sticker-animal">🎟️</span><span class="sticker-value">¡GANASTE<br>UNA BOLETA!</span><span class="sticker-sub">¡Volvé a jugar gratis!</span></span>';
+    // ===================== CAMPAÑA: 5.000 BOLETAS =====================
+    const ADMIN_PIN = "1234"; // cambiá este PIN
+    const CAMP = { total: 5000, seed: "RM-2026", prizes: [
+      { sym: "🐒", label: "₲ 10.000", val: 10000, qty: 20 },
+      { sym: "🦜", label: "₲ 20.000", val: 20000, qty: 20 },
+      { sym: "🦌", label: "₲ 50.000", val: 50000, qty: 5 },
+      { sym: "🦫", label: "₲ 100.000", val: 100000, qty: 3 },
+      { sym: "🐊", label: "₲ 200.000", val: 200000, qty: 1 },
+      { sym: "🦅", label: "₲ 500.000", val: 500000, qty: 1 },
+      { sym: "🐺", label: "₲ 1.000.000", val: 1000000, qty: 1 },
+      { sym: "🦩", label: "₲ 2.000.000", val: 2000000, qty: 1 },
+      { sym: "🐢", label: "🎟️ Boleta gratis", val: 5000, qty: 275, free: true },
+      { sym: "🐆", label: "🎡 Ruleta (🐆🐆🐆)", val: 0, qty: 108, wheel: true }
+    ] };
+    function rng(seed) { let a = seed >>> 0; return () => { a = (a + 0x6D2B79F5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+    let POOL = null;
+    function pool() {
+      if (POOL) return POOL;
+      const a = []; CAMP.prizes.forEach(p => { for (let i = 0; i < p.qty; i++) a.push(p.sym); });
+      while (a.length < CAMP.total) a.push(null);
+      a.length = CAMP.total;
+      const r = rng(hashSeed(CAMP.seed));
+      for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+      return POOL = a;
+    }
+
+    // ===================== STATE =====================
+    let S = {
+      grid: [], canvases: [], scratched: 0, finished: false,
+      lastPrize: 0, balance: 50000, album: {}, free: 0, played: 0, wins: 0, best: 0, streak: 0,
+      ruletaUsed: false, cajaUsed: false, tipShown: false
+    };
+
+    // Load from localStorage
+    try {
+      const saved = JSON.parse(localStorage.getItem("yaguarete_v2") || "{}");
+      if (saved.balance) S.balance = saved.balance;
+      if (saved.played) S.played = saved.played;
+      if (saved.wins) S.wins = saved.wins;
+      if (saved.best) S.best = saved.best;
+      if (saved.streak) S.streak = saved.streak;
+      if (saved.album) S.album = saved.album;
+      S.free = 0;
+    } catch(e){}
+
+    function save() {
+      try {
+        localStorage.setItem("yaguarete_v2", JSON.stringify({
+          balance: S.balance, played: S.played, wins: S.wins, best: S.best, streak: S.streak, album: S.album, free: S.free
+        }));
+      } catch(e){}
+      updateUI();
+    }
+
+    function updateUI() {
+      document.getElementById("balance-pill").textContent = "💰 " + fmt(S.balance);
+      document.getElementById("streak-pill").textContent = "🔥 " + S.streak;
+      document.getElementById("stat-played").textContent = S.played;
+      document.getElementById("album-count").textContent = Object.keys(S.album).length + "/" + CFG.symbols.length;
+      document.getElementById("stat-wins").textContent = S.wins;
+      document.getElementById("stat-best").textContent = S.best ? "₲" + fmt(S.best) : "—";
+      document.getElementById("stat-streak").textContent = S.streak;
+    }
+
+    // ===================== UTILS =====================
+    const fmt = n => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    function rand(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+    function shuffle(a) {
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
       }
-      if (a.id === 2) {
-        return '<span class="ticket-animal animal-id-2 free-ticket-sticker"><span class="sticker-value">GANASTE<br>UNA JUGADA GRATIS</span></span>';
+      return a;
+    }
+    function toast(msg, ms = 2300) {
+      const t = document.getElementById("toast");
+      t.textContent = msg;
+      t.classList.add("show");
+      setTimeout(() => t.classList.remove("show"), ms);
+    }
+    function confetti(n = 45) {
+      const colors = ["#ffd700","#f472b6","#34d399","#38bdf8","#a78bfa","#fb923c","#f87171"];
+      for (let i = 0; i < n; i++) {
+        const el = document.createElement("div");
+        el.className = "confetti";
+        el.style.left = Math.random() * 100 + "vw";
+        el.style.background = colors[rand(0, colors.length-1)];
+        el.style.width = (5 + Math.random()*7) + "px";
+        el.style.height = el.style.width;
+        el.style.animationDuration = (2.1 + Math.random()*1.3) + "s";
+        el.style.animationDelay = Math.random()*0.5 + "s";
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 3800);
       }
-      return '<span class="ticket-animal animal-id-' + a.id + '"><span class="sticker-animal">' + a.icon + '</span><span class="sticker-value">' + a.value + '</span></span>';
-    }).join('');
-  }
-  const modalRow = document.getElementById('modalAnimals');
-  if (modalRow) modalRow.innerHTML = animals.filter(a => a.id !== 1).map(a => '<span class="modal-animal">' + a.icon + '</span>').join('');
-}
-
-function getPrizeById(id) {
-  return PRIZE_CONFIG.find(p => p.id === id);
-}
-
-function remainingTickets() {
-  return pool.length;
-}
-
-function formatGuaranies(n) {
-  return '₲ ' + n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-}
-
-function updateStats(animate = false) {
-  const playsEl = document.getElementById('stat-plays');
-  const winsEl = document.getElementById('stat-wins');
-  const remainEl = document.getElementById('stat-remain');
-  const freeEl = document.getElementById('stat-free');
-
-  if (playsEl) playsEl.textContent = plays;
-  if (winsEl) winsEl.textContent = wins;
-  if (remainEl) remainEl.textContent = remainingTickets();
-  if (freeEl) freeEl.textContent = freePlays;
-
-  if (animate) {
-    [playsEl, winsEl, remainEl].forEach(el => {
-      if (!el) return;
-      el.classList.remove('pop');
-      void el.offsetWidth;
-      el.classList.add('pop');
-    });
-  }
-
-  const priceLabel = document.getElementById('priceLabel');
-  const playBtn = document.getElementById('playBtn');
-  if (remainingTickets() === 0) {
-    if (priceLabel) priceLabel.textContent = 'Agotado';
-    if (playBtn) {
-      playBtn.disabled = true;
-      playBtn.textContent = '🚫 Agotado';
     }
-  } else if (freePlays > 0) {
-    if (priceLabel) priceLabel.textContent = 'Jugada gratis';
-    if (playBtn) playBtn.innerHTML = '🎁 Jugar gratis';
-  } else {
-    if (priceLabel) priceLabel.textContent = formatGuaranies(TICKET_PRICE);
-    if (playBtn) playBtn.innerHTML = '¡Jugar ahora!';
-  }
-}
 
-function initScratch() {
-  // Cada casilla tiene su propia capa raspable; las demás no se borran al raspar una.
-  canvas = document.getElementById('scratchCanvas');
-  if (canvas) {
-    ctx = canvas.getContext('2d');
-    canvas.style.pointerEvents = 'none';
-  }
-  const tiles = Array.from(document.querySelectorAll('#ticketAnimalGrid .ticket-animal'));
-  if (!tiles.length) return;
-  tiles.forEach(function(tile, index) {
-    if (tile.querySelector('.tile-scratch-canvas')) return;
-    const layer = document.createElement('canvas');
-    layer.className = 'tile-scratch-canvas';
-    layer.setAttribute('aria-label', 'Raspar cuadrado ' + (index + 1));
-    layer.dataset.done = '0';
-    layer.style.pointerEvents = 'none'; // activar solo después de validar que la boleta está disponible
-    tile.appendChild(layer);
-    const rect = tile.getBoundingClientRect();
-    const dpr = Math.max(1, window.devicePixelRatio || 1);
-    layer.width = Math.max(1, Math.round(rect.width * dpr));
-    layer.height = Math.max(1, Math.round(rect.height * dpr));
-    const c = layer.getContext('2d');
-    c.setTransform(dpr, 0, 0, dpr, 0, 0);
-    const g = c.createLinearGradient(0, 0, rect.width, rect.height);
-    g.addColorStop(0, '#777b85'); g.addColorStop(.25, '#e7e9ed');
-    g.addColorStop(.5, '#aeb4be'); g.addColorStop(.75, '#f5f6f8');
-    g.addColorStop(1, '#858b96');
-    c.fillStyle = g; c.fillRect(0, 0, rect.width, rect.height);
-    c.strokeStyle = 'rgba(255,255,255,.55)'; c.lineWidth = 1;
-    for (let y = 5; y < rect.height; y += 8) {
-      c.beginPath(); c.moveTo(0, y); c.lineTo(rect.width, y - 3); c.stroke();
+    // Simple WebAudio beeps
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    let audioCtx;
+    function beep(freq = 600, dur = 0.08, type = "sine", vol = 0.15) {
+      try {
+        if (!audioCtx) audioCtx = new AudioCtx();
+        const o = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+        o.type = type; o.frequency.value = freq;
+        g.gain.value = vol;
+        o.connect(g); g.connect(audioCtx.destination);
+        o.start();
+        g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+        o.stop(audioCtx.currentTime + dur);
+      } catch(e){}
     }
-    c.fillStyle = '#252033'; c.textAlign = 'center'; c.textBaseline = 'middle';
-    c.font = '900 ' + Math.max(10, Math.min(15, rect.width * .17)) + 'px system-ui,sans-serif';
-    c.fillText('RASPA', rect.width / 2, rect.height / 2);
-    c.font = 'bold ' + Math.max(8, Math.min(10, rect.width * .11)) + 'px system-ui,sans-serif';
-    c.fillText('AQUÍ ⬇', rect.width / 2, rect.height / 2 + 13);
-    let drawing = false, last = null;
-    function pos(e) {
-      const r = layer.getBoundingClientRect();
-      return {x:e.clientX-r.left,y:e.clientY-r.top};
-    }
-    function erase(e) {
-      if (!drawing || layer.dataset.done === '1' || isRevealed) return;
-      if (e.cancelable) e.preventDefault();
-      const p = pos(e), cc = layer.getContext('2d');
-      cc.save(); cc.globalCompositeOperation = 'destination-out'; cc.lineCap = 'round'; cc.lineJoin = 'round';
-      cc.lineWidth = Math.max(18, rect.width * .24);
-      if (last) { cc.beginPath(); cc.moveTo(last.x,last.y); cc.lineTo(p.x,p.y); cc.stroke(); }
-      cc.beginPath(); cc.arc(p.x,p.y,Math.max(9,rect.width*.12),0,Math.PI*2); cc.fill(); cc.restore();
-      last = p; scratchSound();
-      const data = cc.getImageData(0,0,layer.width,layer.height).data;
-      let clear=0, samples=0;
-      for(let i=3;i<data.length;i+=32){samples++;if(data[i]===0)clear++;}
-      if(samples && clear/samples >= .52) {
-        cc.clearRect(0,0,layer.width,layer.height);
-        layer.dataset.done='1'; layer.style.pointerEvents='none'; tile.classList.add('scratched-tile');
-        tileScratchCount = document.querySelectorAll('#ticketAnimalGrid .tile-scratch-canvas[data-done="1"]').length;
-        if(tileScratchCount >= tiles.length && !tileScratchComplete) {
-          tileScratchComplete = true;
-          if(typeof window.revealPrize === 'function') window.revealPrize();
-          else revealPrize();
+
+    // ===================== GRID LOGIC =====================
+    function decideWin() { return Math.random() < CFG.winChance; }
+
+    function generateGrid(mustWin, forced) {
+      const g = new Array(9).fill(null);
+      const syms = CFG.symbols;
+
+      if (mustWin) {
+        const weights = [1, 0, 0, 0, 0];
+        let r = Math.random(), count = 3, acc = 0;
+        for (let i = 0; i < weights.length; i++) {
+          acc += weights[i];
+          if (r < acc) { count = 3 + i; break; }
+        }
+        let wr = Math.random() * 100, winS = "🐢";
+        if (forced) winS = forced; else for (const k in CFG.winW) { wr -= CFG.winW[k]; if (wr <= 0) { winS = k; break; } }
+        const pos = shuffle([0,1,2,3,4,5,6,7,8]);
+        for (let i = 0; i < count; i++) g[pos[i]] = winS;
+
+        for (let i = 0; i < 9; i++) {
+          if (g[i] === null) {
+            let cands = syms.filter(s => s !== winS);
+            const counts = {};
+            g.forEach(s => { if (s) counts[s] = (counts[s]||0)+1; });
+            cands = cands.filter(s => (counts[s]||0) < 2);
+            if (!cands.length) cands = syms.filter(s => s !== winS);
+            g[i] = cands[rand(0, cands.length-1)];
+          }
+        }
+      } else {
+        let tries = 0;
+        do {
+          for (let i = 0; i < 9; i++) g[i] = syms[rand(0, syms.length-1)];
+          tries++;
+        } while (maxCount(g) >= 3 && tries < 45);
+
+        if (maxCount(g) >= 3) {
+          const counts = {};
+          g.forEach((s,i) => { (counts[s] = counts[s]||[]).push(i); });
+          for (const s in counts) {
+            while (counts[s].length >= 3) {
+              const p = counts[s].pop();
+              g[p] = syms.find(x => x !== s) || syms[0];
+            }
+          }
         }
       }
+      return g;
     }
-    layer.addEventListener('pointerdown',function(e){
-      if(isRevealed || layer.dataset.done==='1') return;
-      drawing=true;last=null;try{layer.setPointerCapture(e.pointerId)}catch(_){}
-      erase(e);
-    },{passive:false});
-    layer.addEventListener('pointermove',erase,{passive:false});
-    function stop(){drawing=false;last=null;}
-    layer.addEventListener('pointerup',stop);layer.addEventListener('pointercancel',stop);layer.addEventListener('lostpointercapture',stop);
-  });
-}
-let tileScratchCount = 0;
-let tileScratchComplete = false;
-function resetTileScratchLayers() {
-  tileScratchCount = 0; tileScratchComplete = false; isRevealed = false;
-  document.querySelectorAll('#ticketAnimalGrid .tile-scratch-canvas').forEach(function(layer){
-    const tile=layer.parentElement; if(tile) tile.classList.remove('scratched-tile');
-    layer.dataset.done='0'; layer.style.pointerEvents='auto';
-    const rect=layer.getBoundingClientRect(), dpr=Math.max(1,window.devicePixelRatio||1);
-    layer.width=Math.max(1,Math.round(rect.width*dpr));layer.height=Math.max(1,Math.round(rect.height*dpr));
-    const c=layer.getContext('2d');c.setTransform(dpr,0,0,dpr,0,0);
-    const g=c.createLinearGradient(0,0,rect.width,rect.height);
-    g.addColorStop(0,'#777b85');g.addColorStop(.25,'#e7e9ed');g.addColorStop(.5,'#aeb4be');g.addColorStop(.75,'#f5f6f8');g.addColorStop(1,'#858b96');
-    c.fillStyle=g;c.fillRect(0,0,rect.width,rect.height);
-    c.fillStyle='#252033';c.textAlign='center';c.textBaseline='middle';c.font='900 '+Math.max(10,Math.min(15,rect.width*.17))+'px system-ui,sans-serif';c.fillText('RASPA',rect.width/2,rect.height/2);
-    c.font='bold '+Math.max(8,Math.min(10,rect.width*.11))+'px system-ui,sans-serif';c.fillText('AQUÍ ⬇',rect.width/2,rect.height/2+13);
-  });
-}
-function getPos(e) {
-  const rect = canvas.getBoundingClientRect();
-  return { x: e.clientX - rect.left, y: e.clientY - rect.top };
-}
-function scratch(e) {}
-function startScratch(e) {}
-function moveScratch(e) {}
-function endScratch() { isScratching = false; lastScratchPos = null; }
 
-function revealPrize() {
-  if (isRevealed) return;
-  isRevealed = true;
-
-  // Borrar toda la capa protectora usando coordenadas reales del canvas,
-  // para que la boleta completa quede visible en cualquier densidad de pantalla.
-  ctx.save();
-  ctx.globalCompositeOperation = 'destination-out';
-  ctx.setTransform(1, 0, 0, 1, 0, 0);
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.restore();
-
-  const wrapper = document.querySelector('.scratch-wrapper');
-  wrapper.classList.add('revealed');
-  setTimeout(function() { wrapper.classList.remove('revealed'); }, 600);
-
-  plays++;
-  const isWin = currentPrize.id !== 11;
-
-  if (isWin) {
-    wins++;
-    if (currentPrize.id === 1) {
-      freePlays++;
+    function maxCount(arr) {
+      const c = {}; let m = 0;
+      arr.forEach(s => { c[s] = (c[s]||0)+1; if (c[s] > m) m = c[s]; });
+      return m;
     }
-    launchConfetti();
-    if (currentPrize.id >= 7) { setTimeout(launchConfetti, 600); setTimeout(launchConfetti, 1200); }
-    winSound(currentPrize.id >= 7); vibrate(currentPrize.id >= 7 ? [200, 100, 200, 100, 400] : [150, 80, 150]);
-  } else { loseSound(); vibrate(60); }
-  currentCode = isWin && currentPrize.id !== 1 ? makeCode() : '';
-  history.unshift({ emoji: currentPrize.emoji, label: currentPrize.label, win: isWin, code: currentCode, time: new Date().toLocaleTimeString('es-PY', { hour: '2-digit', minute: '2-digit' }) });
-  history = history.slice(0, 10);
-  renderHistory();
-  saveState();
-  updateStats(true);
-  showResultModal(isWin);
-}
-
-function showResultModal(isWin) {
-  const overlay = document.getElementById('resultModal');
-  document.getElementById('modalEmoji').textContent = currentPrize.emoji;
-  const claimBtn = document.getElementById('claimBtn');
-
-  if (isWin) {
-    document.getElementById('modalTitle').textContent = '¡Felicitaciones!';
-    document.getElementById('modalPrize').textContent = currentPrize.label;
-    document.getElementById('modalSub').textContent = currentPrize.sub + ' · San Pedro del Ycuamandyyú';
-    // Mostrar reclamar solo si no es jugada extra
-    if (claimBtn) {
-      claimBtn.style.display = (currentPrize.id === 1) ? 'none' : 'flex';
+    function matchInfo(arr) {
+      const c = {}; let m = 0, sym = "";
+      arr.forEach(s => { c[s] = (c[s]||0)+1; if (c[s] > m) { m = c[s]; sym = s; } });
+      return { count: m, symbol: sym };
     }
-  } else {
-    document.getElementById('modalTitle').textContent = '¡Casi lo lográs!';
-    document.getElementById('modalPrize').textContent = 'Seguí participando';
-    document.getElementById('modalSub').textContent = 'La suerte está de tu lado la próxima vez';
-    if (claimBtn) claimBtn.style.display = 'none';
-  }
-  overlay.querySelector('.modal').classList.toggle('jackpot', isWin && currentPrize.id >= 7);
-  if (isWin && currentCode) document.getElementById('modalSub').textContent += ' · Código: ' + currentCode;
-  overlay.classList.add('active');
-}
 
+    // ===================== RENDER + SCRATCH =====================
+    function createGrid() {
+      const el = document.getElementById("grid");
+      el.innerHTML = "";
+      S.canvases = []; S.scratched = 0; S.finished = false;
+      S.ruletaUsed = false; S.cajaUsed = false; S.rTry = 0;
 
-function newGame() {
-  closeModal('resultModal');
+      document.getElementById("result").className = "result";
+      document.getElementById("bonus-row").className = "bonus-row";
+      document.getElementById("progress").style.width = "0%";
+      document.getElementById("progress-text").textContent = "Raspá las casillas · 0/9";
+      document.getElementById("btn-new").disabled = true;
+      document.getElementById("btn-all").disabled = true;
 
-  if (remainingTickets() === 0) {
-    alert('¡Se agotaron todas las boletas!\nContactá por WhatsApp para más info.');
-    return;
-  }
+      S.grid.forEach((symbol, idx) => {
+        const cell = document.createElement("div");
+        cell.className = "cell";
+        cell.dataset.i = idx;
 
-  if (freePlays > 0) {
-    freePlays--;
-  }
+        const sym = document.createElement("div");
+        sym.className = "symbol";
+        const pz = CFG.prizeOf[symbol];
+      sym.innerHTML = symbol + "<small>" + CFG.names[symbol] + "</small><small style=\"color:var(--gold);margin-top:1px\">" + (pz === "free" ? "🎟️ Boleta más" : pz === "ruleta" ? "🎡 Ruleta" : "₲" + fmt(pz)) + "</small>";
+        cell.appendChild(sym);
 
-  const prizeId = pool.pop();
-  currentPrize = getPrizeById(prizeId);
-  setPrizeStickers(currentPrize, data.sticker_ids);
+        const canvas = document.createElement("canvas");
+        canvas.className = "scratch-canvas";
+        canvas.width = 220; canvas.height = 220;
+        cell.appendChild(canvas);
 
-  document.getElementById('prizeEmoji').textContent = currentPrize.emoji;
-  document.getElementById('prizeLabel').textContent = currentPrize.label;
-  document.getElementById('prizeSub').textContent = currentPrize.sub;
+        const ctx = canvas.getContext("2d");
+        // Realistic silver
+        const grd = ctx.createLinearGradient(0,0,220,220);
+        grd.addColorStop(0, "#e4e4e7");
+        grd.addColorStop(0.4, "#a1a1aa");
+        grd.addColorStop(1, "#71717a");
+        ctx.fillStyle = grd;
+        ctx.fillRect(0,0,220,220);
 
-  saveState();
-  updateStats();
-  initScratch();
-}
+        // Scratch lines
+        ctx.strokeStyle = "rgba(255,255,255,0.22)";
+        ctx.lineWidth = 1.4;
+        for (let i = 0; i < 14; i++) {
+          ctx.beginPath();
+          ctx.moveTo(0, i*17);
+          ctx.lineTo(220, i*17 - 35);
+          ctx.stroke();
+        }
 
-function launchConfetti() {
-  const canvasC = document.getElementById('confetti');
-  const ctxC = canvasC.getContext('2d');
-  canvasC.width = window.innerWidth;
-  canvasC.height = window.innerHeight;
+        ctx.fillStyle = "rgba(20,20,20,0.65)";
+        ctx.font = "bold 42px system-ui";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText("RASPAR", 110, 88);
+        ctx.font = "bold 42px system-ui";
+        ctx.fillText("AQUÍ", 110, 136);
 
-  const pieces = [];
-  const colors = ['#ffc107', '#ffe082', '#ff5722', '#00e676', '#2196f3', '#e91e63', '#fff', '#ff9800'];
-
-  for (let i = 0; i < 160; i++) {
-    const isCircle = Math.random() > 0.6;
-    pieces.push({
-      x: Math.random() * canvasC.width,
-      y: -20 - Math.random() * canvasC.height * 0.4,
-      w: 5 + Math.random() * 9,
-      h: 4 + Math.random() * 7,
-      color: colors[Math.floor(Math.random() * colors.length)],
-      speed: 2.2 + Math.random() * 5,
-      drift: -1.5 + Math.random() * 3,
-      rot: Math.random() * 360,
-      rotSpeed: -6 + Math.random() * 12,
-      isCircle: isCircle,
-      opacity: 1
-    });
-  }
-
-  let frame = 0;
-  function animate() {
-    ctxC.clearRect(0, 0, canvasC.width, canvasC.height);
-    pieces.forEach(function(p) {
-      p.y += p.speed;
-      p.x += p.drift;
-      p.rot += p.rotSpeed;
-      if (frame > 100) p.opacity = Math.max(0, p.opacity - 0.02);
-
-      ctxC.save();
-      ctxC.globalAlpha = p.opacity;
-      ctxC.translate(p.x, p.y);
-      ctxC.rotate((p.rot * Math.PI) / 180);
-      ctxC.fillStyle = p.color;
-      if (p.isCircle) {
-        ctxC.beginPath();
-        ctxC.arc(0, 0, p.w / 2, 0, Math.PI * 2);
-        ctxC.fill();
-      } else {
-        ctxC.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
-      }
-      ctxC.restore();
-    });
-    frame++;
-    if (frame < 160) requestAnimationFrame(animate);
-    else ctxC.clearRect(0, 0, canvasC.width, canvasC.height);
-  }
-  animate();
-}
-
-function getPublicBase() {
-  // URL configurada manualmente (recomendado para WhatsApp)
-  if (typeof PUBLIC_BASE_URL === 'string' && PUBLIC_BASE_URL.trim()) {
-    return PUBLIC_BASE_URL.trim().replace(/\/+$/, '');
-  }
-  // Solo si estamos en http/https real
-  try {
-    const u = new URL(location.href);
-    if (u.protocol === 'http:' || u.protocol === 'https:') {
-      // quitar ?t= y hash para la base
-      u.search = '';
-      u.hash = '';
-      let s = u.toString();
-      if (s.endsWith('/')) s = s.slice(0, -1);
-      // si termina en .html, dejar el path completo al archivo
-      return s;
-    }
-  } catch (e) {}
-  return '';
-}
-
-function ticketPlayUrl(token) {
-  const base = getPublicBase();
-  if (!base) return '';
-  const sep = base.includes('?') ? '&' : '?';
-  // GitHub Pages publica este juego como index.html; usar la ruta actual evita enlaces a un archivo inexistente.
-  if (/\.html?$/i.test(base)) return base + sep + 't=' + encodeURIComponent(token);
-  return base.replace(/\/+$/, '') + '/?t=' + encodeURIComponent(token);
-}
-
-function openWhatsApp() {
-  const text = encodeURIComponent('Hola! Quiero jugar a la Raspadita San Pedro del Ycuamandyyú 🎟️');
-  waOpen('https://wa.me/' + WHATSAPP + '?text=' + text);
-}
-
-async function issueSellerTicket() {
-  const sellerCode = prompt('Código de acceso de la vendedora:');
-  if (sellerCode === null) return null;
-  if (!sellerCode.trim()) { alert('Ingresá el código de acceso.'); return null; }
-  try {
-    const response = await fetch('https://bmoepjlepqmnkuzmfuvq.supabase.co/functions/v1/raspadita-issue-link', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'apikey': 'sb_publishable_SWI-q3Z_AIG4jRe43SfVIA_x8BgRFWG' },
-      body: JSON.stringify({ pin: sellerCode })
-    });
-    const data = await response.json();
-    if (!response.ok || !data.ok || !data.token) {
-      alert(data.error === 'invalid_pin' ? 'El código no es correcto. Verificá el PIN privado de la vendedora.' :
-        data.error === 'no_assigned_tickets' ? 'El PIN es válido, pero esta vendedora todavía no tiene boletas asignadas. Pedí al administrador que le asigne boletas.' :
-        data.error === 'sold_out' ? 'Ya no quedan boletas disponibles para esta vendedora.' :
-        data.error === 'temporarily_unavailable' ? 'El servidor está ocupado por un momento. Esperá unos segundos e intentá otra vez.' :
-        'No se pudo generar la boleta. Revisá internet e intentá otra vez.');
-      return null;
-    }
-    const url = ticketPlayUrl(data.token);
-    if (!url) { alert('El enlace público del juego todavía no está disponible.'); return null; }
-    return { url, number: data.ticket_number };
-  } catch (e) {
-    console.error('No se pudo generar la boleta', e);
-    alert('No se pudo conectar con el servidor. Revisá internet e intentá otra vez.');
-    return null;
-  }
-}
-
-async function shareGame() {
-  const ticket = await issueSellerTicket();
-  if (!ticket) return;
-  const text = '🎟️ ¡Tu boleta de la Raspadita San Pedro del Ycuamandyyú!\nBoleta individual N° ' +
-    String(ticket.number).padStart(4, '0') +
-    '\nPremios de hasta ₲ 2.000.000\n\nAbrí este enlace en tu celular y raspá para descubrir tu premio:\n' + ticket.url;
-  waOpen('https://wa.me/?text=' + encodeURIComponent(text));
-}
-
-async function playSellerTicket() {
-  const ticket = await issueSellerTicket();
-  if (ticket) location.href = ticket.url;
-}
-
-function claimPrize() {
-  if (!currentPrize) return;
-  const msg = '¡Hola! Gané en la Raspadita San Pedro del Ycuamandyyú 🎉\n\nPremio: ' + currentPrize.label + '\n(' + currentPrize.sub + ')\nCódigo: ' + currentCode + '\n\nQuiero reclamar mi premio.';
-  waOpen('https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent(msg));
-}
-
-let deferredPrompt;
-window.addEventListener('beforeinstallprompt', function(e) {
-  e.preventDefault();
-  deferredPrompt = e;
-  // No ofrecer instalación a quienes abren una boleta individual desde WhatsApp.
-  if (new URLSearchParams(window.location.search).has('t')) return;
-  const banner = document.getElementById('installBanner');
-  if (banner) banner.classList.add('show');
-});
-
-function installApp() {
-  if (!deferredPrompt) return;
-  deferredPrompt.prompt();
-  deferredPrompt.userChoice.then(function() {
-    deferredPrompt = null;
-    document.getElementById('installBanner').classList.remove('show');
-  });
-}
-
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function() {
-    navigator.serviceWorker.register('sw.js').then(function(reg) { return reg.update(); }).catch(console.error);
-  });
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-  try {
-    const p = location.protocol;
-    if (p === 'file:' || p === 'content:' || p.indexOf('blob') === 0) {
-      const w = document.getElementById('hostWarn');
-      if (w) w.style.display = 'block';
-    }
-  } catch (e) {}
-  initPool();
-  setPrizeStickers(null);
-  applyTheme();
-  renderHistory();
-  updateStats();
-
-  document.getElementById('prizeEmoji').textContent = '🎟️';
-  document.getElementById('prizeLabel').textContent = 'Tu premio';
-  document.getElementById('prizeSub').textContent = 'Tocá Jugar y raspa';
-
-  initScratch();
-
-  const c = document.getElementById('scratchCanvas');
-  // Usar una sola familia de eventos evita que Android procese el mismo gesto dos veces.
-  c.style.touchAction = 'none';
-  c.style.pointerEvents = 'auto';
-  if (window.PointerEvent) {
-    c.addEventListener('pointerdown', function(e) {
-      if (isRevealed) return;
-      if (e.cancelable) e.preventDefault();
-      isScratching = true;
-      lastScratchPos = getPos(e);
-      try { c.setPointerCapture(e.pointerId); } catch (_) {}
-      scratch(e);
-    }, { passive: false });
-    c.addEventListener('pointermove', function(e) {
-      if (!isScratching || isRevealed) return;
-      if (e.cancelable) e.preventDefault();
-      scratch(e);
-    }, { passive: false });
-    c.addEventListener('pointerup', endScratch);
-    c.addEventListener('pointercancel', endScratch);
-    c.addEventListener('lostpointercapture', endScratch);
-  } else {
-    c.addEventListener('touchstart', function(e) {
-      if (isRevealed) return;
-      if (e.cancelable) e.preventDefault();
-      startScratch(e);
-    }, { passive: false });
-    c.addEventListener('touchmove', function(e) {
-      if (!isScratching || isRevealed) return;
-      if (e.cancelable) e.preventDefault();
-      scratch(e);
-    }, { passive: false });
-    c.addEventListener('touchend', endScratch, { passive: true });
-    c.addEventListener('mousedown', function(e) { if (!isRevealed) startScratch(e); });
-    c.addEventListener('mousemove', function(e) { if (isScratching) moveScratch(e); });
-    window.addEventListener('mouseup', endScratch);
-  }
-
-  window.addEventListener('resize', function() {
-    if (!isRevealed) initScratch();
-  });
-});
-
-function beep(freq, dur, type, vol) {
-  try {
-    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
-    const o = audioCtx.createOscillator(), g = audioCtx.createGain();
-    o.type = type || 'sine'; o.frequency.value = freq;
-    g.gain.value = vol || 0.05; o.connect(g); g.connect(audioCtx.destination);
-    o.start(); g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + dur); o.stop(audioCtx.currentTime + dur);
-  } catch (e) {}
-}
-function vibrate(p) { try { if (navigator.vibrate) navigator.vibrate(p); } catch (e) {} }
-let lastTick = 0;
-function scratchSound() { const n = Date.now(); if (n - lastTick > 70) { lastTick = n; beep(180 + Math.random() * 120, 0.05, 'sawtooth', 0.025); } }
-function winSound(big) { [523, 659, 784, 1047].concat(big ? [1319, 1568] : []).forEach(function(f, i) { setTimeout(function() { beep(f, 0.25, 'triangle', 0.08); }, i * 110); }); }
-function loseSound() { beep(220, 0.3, 'sine', 0.06); setTimeout(function() { beep(165, 0.4, 'sine', 0.06); }, 180); }
-
-function openModal(id) { document.getElementById(id).classList.add('active'); }
-function closeModal(id) { document.getElementById(id || 'resultModal').classList.remove('active'); }
-function applyTheme() { document.body.classList.toggle('light', theme === 'light'); }
-function toggleTheme() { theme = theme === 'light' ? 'dark' : 'light'; applyTheme(); saveState(); }
-
-function makeCode() {
-  const n = String(TOTAL_TICKETS - pool.length).padStart(4, '0');
-  const l = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  let r = ''; for (let i = 0; i < 3; i++) r += l[Math.floor(Math.random() * l.length)];
-  return 'SPY-' + n + '-' + r;
-}
-function renderHistory() {
-  const el = document.getElementById('history');
-  if (!history.length) { el.innerHTML = '<div class="hist-empty">Todavía no jugaste.</div>'; return; }
-  el.innerHTML = history.map(function(x) {
-    return '<div class="hist-item ' + (x.win ? 'win' : '') + '"><span>' + x.emoji + ' ' + x.label + '<small>' + x.time + (x.code ? ' · ' + x.code : '') + '</small></span></div>';
-  }).join('');
-}
-
-function buyMany(q) {
-  const total = formatGuaranies(q * TICKET_PRICE);
-  const t = encodeURIComponent('Hola! Quiero comprar ' + q + ' boletas de la Raspadita San Pedro del Ycuamandyyú (' + total + ') 🎟️');
-  waOpen('https://wa.me/' + WHATSAPP + '?text=' + t);
-}
-
-function openAdmin() {
-  location.href = 'admin.html';
-}
-function resetPool() {
-  if (!confirm('¿Reiniciar el pozo y las estadísticas?')) return;
-  try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
-  location.reload();
-}
-(function() {
-  let taps = 0, t;
-  document.addEventListener('click', function(e) {
-    if (e.target.id === 'logoIcon') { taps++; clearTimeout(t); t = setTimeout(function() { taps = 0; }, 1500); if (taps >= 5) { taps = 0; openAdmin(); } }
-  });
-})();
-
-function waOpen(url) {
-  // Usar HTTPS oficial; evitar whatsapp://, que falla en algunos WebView de Android.
-  let safeUrl = url;
-  try {
-    const u = new URL(url, location.href);
-    if (u.protocol === 'whatsapp:') {
-      const text = u.searchParams.get('text') || '';
-      safeUrl = 'https://api.whatsapp.com/send' + (text ? '?text=' + encodeURIComponent(text) : '');
-    } else if (u.hostname === 'wa.me') {
-      safeUrl = 'https://api.whatsapp.com/send' + (u.search ? u.search : '');
-    }
-  } catch (e) {}
-  // Mostrar siempre una alternativa tocable si la app no permite abrir una ventana nueva.
-  const a = document.getElementById('waLink');
-  const copy = document.getElementById('waCopy');
-  if (a) a.href = safeUrl;
-  if (copy) copy.dataset.url = safeUrl;
-  let w = null;
-  try { w = window.open(safeUrl, '_blank'); } catch (e) {}
-  if (!w) {
-    if (typeof openModal === 'function' && document.getElementById('waModal')) openModal('waModal');
-    else if (a) a.click();
-  }
-}
-function copyWa() {
-  const u = document.getElementById('waCopy').dataset.url;
-  const b = document.getElementById('waCopy');
-  try { navigator.clipboard.writeText(u).then(function() { b.textContent = '✅ Copiado'; }, function() { b.textContent = 'Copiá el enlace manualmente'; }); } catch (e) { b.textContent = 'Copiá el enlace manualmente'; }
-}
-</script>
-  <script>// Boleta individual por link: ?t=TOKEN (WhatsApp-safe). También acepta #t=TOKEN. Sin token = pantalla principal.
-(function () {
-  'use strict';
-  const AL = '0123456789ABCDEF';
-
-  function readToken() {
-    // Prefer query string (?t=) — WhatsApp y mensajería lo conservan
-    try {
-      const q = new URLSearchParams(location.search).get('t');
-      if (q) return q.toUpperCase().split('').filter(c => AL.includes(c)).join('');
-    } catch (e) {}
-    // Fallback hash (#t=)
-    const m = location.hash.match(/[?&#]?t=([^&]+)/i) || location.hash.match(/t=([^&]+)/i);
-    return m ? m[1].toUpperCase().split('').filter(c => AL.includes(c)).join('') : '';
-  }
-
-  function ticketUrl(token) {
-    // Preferir URL pública configurada (válida para WhatsApp)
-    if (typeof ticketPlayUrl === 'function') {
-      const pub = ticketPlayUrl(token);
-      if (pub) return pub;
-    }
-    if (typeof getPublicBase === 'function') {
-      const base = getPublicBase();
-      if (base) {
-        const sep = base.includes('?') ? '&' : '?';
-        if (/\.html?$/i.test(base)) return base + sep + 't=' + encodeURIComponent(token);
-        return base + '/?t=' + encodeURIComponent(token);
-      }
-    }
-    // Fallback local (solo para probar en el mismo dispositivo)
-    try {
-      const u = new URL(location.href);
-      u.hash = '';
-      u.searchParams.set('t', token);
-      return u.toString();
-    } catch (e) {
-      return '?t=' + encodeURIComponent(token);
-    }
-  }
-
-  const TOKEN = readToken();
-  const KEY = 'spy_t_' + TOKEN;
-  const enc = new TextEncoder();
-  const $ = id => document.getElementById(id);
-  const sha = async s => new Uint8Array(await crypto.subtle.digest('SHA-256', enc.encode(s)));
-  const hex = b => [...b].map(x => x.toString(16).padStart(2, '0')).join('');
-  let T = null;
-
-  window.initPool = function () {
-    try { theme = (JSON.parse(localStorage.getItem('spy_pool_v2') || '{}')).theme || 'dark'; } catch (e) {}
-    pool = [];
-  };
-  window.saveState = function () { try { localStorage.setItem('spy_pool_v2', JSON.stringify({ theme })); } catch (e) {} };
-  window.openAdmin = function () { location.href = 'admin.html'; };
-  window.makeCode = () => (TOKEN && T ? T.code : '');
-
-  const _us = window.updateStats;
-  window.updateStats = function (a) {
-    _us(a);
-    if (!TOKEN) {
-      const p = $('priceLabel');
-      if (p) p.textContent = '₲ 5.000 · comprá por WhatsApp';
-    }
-  };
-  const _new = window.newGame;
-  window.newGame = function () { if (TOKEN) { closeModal('resultModal'); return; } _new(); };
-  const _show = window.showResultModal;
-  window.showResultModal = function (w) {
-    _show(w);
-    const s = document.querySelector('#resultModal .btn-secondary');
-    if (s) s.textContent = 'Ver mi boleta';
-  };
-  const _rev = window.revealPrize;
-  let serverBusy = false;
-  window.revealPrize = async function () {
-    if (isRevealed || serverBusy) return;
-    if (!TOKEN) { alert('Para raspar necesitás abrir el enlace individual de una boleta.'); return; }
-    serverBusy = true;
-    const cv = $('scratchCanvas');
-    const bar = $('ticketBar');
-    cv.style.pointerEvents = 'none';
-    try {
-      const response = await fetch('https://bmoepjlepqmnkuzmfuvq.supabase.co/functions/v1/raspadita-scratch', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'apikey': 'sb_publishable_SWI-q3Z_AIG4jRe43SfVIA_x8BgRFWG' },
-        body: JSON.stringify({ action: 'scratch', token: TOKEN })
+        setupScratch(canvas, ctx, idx, cell);
+        S.canvases.push({ canvas, ctx, revealed: false });
+        el.appendChild(cell);
       });
-      const data = await response.json();
-      if (!response.ok || !data.ok) {
-        bar.textContent = data.error === 'ticket_not_found' ? 'Esta boleta no existe o el enlace no es válido.' : 'No pudimos conectar. Revisá tu internet e intentá otra vez.';
-        serverBusy = false;
-        cv.style.pointerEvents = 'auto';
-        resetTileScratchLayers();
+
+    }
+
+    function setupScratch(canvas, ctx, idx, cell) {
+      let drawing = false, lx, ly;
+
+      const pos = e => {
+        const r = canvas.getBoundingClientRect();
+        const cx = e.touches ? e.touches[0].clientX : e.clientX;
+        const cy = e.touches ? e.touches[0].clientY : e.clientY;
+        return {
+          x: (cx - r.left) * (canvas.width / r.width),
+          y: (cy - r.top) * (canvas.height / r.height)
+        };
+      };
+
+      const start = e => {
+        if (S.finished || S.canvases[idx].revealed) return;
+        e.preventDefault();
+        drawing = true;
+        document.getElementById("btn-all").disabled = false;
+        const p = pos(e); lx = p.x; ly = p.y;
+        scratch(p.x, p.y);
+        beep(400 + Math.random()*200, 0.04, "triangle", 0.08);
+      };
+      const move = e => {
+        if (!drawing || S.finished) return;
+        e.preventDefault();
+        const p = pos(e);
+        line(lx, ly, p.x, p.y);
+        lx = p.x; ly = p.y;
+      };
+      const end = () => { drawing = false; checkReveal(idx, cell); };
+
+      canvas.addEventListener("mousedown", start);
+      canvas.addEventListener("mousemove", move);
+      canvas.addEventListener("mouseup", end);
+      canvas.addEventListener("mouseleave", end);
+      canvas.addEventListener("touchstart", start, {passive:false});
+      canvas.addEventListener("touchmove", move, {passive:false});
+      canvas.addEventListener("touchend", end);
+
+      function scratch(x,y) {
+        ctx.globalCompositeOperation = "destination-out";
+        ctx.beginPath();
+        ctx.arc(x, y, CFG.brush, 0, Math.PI*2);
+        ctx.fill();
+      }
+      function line(x1,y1,x2,y2) {
+        ctx.globalCompositeOperation = "destination-out";
+        ctx.lineWidth = CFG.brush * 1.7;
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+        ctx.beginPath();
+        ctx.moveTo(x1,y1); ctx.lineTo(x2,y2);
+        ctx.stroke();
+      }
+    }
+
+    function checkReveal(idx, cell) {
+      if (S.canvases[idx].revealed) return;
+      const { canvas, ctx } = S.canvases[idx];
+      const data = ctx.getImageData(0,0,canvas.width,canvas.height).data;
+      let trans = 0;
+      for (let i = 3; i < data.length; i += 4) if (data[i] < 120) trans++;
+      const pct = trans / (canvas.width * canvas.height);
+
+      if (pct > CFG.threshold) {
+        S.canvases[idx].revealed = true;
+        canvas.classList.add("hidden");
+        cell.classList.add("revealed");
+        S.scratched++;
+        beep(520, 0.06, "sine", 0.1);
+        if (navigator.vibrate) navigator.vibrate(25);
+
+        const p = (S.scratched / 9) * 100;
+        document.getElementById("progress").style.width = p + "%";
+        document.getElementById("progress-text").textContent = `Raspá las casillas · ${S.scratched}/9`;
+
+        if (S.scratched === 9) setTimeout(finish, 400);
+      }
+    }
+
+    function rasparTodo() {
+      if (S.finished) return;
+      S.canvases.forEach((c, i) => {
+        if (!c.revealed) {
+          c.revealed = true;
+          c.canvas.classList.add("hidden");
+          document.querySelector(`.cell[data-i="${i}"]`).classList.add("revealed");
+          S.scratched++;
+        }
+      });
+      document.getElementById("progress").style.width = "100%";
+      document.getElementById("progress-text").textContent = "Raspá las casillas · 9/9";
+      document.getElementById("btn-all").disabled = true;
+      setTimeout(finish, 350);
+    }
+
+    // ===================== FINISH =====================
+    async function finish() {
+      S.finished = true;
+      if (IS_CONNECTED_CLIENT) {
+        try { await millonariaApi("scratch"); }
+        catch (err) { toast("Aviso: no se pudo guardar el estado de la boleta en el servidor."); }
+      }
+      document.getElementById("btn-new").disabled = false;
+      document.getElementById("btn-all").disabled = true;
+
+      const info = matchInfo(S.grid);
+      const isWin = info.count >= 3;
+      S.played++;
+
+      const result = document.getElementById("result");
+      const title = document.getElementById("result-title");
+      const prizeEl = document.getElementById("result-prize");
+      const msg = document.getElementById("result-msg");
+
+      if (isWin) {
+        const tier = CFG.prizeOf[info.symbol];
+        const isFree = tier === "free", isRuleta = tier === "ruleta";
+        S.spin = isRuleta;
+        let prize = isFree ? CFG.cost : isRuleta ? 0 : tier;
+        if (isRuleta) setTimeout(openRuleta, 1400);
+        // Small streak bonus
+        // sin bonus de racha: el premio es el de la tabla
+        S.lastPrize = prize;
+        if (isFree) S.free++; else S.balance += prize;
+        S.wins++;
+        S.streak++;
+        if (!isFree && prize > S.best) S.best = prize;
+
+        document.querySelectorAll(".cell").forEach((cell, i) => {
+          if (S.grid[i] === info.symbol) cell.classList.add("winner");
+        });
+
+        result.className = "result show win";
+        title.textContent = prize >= 500000 ? "¡JACKPOT! 🔥" : "¡GANASTE! 🎉";
+        prizeEl.textContent = isFree ? "🎟️ Una boleta más" : isRuleta ? "🎡 ¡Giras la ruleta!" : "+ ₲" + fmt(prize);
+        msg.textContent = `${info.count} ${info.symbol} iguales` + (S.streak > 1 ? ` · Racha x${S.streak}` : "");
+
+        const firstTime = !S.album[info.symbol];
+        S.album[info.symbol] = (S.album[info.symbol] || 0) + 1;
+        if (false) {
+          S.balance += 5000;
+          setTimeout(() => toast("📖 ¡" + CFG.names[info.symbol] + " nuevo en el álbum! +₲5.000"), 1300);
+          if (Object.keys(S.album).length === CFG.symbols.length) {
+            S.balance += 100000;
+            setTimeout(() => toast("🏆 ¡Álbum completo! +₲100.000"), 4000);
+          }
+        }
+        confetti(prize >= 100000 ? 90 : 40);
+        beep(800, 0.15, "sine", 0.2);
+        setTimeout(() => beep(1000, 0.2, "sine", 0.18), 120);
+        if (navigator.vibrate) navigator.vibrate([30,50,30,50,60]);
+      } else {
+        S.streak = 0;
+        S.lastPrize = 0;
+        result.className = "result show lose";
+        title.textContent = "Seguí participando";
+        prizeEl.textContent = "";
+        msg.textContent = `Más salió ${info.symbol} (${info.count}). ¡Gracias por jugar!`;
+        beep(200, 0.12, "sawtooth", 0.08);
+      }
+
+      document.getElementById("bonus-row").className = (isWin && S.spin) ? "bonus-row show" : "bonus-row";
+      const hint = document.getElementById("result-hint");
+      hint.style.display = S.free > 0 ? "" : "none";
+      hint.textContent = "👆 Tocá acá para jugar tu boleta extra 🎟️";
+      const pt = document.getElementById("result-prize").textContent || "Seguí participando";
+      recordResult(pt);
+      const nb = document.getElementById("btn-notify");
+      if (IS_CLIENT && CM[3]) { nb.style.display = "block"; nb.href = "https://wa.me/" + CM[3] + "?text=" + encodeURIComponent("¡Hola! Raspé mi boleta N° " + document.getElementById("ticket-id").textContent + ": " + pt); } else { nb.style.display = "none"; }
+      document.getElementById("btn-home").style.display = SELLER_MODE ? "" : IS_CLIENT ? "none" : "";
+      save();
+    }
+
+    // ===================== RULETA =====================
+    function buildWheel() {
+      const wheel = document.getElementById("wheel");
+      wheel.innerHTML = "";
+      wheel.style.transform = "rotate(0deg)";
+      const n = CFG.ruleta.length;
+      const seg = 360 / n;
+
+      // Conic gradient background
+      let gradient = "conic-gradient(";
+      CFG.ruleta.forEach((s, i) => {
+        const start = i * seg;
+        gradient += `${s.color} ${start}deg ${start + seg}deg${i < n-1 ? "," : ""}`;
+      });
+      gradient += ")";
+      wheel.style.background = gradient;
+
+      CFG.ruleta.forEach((s, i) => {
+        const d = document.createElement("div");
+        d.className = "wheel-segment";
+        d.style.transform = `rotate(${i * seg + seg/2}deg)`;
+        d.innerHTML = s.label;
+        wheel.appendChild(d);
+      });
+    }
+
+    function openRuleta() {
+      if (S.ruletaUsed) { toast("Ya usaste la ruleta en esta boleta"); return; }
+      buildWheel();
+      document.getElementById("ruleta-result").textContent = "";
+      document.getElementById("btn-girar").disabled = false;
+      document.getElementById("modal-ruleta").classList.add("show");
+    }
+
+    async function girarRuleta() {
+      const btn = document.getElementById("btn-girar");
+      btn.disabled = true;
+      S.ruletaUsed = true;
+      let winIdx = 0, serverItem = null;
+      try {
+        if (IS_CONNECTED_CLIENT) {
+          const payload = await millonariaApi("spin");
+          const outcome = Array.isArray(payload) ? payload[0] : (payload.result || payload);
+          const label = String(outcome.outcome_label || outcome.label || "").toLowerCase();
+          const type = String(outcome.outcome_type || outcome.type || "").toLowerCase();
+          const amount = Number(outcome.outcome_amount ?? outcome.value ?? 0);
+          serverItem = amount === 0 && /otra|jugada/.test(label) || type === "again"
+            ? {type:"again",value:0}
+            : amount === 0 && /nada/.test(label) || type === "none"
+              ? {type:"none",value:0}
+              : /jackpot/.test(type) || amount === 500000
+                ? {type:"jackpot",value:amount || 500000}
+                : {type:"coins",value:amount};
+          winIdx = CFG.ruleta.findIndex(x => x.type === serverItem.type && x.value === serverItem.value);
+          if (winIdx < 0) winIdx = CFG.ruleta.findIndex(x => x.value === serverItem.value);
+          if (winIdx < 0) throw new Error("El resultado de la ruleta no coincide con el panel");
+        } else {
+          const n = CFG.ruleta.length;
+          let rr = Math.random() * CFG.ruleta.reduce((a, x) => a + x.w, 0);
+          for (let i = 0; i < n; i++) { rr -= CFG.ruleta[i].w; if (rr <= 0) { winIdx = i; break; } }
+          serverItem = CFG.ruleta[winIdx];
+        }
+      } catch (err) {
+        S.ruletaUsed = false; btn.disabled = false;
+        toast("No se pudo conectar: " + (err.message || "intentá de nuevo"));
         return;
       }
-      T = { n: data.ticket_number, code: data.prize_claim_code || '' };
-      currentCode = T.code;
-      currentPrize = getPrizeById(Number(data.prize_id));
-      setPrizeStickers(currentPrize, data.sticker_ids);
-      if (!currentPrize) throw new Error('Premio inválido en el servidor');
-      _rev();
-      try { localStorage.setItem(KEY, '1'); } catch (e) {}
-      showBox();
-    } catch (e) {
-      console.error('No se pudo raspar la boleta', e);
-      bar.textContent = 'No pudimos conectar con el servidor. Comprobá internet e intentá otra vez.';
-      serverBusy = false;
-      cv.style.pointerEvents = 'auto';
-      resetTileScratchLayers();
-    }
-  };
-  window.claimPrize = function () {
-    if (!currentPrize || !T) return;
-    const x = currentPrize.id === 1;
-    const msg = '¡Hola! ' + (x ? 'Gané una boleta gratis 🎟️' : 'Gané en la Raspadita San Pedro del Ycuamandyyú 🎉\n\nPremio: ' + currentPrize.label) +
-      '\nBoleta N° ' + String(T.n).padStart(4, '0') + '\nCódigo: ' + T.code + '\n\nQuiero ' + (x ? 'mi boleta gratis.' : 'reclamar mi premio.');
-    waOpen('https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent(msg));
-  };
-
-  function showBox() {
-    const p = currentPrize, win = p.id !== 11, b = $('resultBox');
-    b.style.display = 'block';
-    b.className = 'result-box ' + (win ? 'win' : 'lose');
-    b.innerHTML = win
-      ? '<h3>' + p.emoji + ' ¡Ganaste ' + (p.id === 1 ? 'una boleta gratis' : p.label) + '!</h3>' + (p.id === 1 ? '' : '<p>Tu código: <b>' + T.code + '</b></p>') +
-        '<button class="btn btn-primary" style="width:100%;background:linear-gradient(145deg,#25D366,#128C7E);color:#fff" onclick="claimPrize()">💬 ' + (p.id === 1 ? 'Reclamar mi boleta gratis' : 'Reclamar mi premio') + '</button>'
-      : '<h3>😢 Esta boleta no tiene premio</h3><p>¡Gracias por participar! Probá con otra boleta.</p>';
-  }
-
-  document.addEventListener('DOMContentLoaded', async function () {
-    if (!TOKEN) {
-      $('scratchCanvas').style.pointerEvents = 'none';
-      $('scratchCanvas').parentNode.addEventListener('click', function () {
-        let d = $('toast');
-        if (!d) {
-          d = document.createElement('div');
-          d.id = 'toast';
-          d.style.cssText = 'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#ffc107;color:#1a0f2e;padding:12px 18px;border-radius:14px;font-weight:700;z-index:300;max-width:90%;text-align:center';
-          document.body.appendChild(d);
+      const seg = 360 / CFG.ruleta.length;
+      const target = 4 * 360 + (360 - (winIdx * seg + seg/2));
+      const wheel = document.getElementById("wheel");
+      wheel.style.transition = "none"; wheel.style.transform = "rotate(0deg)"; void wheel.offsetWidth; wheel.style.transition = "";
+      wheel.style.transform = `rotate(${target}deg)`;
+      for (let i = 0; i < 26; i++) setTimeout(() => beep(900, 0.03, "square", 0.05), 4300 * Math.pow(i / 26, 1.8));
+      setTimeout(() => {
+        const item = serverItem || CFG.ruleta[winIdx];
+        let text = "";
+        if (item.type === "coins") {
+          S.balance += item.value;
+          text = `+₲${fmt(item.value)}`; if (item.value >= 100000) confetti(50);
+        } else if (item.type === "again") {
+          text = "🐕 ¡Una jugada más!";
+          // El inventario del servidor se consume una vez por boleta: no permite un segundo premio de ruleta.
+        } else if (item.type === "jackpot") {
+          S.balance += item.value;
+          text = `¡JACKPOT! +₲${fmt(item.value)}`;
+          confetti(50);
+        } else {
+          text = "Nada esta vez...";
         }
-        d.textContent = '🎟️ Comprá tu boleta por WhatsApp y recibí tu enlace individual para raspar';
-        d.style.display = 'block';
-        clearTimeout(d.t);
-        d.t = setTimeout(function () { d.style.display = 'none'; }, 3000);
-      });
-      return;
+        const rEl = document.getElementById("ruleta-result");
+        rEl.textContent = text; ruletaDone(item, text);
+        rEl.classList.remove("pop"); void rEl.offsetWidth; rEl.classList.add("pop");
+        save(); beep(700, 0.15, "sine", 0.15);
+      }, 4600);
     }
-    document.body.classList.add('ticket');
-    const bar = $('ticketBar');
-    const cv = $('scratchCanvas');
-    cv.style.pointerEvents = 'none';
-    bar.textContent = 'Verificando tu boleta…';
-    try {
-      const response = await fetch('https://bmoepjlepqmnkuzmfuvq.supabase.co/functions/v1/raspadita-scratch', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'apikey': 'sb_publishable_SWI-q3Z_AIG4jRe43SfVIA_x8BgRFWG' },
-        body: JSON.stringify({ action: 'status', token: TOKEN })
-      });
-      const data = await response.json();
-      if (!response.ok || !data.ok) throw new Error(data.error || 'ticket_not_found');
-      T = { n: data.ticket_number, code: data.prize_claim_code || '' };
-      setPrizeStickers(data.scratched ? getPrizeById(Number(data.prize_id)) : null, data.sticker_ids);
-      bar.innerHTML = '🎟️ Boleta N° <b>' + String(T.n).padStart(4, '0') + '</b>' +
-        '<div style="font-size:0.72rem;color:var(--text-muted);margin-top:6px;word-break:break-all">Tu enlace individual · <button type="button" id="copyTicketLink" style="background:none;border:0;color:var(--gold);font-weight:700;cursor:pointer;padding:0">Copiar enlace</button></div>';
-      $('copyTicketLink').addEventListener('click', function () {
-        const u = ticketUrl(TOKEN);
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(u).then(function () { alert('Enlace copiado'); }).catch(function () { prompt('Copiá el enlace:', u); });
-        } else prompt('Copiá el enlace:', u);
-      });
-      if (data.scratched) {
-        currentPrize = getPrizeById(Number(data.prize_id));
-        currentCode = T.code;
-        if (!currentPrize) throw new Error('Premio inválido');
-        isRevealed = true;
-        cv.style.display = 'none';
-        cv.style.pointerEvents = 'none';
-        bar.innerHTML = '🔒 <b>Esta boleta ya fue raspada</b><div style="font-size:0.78rem;color:var(--text-muted);margin-top:5px">El resultado original se conserva y no se puede volver a jugar.</div>';
-        document.querySelectorAll('.tile-scratch-canvas').forEach(function(layer){layer.style.display='none';layer.style.pointerEvents='none';});
-        showBox();
-      } else {
-        $('prizeEmoji').textContent = '🎟️';
-        $('prizeLabel').textContent = 'Tu premio está oculto';
-        $('prizeSub').textContent = 'Raspá la tarjeta para descubrirlo';
-        cv.style.display = '';
-        cv.style.pointerEvents = 'none';
-        document.querySelectorAll('.tile-scratch-canvas').forEach(function(layer){layer.style.display='';layer.style.pointerEvents='auto';});
-        tileScratchCount = 0; tileScratchComplete = false;
-        isRevealed = false;
-        setTimeout(function () {
-          if (!isRevealed) {
-            try { initScratch(); } catch (e) { console.error('No se pudieron preparar los cuadrados raspables', e); }
-            // setPrizeStickers reemplaza los 9 cuadrados después de que initScratch se ejecutó al cargar la página.
-            // Por eso hay que activar las capas NUEVAS después de volver a crearlas.
-            document.querySelectorAll('#ticketAnimalGrid .tile-scratch-canvas').forEach(function(layer) {
-              layer.style.pointerEvents = 'auto';
-            });
-            cv.style.pointerEvents = 'none';
-          }
-        }, 120);
+
+    // ===================== CAJA =====================
+    function openCaja() {
+      if (S.cajaUsed) { toast("Ya abriste la caja en esta boleta"); return; }
+      document.getElementById("box-visual").textContent = "🎁";
+      document.getElementById("box-visual").classList.remove("open");
+      document.getElementById("caja-result").textContent = "";
+      document.getElementById("btn-abrir").disabled = false;
+      document.getElementById("modal-caja").classList.add("show");
+    }
+
+    function abrirCaja() {
+      document.getElementById("btn-abrir").disabled = true;
+      S.cajaUsed = true;
+
+      // Weighted random
+      const total = CFG.cajaRewards.reduce((s,r) => s + r.weight, 0);
+      let r = Math.random() * total;
+      let reward = CFG.cajaRewards[0];
+      for (const item of CFG.cajaRewards) {
+        r -= item.weight;
+        if (r <= 0) { reward = item; break; }
       }
-    } catch (e) {
-      console.error('Error verificando boleta', e);
-      bar.textContent = 'Este enlace no es válido o el servidor no está disponible. Revisá tu conexión.';
-      $('prizeLabel').textContent = 'No se pudo cargar';
-      cv.style.pointerEvents = 'none';
+
+      setTimeout(() => {
+        document.getElementById("box-visual").textContent = reward.emoji;
+        document.getElementById("box-visual").classList.add("open");
+        document.getElementById("caja-result").textContent = reward.text;
+
+        if (reward.coins) S.balance += reward.coins;
+        if (reward.streak) S.streak += reward.streak;
+        if (reward.free) { S.free++; toast("🎟️ Boleta gratis para la próxima"); }
+
+        if (reward.coins >= 1500) confetti(40);
+        save();
+        beep(650, 0.12, "sine", 0.14);
+      }, 600);
     }
-  });
-})();
-</script>
+
+    function openAlbum() {
+      document.getElementById("album-grid").innerHTML = CFG.symbols.map(s => {
+        const n = S.album[s];
+        return `<div class="slot ${n ? "" : "lock"}"><div class="e">${s}</div><small>${n ? CFG.names[s] + " ×" + n : "???"}</small></div>`;
+      }).join("");
+      document.getElementById("modal-album").classList.add("show");
+    }
+
+    function closeModal(which) {
+      document.getElementById("modal-" + which).classList.remove("show");
+    }
+
+    // ===================== MAIN ACTIONS =====================
+    function nuevaBoleta(first) {
+      if (!first) {
+        if (S.free <= 0) return;
+        S.free--;
+        toast("🎟️ Boleta extra: ¡a raspar!");
+        save();
+      }
+      document.getElementById("ticket-id").textContent = String(rand(1000,9999));
+      const mustWin = decideWin();
+      S.grid = generateGrid(mustWin);
+      createGrid();
+      if (first) toast("🎫 Tu boleta: ¡a raspar!");
+      beep(500, 0.07, "triangle", 0.1);
+
+      // First time tip
+      if (!S.tipShown && S.played === 0) {
+        S.tipShown = true;
+        const tip = document.createElement("div");
+        tip.className = "tip";
+        tip.textContent = "👆 Pasá el dedo sobre las casillas para raspar";
+        document.body.appendChild(tip);
+        setTimeout(() => tip.remove(), 4500);
+      }
+    }
+
+    function compartir() {
+      const id = document.getElementById("ticket-id").textContent;
+      const text = `💰 ¡RASPADITA MILLONARIA!\nBoleta N° ${id}\n¿Sacaré 3 animales iguales?\nRacha actual: ${S.streak} 🔥\n\nJugá vos también 💫`;
+      if (navigator.share) {
+        navigator.share({ title: "Raspadita Millonaria", text }).catch(()=>{});
+      } else {
+        navigator.clipboard.writeText(text).then(() => toast("¡Copiado! Pegalo donde quieras"));
+      }
+    }
+
+    function showSavedTicket(ticket, roulette) {
+      S.finished = true;
+      S.scratched = 9;
+      S.ruletaUsed = !!roulette;
+      S.spin = ticket.prize_kind === "roulette" && !roulette;
+      S.canvases.forEach((c, i) => {
+        c.revealed = true;
+        c.canvas.classList.add("hidden");
+        const cell = document.querySelector(`.cell[data-i="${i}"]`);
+        if (cell) cell.classList.add("revealed");
+      });
+      const info = matchInfo(S.grid);
+      document.getElementById("progress").style.width = "100%";
+      document.getElementById("progress-text").textContent = "Boleta raspada · resultado guardado";
+      document.getElementById("btn-all").disabled = true;
+      document.getElementById("btn-new").disabled = true;
+      document.getElementById("result").className = "result show " + (info.count >= 3 ? "win" : "lose");
+      document.getElementById("result-title").textContent = info.count >= 3 ? "¡BOLETA YA JUGADA! 🎉" : "BOLETA YA JUGADA";
+      document.querySelectorAll(".cell").forEach((cell, i) => {
+        if (info.count >= 3 && S.grid[i] === info.symbol) cell.classList.add("winner");
+      });
+      let prizeText = ticket.prize_label || (info.count >= 3 ? "Premio registrado" : "Sin premio");
+      if (ticket.prize_kind === "roulette") {
+        prizeText = roulette ? "🎡 Ruleta: " + roulette.outcome_label : "🎡 ¡Premio en la RULETA pendiente de girar!";
+      }
+      document.getElementById("result-prize").textContent = prizeText;
+      document.getElementById("result-msg").textContent = "Este es el resultado original guardado en el sistema. No se puede volver a raspar.";
+      document.getElementById("btn-home").style.display = SELLER_MODE ? "" : "none";
+      document.getElementById("bonus-row").className = S.spin ? "bonus-row show" : "bonus-row";
+      document.getElementById("btn-girar").disabled = !!roulette;
+      if (roulette) {
+        const nb = document.getElementById("btn-notify");
+        if (CM && CM[3]) {
+          nb.style.display = "block";
+          nb.href = "https://wa.me/" + CM[3] + "?text=" + encodeURIComponent("¡Hola! Raspé mi boleta N° " + pad(DB_TICKET) + ": 🎡 Ruleta: " + roulette.outcome_label);
+        }
+      }
+      toast("Resultado recuperado: esta boleta ya fue raspada");
+    }
+
+    // Start
+    const GAME_BASE = location.href.split("?")[0];
+    const URLP = new URLSearchParams(location.search);
+    let DB_TICKET = Number(URLP.get("ticket") || 0);
+    let DB_TOKEN = (URLP.get("token") || "").trim().toUpperCase();
+    let CM = DB_TICKET >= 1 && DB_TICKET <= 5000 && /^[A-F0-9]{32}$/.test(DB_TOKEN)
+      ? [null, DB_TOKEN, String(DB_TICKET), ""] : location.hash.match(/^#t([a-z0-9]{4})-(\d{4})(?:-(\d{8,15}))?$/);
+    let IS_CONNECTED_CLIENT = DB_TICKET >= 1 && DB_TICKET <= 5000 && /^[A-F0-9]{32}$/.test(DB_TOKEN);
+    let IS_CLIENT = !!CM;
+    let SELLER_MODE = false, SELLER_PIN = "";
+    const MILLONARIA_BASE = "https://jsaucedoamarilla-cyber.github.io/raspadita-spy/millonaria/";
+    const SB_URL = "https://bmoepjlepqmnkuzmfuvq.supabase.co";
+    const SB_PUBLIC_KEY = "sb_publishable_SWI-q3Z_AIG4jRe43SfVIA_x8BgRFWG";
+    const SPIN_URL = SB_URL + "/functions/v1/millonaria-ruleta";
+    async function millonariaApi(action) {
+      const response = await fetch(SPIN_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "apikey": SB_PUBLIC_KEY },
+        body: JSON.stringify({ action, ticket_number: DB_TICKET || Number(CM?.[2]), token: DB_TOKEN || CM?.[1] })
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || "No se pudo conectar con el servidor");
+      return data;
+    }
+    async function sellerApi(action, extra={}) {
+      const response=await fetch(SB_URL+"/functions/v1/millonaria-admin",{
+        method:"POST",headers:{"Content-Type":"application/json","apikey":SB_PUBLIC_KEY},
+        body:JSON.stringify({action,...extra})
+      });
+      const data=await response.json().catch(()=>({}));
+      if(!response.ok||!data.ok)throw new Error(({acceso_vendedora_invalido:"ID o PIN incorrecto, o usuario desactivado.",boleta_no_asignada:"Esta boleta no pertenece a tu cuenta.",boleta_ya_entregada:"Esta boleta ya fue entregada."})[data.error]||"No se pudo conectar con el panel.");
+      return data;
+    }
+    function symbolFromTicket(ticket) {
+      const label = String(ticket?.prize_label || "").toLowerCase();
+      if (label.includes("ruleta")) return "🐆";
+      if (label.includes("gratis") || label.includes("boleta")) return "🐢";
+      const amount = Number(ticket?.prize_amount || (label.match(/\d+/g) || []).join(""));
+      return ({10000:"🐒",20000:"🦜",50000:"🦌",100000:"🦫",200000:"🐊",500000:"🦅",1000000:"🐺",2000000:"🦩"})[amount] || null;
+    }
+    const PRICE = 5000;
+    let P = null, outArm = false, ADM = false;
+    const pad = n => String(n).padStart(4, "0");
+    const esc = t => String(t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+    function loadP() { P = null; try { localStorage.removeItem("rm_seller2"); } catch(e) {} }
+    function saveP() { /* Los usuarios y boletas se administran en el servidor. */ }
+    function hashSeed(str) { let h = 2166136261; for (let i = 0; i < str.length; i++) h = Math.imul(h ^ str.charCodeAt(i), 16777619); return h >>> 0; }
+    function ticketGrid(n) {
+      const orig = Math.random; Math.random = rng(hashSeed("g" + CAMP.seed + n));
+      try { const sym = pool()[n - 1] || null; return generateGrid(!!sym, sym); } finally { Math.random = orig; }
+    }
+    function extraGrid() { let r = Math.random() * CAMP.total, sym = null; for (const p of CAMP.prizes) { r -= p.qty; if (r < 0) { sym = p.sym; break; } } return generateGrid(!!sym, sym); }
+    function ruletaDone(item, text) {
+      const pt = "🎡 Ruleta: " + text;
+      if (P && !IS_CLIENT && S.curNum) { P.res[S.curNum] = pt; saveP(); }
+      const nb = document.getElementById("btn-notify");
+      if (IS_CLIENT && CM[3]) { nb.style.display = "block"; nb.href = "https://wa.me/" + CM[3] + "?text=" + encodeURIComponent("¡Hola! Raspé mi boleta N° " + document.getElementById("ticket-id").textContent + ": " + pt); }
+    }
+    function waMsg() { return "🎫 ¡Tu boleta N° " + S.sel + " de *Raspadita Millonaria* te espera! Raspá y podés ganar hasta ₲2.000.000 y en la RULETA hasta ₲1.330.000 🎡👇\n" + GAME_BASE + "#t" + P.code + "-" + S.sel + (P.phone ? "-" + P.phone : ""); }
+    function updateWa() {
+      let n = document.getElementById("wa-num").value.replace(/\D/g, "");
+      if (n.startsWith("0")) n = n.slice(1);
+      if (n && !n.startsWith("595")) n = "595" + n;
+      document.getElementById("wa-link").href = "https://wa.me/" + n + "?text=" + encodeURIComponent(waMsg());
+    }
+    function copyLink() {
+      try { navigator.clipboard.writeText(waMsg()).then(() => { toast("¡Mensaje copiado!"); sentSel(); }).catch(() => toast("No se pudo copiar")); }
+      catch (e) { toast("No se pudo copiar"); }
+    }
+    function startGame(grid, label) {
+      document.getElementById("tk-sheet").style.display = "none";
+      document.getElementById("picker").style.display = "none";
+      document.getElementById("ticket-id").textContent = label;
+      S.grid = grid; createGrid();
+      toast("👆 Pasá el dedo para raspar");
+      beep(500, 0.07, "triangle", 0.1);
+      window.scrollTo(0, 0);
+    }
+    async function playNum(n) {
+      const row=(P?.tickets||[]).find(t=>Number(t.ticket_number)===Number(n));
+      if(!row || !row.token){toast("No se encontró esta boleta asignada");return;}
+      DB_TICKET=Number(n); DB_TOKEN=String(row.token).toUpperCase(); CM=[null,DB_TOKEN,String(n),String(P.phone||"")];
+      IS_CONNECTED_CLIENT=true; IS_CLIENT=true; SELLER_MODE=true;
+      S.curNum=null; S.free=0; S.streak=0; S.rseed=Number(n);
+      try {
+        const payload=await millonariaApi("status"), ticket=payload.ticket;
+        if(!ticket || !Array.isArray(ticket.sticker_ids))throw new Error("No se pudo cargar la boleta");
+        const grid=ticket.sticker_ids.map(id=>CFG.symbols[Number(id)-1]);
+        startGame(grid,String(n));
+        if(ticket.scratched)showSavedTicket(ticket,payload.ruleta||null);
+      } catch(e) { toast("Error al abrir boleta: "+(e.message||"intentá otra vez")); }
+    }
+    function playExtra() { S.curNum = null; S.rseed = null; startGame(extraGrid(), "EXTRA"); }
+    async function shareNum(n) {
+      try {
+        const d=await sellerApi("seller_issue",{seller_id:P.id,pin:SELLER_PIN,ticket_number:Number(n)});
+        P.lastShareUrl=MILLONARIA_BASE+"?ticket="+d.ticket_number+"&token="+encodeURIComponent(d.token);
+        const row=(P.tickets||[]).find(t=>Number(t.ticket_number)===Number(n)); if(row){row.issued=true;row.sold=true;}
+        S.sel=String(n);
+        document.getElementById("sheet-num").textContent="Boleta N.º "+pad(n);
+        document.getElementById("wa-num").value="";
+        updateWa();
+        document.getElementById("tk-sheet").style.display="flex";
+        renderPanel();
+      } catch(e) { toast(e.message||"No se pudo preparar el enlace"); }
+    }
+    function sentSel() { closeSheet(); renderPanel(); }
+    function closeSheet() { document.getElementById("tk-sheet").style.display = "none"; }
+    function markSold(n) { toast("Las ventas se registran al compartir el enlace de la boleta."); }
+    function addPaid() { toast("La rendición se administra desde el panel web."); }
+    function recordResult(t) { if (!IS_CLIENT && P && S.curNum) { P.res[S.curNum] = t; saveP(); } }
+    async function setupSeller() {
+      const id=Number(document.getElementById("sl-id").value), pin=document.getElementById("sl-pin").value.trim();
+      if(!Number.isInteger(id)||id<1||pin.length<4){toast("Ingresá el ID y el PIN que te dio el administrador");return;}
+      try {
+        const login=await sellerApi("seller_login",{seller_id:id,pin});
+        const list=await sellerApi("seller_tickets",{seller_id:id,pin});
+        SELLER_PIN=pin; SELLER_MODE=true;
+        P={id:login.seller.id,name:login.seller.name,phone:login.seller.phone||"",tickets:list.tickets||[],lastShareUrl:""};
+        renderPanel();
+      } catch(e) { toast(e.message||"ID o PIN incorrecto"); }
+    }
+    function logoutSeller() {
+      P=null; SELLER_PIN=""; SELLER_MODE=false; IS_CONNECTED_CLIENT=false; IS_CLIENT=false; DB_TICKET=0; DB_TOKEN=""; CM=null;
+      try { localStorage.removeItem("rm_seller2"); } catch(e) {}
+      renderPanel();
+    }
+    function renderPanel() {
+      const el = document.getElementById("panel");
+      if (ADM) return renderAdmin();
+      if (!P) {
+        el.innerHTML = `<h2>🎫 Raspadita Millonaria</h2><p>Acceso privado de vendedoras</p>
+          <p>ID de usuario creado por el administrador</p><input id="sl-id" type="number" inputmode="numeric" placeholder="ID de vendedora">
+          <p>PIN entregado por el administrador</p><input id="sl-pin" type="password" inputmode="numeric" placeholder="PIN privado">
+          <button class="st-btn" onclick="setupSeller()">🔐 Entrar</button>
+          <p style="font-size:.75rem;color:var(--muted)">Si no tenés usuario, pedíselo al administrador. No se permite crear cuentas desde el APK.</p>`;
+        return;
+      }
+      const nums = (P.tickets || []).map(t => String(t.ticket_number));
+      const sold = (P.tickets || []).filter(t => t.sold).length;
+      const available = (P.tickets || []).filter(t => !t.issued && !t.scratched);
+      const card = t => {
+        const n=String(t.ticket_number), status=t.scratched?"Raspada":t.issued?"Enlace enviado":"Disponible";
+        const result=t.scratched?(t.prize_label||"Resultado guardado"):"Pendiente de raspar";
+        return `<div class="pn-t"><div class="pn-th"><b>🎫 Boleta N.º ${pad(n)}</b><span>${status}</span></div>
+          <p>Resultado: <b>${esc(result)}</b></p>
+          <button class="st-btn" style="background:#f6d56e;color:#241545" onclick="playNum('${n}')">🎮 VER / JUGAR BOLETA</button>
+          <button class="st-btn wa" onclick="shareNum('${n}')">📲 COMPARTIR POR WHATSAPP</button>
+        </div>`;
+      };
+      el.innerHTML = `<div class="pn-head"><div><h2>Hola, ${esc(P.name)} 👋</h2><p>Usuario N.º ${P.id} · Solo ves las boletas asignadas a tu cuenta.</p></div><button class="pn-out" onclick="logoutSeller()">Salir</button></div>
+        <div class="pn-stats">
+          <div class="pn-c"><span>Boletas asignadas</span><b>${P.tickets.length}</b></div>
+          <div class="pn-c"><span>Enlaces enviados</span><b>${P.tickets.filter(t=>t.issued).length}</b></div>
+          <div class="pn-c"><span>Boletas raspadas</span><b>${P.tickets.filter(t=>t.scratched).length}</b></div>
+          <div class="pn-c"><span>Boletas pendientes</span><b>${P.tickets.filter(t=>!t.scratched).length}</b></div>
+        </div>
+        <h3>🎫 Mis boletas asignadas</h3>${P.tickets.map(card).join("") || "<p>El administrador todavía no te asignó boletas.</p>"}
+      `;
+    }
+    function adminLogin() {
+      document.getElementById("panel").innerHTML = `<h2>🔐 Administrador</h2><p>Ingresá el PIN</p><input id="ad-pin" type="password" inputmode="numeric" placeholder="PIN"><button class="st-btn" onclick="adminEnter()">Entrar</button><button class="st-btn ghost" onclick="renderPanel()">⬅ Volver</button>`;
+    }
+    function adminEnter() { toast("La administración de usuarios se realiza únicamente desde el panel web privado."); }
+    function adminExit() { ADM = false; renderPanel(); }
+    function ticketsOf(sym) { const out = []; pool().forEach((x, i) => { if (x === sym) out.push(pad(i + 1)); }); return out; }
+    function adminCheck() {
+      const n = Math.round(+document.getElementById("ad-n").value), el = document.getElementById("ad-res");
+      if (!(n >= 1 && n <= CAMP.total)) { el.textContent = "Fuera de rango (1 a " + CAMP.total + ")"; return; }
+      const p = CAMP.prizes.find(x => x.sym === pool()[n - 1]);
+      el.textContent = "Boleta " + pad(n) + ": " + (p ? p.label : "Sin premio");
+    }
+    function adminCopy() {
+      const t = CAMP.prizes.map(p => p.label + " (" + p.qty + "): " + ticketsOf(p.sym).join(", ")).join("\n\n");
+      try { navigator.clipboard.writeText(t).then(() => toast("Lista copiada")).catch(() => toast("No se pudo copiar")); } catch (e) { toast("No se pudo copiar"); }
+    }
+    function renderAdmin() {
+      const cash = CAMP.prizes.reduce((a, p) => a + (p.free || p.wheel ? 0 : p.val * p.qty), 0);
+      const free = CAMP.prizes.filter(p => p.free).reduce((a, p) => a + p.qty * CFG.cost, 0);
+      const won = CAMP.prizes.reduce((a, p) => a + p.qty, 0), sales = CAMP.total * CFG.cost;
+      document.getElementById("panel").innerHTML = `<div class="pn-head"><div><h2>🔐 Panel del administrador</h2><p>${fmt(CAMP.total)} boletas · ₲${fmt(CFG.cost)} c/u</p></div><button class="pn-out" onclick="adminExit()">Salir</button></div>
+        <div class="pn-stats">
+          <div class="pn-c"><span>Ventas si se vende todo</span><b>₲ ${fmt(sales)}</b></div>
+          <div class="pn-c"><span>Premios en efectivo</span><b>₲ ${fmt(cash)}</b></div>
+          <div class="pn-c"><span>Boletas gratis (valor)</span><b>₲ ${fmt(free)}</b></div>
+          <div class="pn-c"><span>Premios / ventas</span><b>${((cash + free) / sales * 100).toFixed(1)}%</b></div>
+          <div class="pn-c"><span>Boletas con premio</span><b>${fmt(won)}</b></div>
+          <div class="pn-c"><span>Boletas sin premio</span><b>${fmt(Math.max(0, CAMP.total - won))}</b></div>
+        </div>
+        <h3>🎁 Premios cargados</h3><div class="pn-t">${CAMP.prizes.map(p => `<div class="ad-row"><span>${p.label}</span><b>${p.qty}</b></div>`).join("")}</div>
+        <h3>🔎 Consultar boleta</h3><input id="ad-n" type="number" inputmode="numeric" placeholder="N.º de boleta (1 a ${CAMP.total})"><button class="st-btn ghost" onclick="adminCheck()">Ver premio</button><p id="ad-res" style="color:var(--gold);font-weight:700"></p>
+        <h3>🏆 Boletas premiadas</h3>${CAMP.prizes.map(p => `<details><summary>${p.label} · ${p.qty}</summary><div class="ad-nums">${ticketsOf(p.sym).map(n => `<span>${n}</span>`).join("")}</div></details>`).join("")}
+        <button class="st-btn ghost" onclick="adminCopy()">📋 Copiar lista completa</button>
+        <h3>🎡 Ruleta</h3><p>Premios provisorios, pendientes de cargar:</p><div class="pn-t">${CFG.ruleta.map(r => `<div class="ad-row"><span>${r.label.replace(/<br>/g, " ").replace(/<\/?b>/g, "")}</span><b>peso ${r.w}</b></div>`).join("")}</div>`;
+    }
+    function openPanel() { S.free = 0; renderPanel(); document.getElementById("picker").style.display = "flex"; }
+    function showStart() { openPanel(); }
+    document.getElementById("result").onclick = () => { if (S.finished && S.free > 0) { S.free--; playExtra(); } };
+    updateUI();
+    if (IS_CONNECTED_CLIENT) {
+      S.curNum = null; S.free = 0; S.rseed = DB_TICKET;
+      document.getElementById("picker").style.display = "none";
+      millonariaApi("status").then(payload => {
+        const ticket = payload.ticket;
+        if (!ticket) throw new Error("No se encontró esta boleta");
+        const savedGrid = Array.isArray(ticket.sticker_ids) && ticket.sticker_ids.length === 9
+          ? ticket.sticker_ids.map(id => CFG.symbols[Number(id) - 1])
+          : null;
+        if (!savedGrid || savedGrid.some(sym => !sym)) throw new Error("No se pudo cargar el resultado guardado de esta boleta");
+        startGame(savedGrid, String(DB_TICKET));
+        if (ticket.scratched) {
+          showSavedTicket(ticket, payload.ruleta || null);
+        } else if (payload.ruleta) {
+          const nb = document.getElementById("btn-notify"); nb.style.display = "block";
+        }
+      }).catch(err => { toast("Error al cargar boleta: " + (err.message || "revisá el enlace")); document.getElementById("ticket-id").textContent = "ENLACE NO VÁLIDO"; });
+    } else if (IS_CLIENT) { S.curNum = null; S.free = 0; S.rseed = CM[2]; startGame(ticketGrid(+CM[2]), CM[2]); }
+    else { loadP(); openPanel(); }
+
+    // Prevent double-tap zoom
+    document.addEventListener("dblclick", e => e.preventDefault(), {passive:false});
+  </script>
 </body>
 </html>
+<!-- Build de prueba del panel Millonaria actualizado: 2026-10-22 -->
