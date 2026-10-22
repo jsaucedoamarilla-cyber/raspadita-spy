@@ -18,7 +18,7 @@ public class MainActivity extends Activity {
   web.setWebViewClient(new WebViewClient());
   web.setWebChromeClient(new WebChromeClient());
   setContentView(web);
-  web.loadUrl("file:///android_asset/www/index.html");
+  web.loadUrl("https://jsaucedoamarilla-cyber.github.io/raspadita-spy/millonaria/admin.html");
  }
  @Override public void onBackPressed() { if (web != null && web.canGoBack()) web.goBack(); else super.onBackPressed(); }
 }
