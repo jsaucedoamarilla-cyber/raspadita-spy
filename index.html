@@ -4,12 +4,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#2a1a45">
-  <title>Raspadita San Pedro del Ycuamandyyú</title>
+  <title>Raspadita Millonaria</title>
   <script>
     // Conservar el token de la boleta al entrar al juego.
     // Es esencial que el cliente llegue a la boleta individual, no a la descarga de la APK.
     (function () {
-      var target = new URL("raspadita-apk/www/", window.location.href);
+      var target = new URL("millonaria/", window.location.href);
       target.search = window.location.search;
       target.hash = window.location.hash;
       window.location.replace(target.toString());
@@ -17,11 +17,11 @@
   </script>
 </head>
 <body>
-  <p>Abriendo la boleta de Raspadita San Pedro del Ycuamandyyú…</p>
-  <a id="gameLink" href="raspadita-apk/www/">Entrar al juego</a>
+  <p>Abriendo la boleta de Raspadita Millonaria…</p>
+  <a id="gameLink" href="millonaria/">Entrar al juego</a>
   <script>
     var link = document.getElementById("gameLink");
-    var target = new URL("raspadita-apk/www/", window.location.href);
+    var target = new URL("millonaria/", window.location.href);
     target.search = window.location.search;
     target.hash = window.location.hash;
     link.href = target.toString();
