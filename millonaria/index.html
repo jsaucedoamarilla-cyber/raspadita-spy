@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>Raspadita Millonaria</title>
+  <title>Raspadita San Pedro del Ycuamandyyú</title>
   <meta name="theme-color" content="#0f0720" />
   <style>
     :root {
@@ -486,7 +486,7 @@
   <div class="top-bar">
     <div class="logo">
       <div class="logo-icon">🐆</div>
-      <span>RASPADITA MILLONARIA</span>
+      <span>RASPADITA SAN PEDRO DEL YCUAMANDYYÚ</span>
     </div>
     <div class="top-right">
       <div class="pill streak" id="streak-pill">🔥 0</div>
@@ -1218,9 +1218,9 @@
 
     function compartir() {
       const id = document.getElementById("ticket-id").textContent;
-      const text = `💰 ¡RASPADITA MILLONARIA!\nBoleta N° ${id}\n¿Sacaré 3 animales iguales?\nRacha actual: ${S.streak} 🔥\n\nJugá vos también 💫`;
+      const text = `💰 ¡RASPADITA SAN PEDRO DEL YCUAMANDYYÚ!\nBoleta N° ${id}\n¿Sacaré 3 animales iguales?\nRacha actual: ${S.streak} 🔥\n\nJugá vos también 💫`;
       if (navigator.share) {
-        navigator.share({ title: "Raspadita Millonaria", text }).catch(()=>{});
+        navigator.share({ title: "Raspadita San Pedro del Ycuamandyyú", text }).catch(()=>{});
       } else {
         navigator.clipboard.writeText(text).then(() => toast("¡Copiado! Pegalo donde quieras"));
       }
@@ -1321,7 +1321,7 @@
       const nb = document.getElementById("btn-notify");
       if (IS_CLIENT && CM[3]) { nb.style.display = "block"; nb.href = "https://wa.me/" + CM[3] + "?text=" + encodeURIComponent("¡Hola! Raspé mi boleta N° " + document.getElementById("ticket-id").textContent + ": " + pt); }
     }
-    function waMsg() { return "🎫 ¡Tu boleta N° " + S.sel + " de *Raspadita Millonaria* te espera! Raspá y podés ganar hasta ₲2.000.000 y en la RULETA hasta ₲1.330.000 🎡👇\n" + GAME_BASE + "#t" + P.code + "-" + S.sel + (P.phone ? "-" + P.phone : ""); }
+    function waMsg() { return "🎫 ¡Tu boleta N° " + S.sel + " de *Raspadita San Pedro del Ycuamandyyú* te espera! Raspá y podés ganar hasta ₲2.000.000 y en la RULETA hasta ₲1.330.000 🎡👇\n" + GAME_BASE + "#t" + P.code + "-" + S.sel + (P.phone ? "-" + P.phone : ""); }
     function updateWa() {
       let n = document.getElementById("wa-num").value.replace(/\D/g, "");
       if (n.startsWith("0")) n = n.slice(1);
@@ -1394,7 +1394,7 @@
       const el = document.getElementById("panel");
       if (ADM) return renderAdmin();
       if (!P) {
-        el.innerHTML = `<h2>🎫 Raspadita Millonaria</h2><p>Acceso privado de vendedoras</p>
+        el.innerHTML = `<h2>🎫 Raspadita San Pedro del Ycuamandyyú</h2><p>Acceso privado de vendedoras</p>
           <p>ID de usuario creado por el administrador</p><input id="sl-id" type="number" inputmode="numeric" placeholder="ID de vendedora">
           <p>PIN entregado por el administrador</p><input id="sl-pin" type="password" inputmode="numeric" placeholder="PIN privado">
           <button class="st-btn" onclick="setupSeller()">🔐 Entrar</button>
