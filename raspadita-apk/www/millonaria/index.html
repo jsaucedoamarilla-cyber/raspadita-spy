@@ -1356,7 +1356,7 @@
     function customerUrl(token) { return SPIN_URL + "?action=customer-page&token=" + encodeURIComponent(String(token || "")); }
     function waMsg() {
       const row = (P?.tickets || []).find(t => Number(t.ticket_number) === Number(S.sel));
-      const link = P?.lastShareUrl || customerUrl(row?.token);
+      const link = customerUrl(row?.token);
       return "🎫 ¡Tu boleta N° " + S.sel + " de *Raspadita Millonaria* te espera! Raspá y podés ganar hasta ₲2.000.000 y en la RULETA hasta ₲500.000 🎡👇\n" + link;
     }
     function updateWa() {
