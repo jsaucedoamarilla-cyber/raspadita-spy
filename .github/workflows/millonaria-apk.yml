@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - "raspadita-apk/www/millonaria/**"
+      - "raspadita-apk/www/**"
       - "raspadita-apk/millonaria-android-webview/**"
       - ".github/workflows/millonaria-apk.yml"
 permissions:
@@ -23,12 +23,14 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: "8.2"
-      - name: Preparar juego dentro del APK
+      - name: Preparar ambos juegos dentro del APK
         working-directory: raspadita-apk/millonaria-android-webview
         run: |
-          mkdir -p app/src/main/assets/www
-          cp ../www/millonaria/index.html app/src/main/assets/www/index.html
-      - name: Compilar APK independiente
+          mkdir -p app/src/main/assets/www/millonaria
+          cp ../www/selector.html app/src/main/assets/www/selector.html
+          cp ../www/index.html app/src/main/assets/www/index.html
+          cp ../www/millonaria/index.html app/src/main/assets/www/millonaria/index.html
+      - name: Compilar APK
         working-directory: raspadita-apk/millonaria-android-webview
         run: gradle assembleDebug
       - name: Guardar APK para descargar
