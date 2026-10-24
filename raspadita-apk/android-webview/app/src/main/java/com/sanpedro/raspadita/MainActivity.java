@@ -50,8 +50,8 @@ public class MainActivity extends AppCompatActivity {
                 return handleExternalUrl(url);
             }
         });
-        // Abrir la pantalla de vendedores incluida dentro de la APK.
-        webView.loadUrl("file:///android_asset/www/index.html");
+        // Abrir el selector que permite elegir San Pedro o Millonaria.
+        webView.loadUrl("file:///android_asset/www/selector.html");
     }
 
     // Android WebView no resuelve automáticamente index.html al abrir una carpeta local.
