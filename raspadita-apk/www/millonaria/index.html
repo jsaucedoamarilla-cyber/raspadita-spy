@@ -1385,6 +1385,13 @@
       IS_CONNECTED_CLIENT=true; IS_CLIENT=true; SELLER_MODE=true;
       S.curNum=null; S.free=0; S.streak=0; S.rseed=Number(n); S.serverPlay=null;
       try {
+        // Una boleta asignada debe registrarse como vendida antes de jugarse.
+        // Así el servidor no rechaza la jugada con 409 y la venta queda contabilizada.
+        if (row.status === "assigned" || row.sold === false) {
+          await sellerApi("seller_issue", { ticket_number: Number(n) });
+          row.status = "sold"; row.sold = true; row.issued = true;
+          renderPanel();
+        }
         const payload=await millonariaApi("play-ticket");
         if(!Array.isArray(payload.symbols) || payload.symbols.length!==9) throw new Error("El servidor no devolvió las 9 imágenes de esta boleta");
         DB_TICKET=Number(payload.ticket_number||n);
