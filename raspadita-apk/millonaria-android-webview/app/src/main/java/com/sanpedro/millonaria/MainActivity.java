@@ -13,12 +13,13 @@ public class MainActivity extends Activity {
   WebSettings settings = web.getSettings();
   settings.setJavaScriptEnabled(true);
   settings.setDomStorageEnabled(true);
+  settings.setDatabaseEnabled(true);
   settings.setAllowFileAccess(true);
   settings.setMediaPlaybackRequiresUserGesture(false);
   web.setWebViewClient(new WebViewClient());
   web.setWebChromeClient(new WebChromeClient());
   setContentView(web);
-  web.loadUrl("https://jsaucedoamarilla-cyber.github.io/raspadita-spy/millonaria/admin.html");
+  web.loadUrl("file:///android_asset/www/selector.html");
  }
  @Override public void onBackPressed() { if (web != null && web.canGoBack()) web.goBack(); else super.onBackPressed(); }
 }
