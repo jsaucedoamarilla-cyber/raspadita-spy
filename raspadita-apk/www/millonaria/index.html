@@ -1280,23 +1280,41 @@
     const SB_URL = "https://kevrsvgalmskvqnysbkd.supabase.co";
     const SB_PUBLIC_KEY = "sb_publishable_itHsSSmgXCLNWjfldx_f5A_J7ImxfOX";
     const SPIN_URL = SB_URL + "/functions/v1/raspadita-public";
+    let SELLER_SESSION = null;
     async function millonariaApi(action) {
       const response = await fetch(SPIN_URL, {
         method: "POST",
-        headers: { "Content-Type": "application/json", "apikey": SB_PUBLIC_KEY },
+        headers: { "Content-Type": "application/json", "apikey": SB_PUBLIC_KEY, "Authorization": "Bearer " + (SELLER_SESSION?.access_token || "") },
         body: JSON.stringify({ action, ticket_number: DB_TICKET || Number(CM?.[2]), token: DB_TOKEN || CM?.[1] })
       });
       const data = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(data.error || "No se pudo conectar con el servidor");
+      if (!response.ok || data.error) throw new Error(data.error || "No se pudo conectar con el servidor");
       return data;
     }
     async function sellerApi(action, extra={}) {
-      const response=await fetch(SB_URL+"/functions/v1/millonaria-admin",{
-        method:"POST",headers:{"Content-Type":"application/json","apikey":SB_PUBLIC_KEY},
-        body:JSON.stringify({action,...extra})
+      if (action === "seller_login") {
+        const username = String(extra.username || "").trim().toLowerCase();
+        const password = String(extra.password || "");
+        const response = await fetch(SB_URL + "/auth/v1/token?grant_type=password", {
+          method: "POST", headers: { "Content-Type": "application/json", "apikey": SB_PUBLIC_KEY },
+          body: JSON.stringify({ email: username + "@raspaditamillonaria.com", password })
+        });
+        const auth = await response.json().catch(() => ({}));
+        if (!response.ok || !auth.access_token) throw new Error(auth.msg || auth.error_description || auth.message || "Usuario o contraseña incorrectos.");
+        SELLER_SESSION = auth;
+        return { ok: true, session: auth };
+      }
+      const actionMap = { seller_tickets: "seller-tickets", seller_issue: "seller-mark-sold" };
+      const body = { action: actionMap[action] || action, ...extra };
+      delete body.pin; delete body.seller_id;
+      const response = await fetch(SPIN_URL, {
+        method: "POST", headers: { "Content-Type": "application/json", "apikey": SB_PUBLIC_KEY, "Authorization": "Bearer " + (SELLER_SESSION?.access_token || "") },
+        body: JSON.stringify(body)
       });
-      const data=await response.json().catch(()=>({}));
-      if(!response.ok||!data.ok)throw new Error(({acceso_vendedora_invalido:"ID o PIN incorrecto, o usuario desactivado.",boleta_no_asignada:"Esta boleta no pertenece a tu cuenta.",boleta_ya_entregada:"Esta boleta ya fue entregada."})[data.error]||"No se pudo conectar con el panel.");
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || data.error) throw new Error(data.error || "No se pudo conectar con el panel.");
+      if (action === "seller_tickets") return { ...data, tickets: (data.tickets || []).map(t => ({ ...t, token: t.public_token, issued: t.status !== "assigned", sold: t.status !== "assigned", scratched: t.status === "played", prize_label: t.result_label || "", prize_amount: t.prize_amount || 0 })) };
+      if (action === "seller_issue") return { ...data, token: "", customer_link: data.customer_link };
       return data;
     }
     function symbolFromTicket(ticket) {
@@ -1361,8 +1379,8 @@
     function playExtra() { S.curNum = null; S.rseed = null; startGame(extraGrid(), "EXTRA"); }
     async function shareNum(n) {
       try {
-        const d=await sellerApi("seller_issue",{seller_id:P.id,pin:SELLER_PIN,ticket_number:Number(n)});
-        P.lastShareUrl=MILLONARIA_BASE+"?ticket="+d.ticket_number+"&token="+encodeURIComponent(d.token);
+        const d=await sellerApi("seller_issue",{ticket_number:Number(n)});
+        P.lastShareUrl=d.customer_link||"";
         const row=(P.tickets||[]).find(t=>Number(t.ticket_number)===Number(n)); if(row){row.issued=true;row.sold=true;}
         S.sel=String(n);
         document.getElementById("sheet-num").textContent="Boleta N.º "+pad(n);
@@ -1378,15 +1396,16 @@
     function addPaid() { toast("La rendición se administra desde el panel web."); }
     function recordResult(t) { if (!IS_CLIENT && P && S.curNum) { P.res[S.curNum] = t; saveP(); } }
     async function setupSeller() {
-      const id=Number(document.getElementById("sl-id").value), pin=document.getElementById("sl-pin").value.trim();
-      if(!Number.isInteger(id)||id<1||pin.length<4){toast("Ingresá el ID y el PIN que te dio el administrador");return;}
+      const username = document.getElementById("sl-id").value.trim().toLowerCase();
+      const password = document.getElementById("sl-pin").value;
+      if (!username || !password) { toast("Ingresá tu usuario y contraseña"); return; }
       try {
-        const login=await sellerApi("seller_login",{seller_id:id,pin});
-        const list=await sellerApi("seller_tickets",{seller_id:id,pin});
-        SELLER_PIN=pin; SELLER_MODE=true;
-        P={id:login.seller.id,name:login.seller.name,phone:login.seller.phone||"",tickets:list.tickets||[],lastShareUrl:""};
+        await sellerApi("seller_login", { username, password });
+        const list = await sellerApi("seller_tickets");
+        SELLER_PIN = password; SELLER_MODE = true;
+        P = { id: list.seller.id, name: list.seller.name, phone: list.seller.phone || "", tickets: list.tickets || [], lastShareUrl: "" };
         renderPanel();
-      } catch(e) { toast(e.message||"ID o PIN incorrecto"); }
+      } catch(e) { SELLER_SESSION = null; toast(e.message || "Usuario o contraseña incorrectos"); }
     }
     function logoutSeller() {
       P=null; SELLER_PIN=""; SELLER_MODE=false; IS_CONNECTED_CLIENT=false; IS_CLIENT=false; DB_TICKET=0; DB_TOKEN=""; CM=null;
@@ -1398,8 +1417,8 @@
       if (ADM) return renderAdmin();
       if (!P) {
         el.innerHTML = `<h2>🎫 Raspadita Millonaria</h2><p>Acceso privado de vendedoras</p>
-          <p>ID de usuario creado por el administrador</p><input id="sl-id" type="number" inputmode="numeric" placeholder="ID de vendedora">
-          <p>PIN entregado por el administrador</p><input id="sl-pin" type="password" inputmode="numeric" placeholder="PIN privado">
+          <p>Usuario de vendedora</p><input id="sl-id" type="text" autocomplete="username" placeholder="Usuario">
+          <p>Contraseña</p><input id="sl-pin" type="password" autocomplete="current-password" placeholder="Contraseña">
           <button class="st-btn" onclick="setupSeller()">🔐 Entrar</button>
           <p style="font-size:.75rem;color:var(--muted)">Si no tenés usuario, pedíselo al administrador. No se permite crear cuentas desde el APK.</p>`;
         return;
