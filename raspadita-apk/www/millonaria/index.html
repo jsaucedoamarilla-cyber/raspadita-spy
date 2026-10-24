@@ -1085,6 +1085,7 @@
         if (IS_CONNECTED_CLIENT) {
           const payload = await millonariaApi("spin-wheel");
           const outcome = Array.isArray(payload) ? payload[0] : (payload.result || payload);
+          S.serverWheelSpins = Number(outcome.wheel_spins ?? ((S.serverWheelSpins || 0) + 1));
           const label = String(outcome.outcome_label || outcome.label || "").toLowerCase();
           const type = String(outcome.outcome_type || outcome.type || "").toLowerCase();
           const amount = Number(outcome.outcome_amount ?? outcome.value ?? 0);
@@ -1132,7 +1133,16 @@
           text = "Nada esta vez...";
         }
         const rEl = document.getElementById("ruleta-result");
-        rEl.textContent = text; ruletaDone(item, text);
+        rEl.textContent = text;
+        if (item.type === "again" && Number(S.serverWheelSpins || 0) < 2) {
+          S.ruletaUsed = false;
+          btn.textContent = "🎡 GIRAR OTRA VEZ";
+          btn.disabled = false;
+        } else {
+          S.ruletaUsed = true;
+          btn.disabled = true;
+        }
+        ruletaDone(item, text);
         rEl.classList.remove("pop"); void rEl.offsetWidth; rEl.classList.add("pop");
         save(); beep(700, 0.15, "sine", 0.15);
       }, 4600);
@@ -1227,8 +1237,10 @@
     function showSavedTicket(ticket, roulette) {
       S.finished = true;
       S.scratched = 9;
-      S.ruletaUsed = !!roulette;
-      S.spin = ticket.prize_kind === "roulette" && !roulette;
+      S.serverWheelSpins = Number(ticket.wheel_spins || 0);
+      const canSpinAgain = !!roulette && String(roulette.outcome_type || "").toLowerCase() === "again" && S.serverWheelSpins < 2;
+      S.ruletaUsed = !!roulette && !canSpinAgain;
+      S.spin = ticket.prize_kind === "roulette" && (!roulette || canSpinAgain);
       S.canvases.forEach((c, i) => {
         c.revealed = true;
         c.canvas.classList.add("hidden");
@@ -1376,12 +1388,12 @@
         const payload=await millonariaApi("play-ticket");
         if(!Array.isArray(payload.symbols) || payload.symbols.length!==9) throw new Error("El servidor no devolvió las 9 imágenes de esta boleta");
         DB_TICKET=Number(payload.ticket_number||n);
-        S.serverPlay=payload;
+        S.serverPlay=payload; S.serverWheelSpins=Number(payload.wheel_spins||0);
         startGame(payload.symbols,String(n));
         const rowState=(P?.tickets||[]).find(t=>Number(t.ticket_number)===Number(n));
         if(payload.already_played){
           if(rowState){rowState.scratched=true;rowState.prize_label=payload.result_label==="RUEDA"?"Premio en ruleta":(payload.is_winner?"Premio registrado":"Sin premio");}
-          const saved={scratched:true,prize_kind:payload.result_label==="RUEDA"?"roulette":(payload.is_winner?"prize":"none"),prize_label:payload.result_label==="RUEDA"?"Premio en ruleta":(payload.is_winner?"₲ "+fmt(Number(payload.amount_won||0)):"Sin premio"),prize_amount:Number(payload.amount_won||0)};
+          const saved={scratched:true,prize_kind:payload.result_label==="RUEDA"?"roulette":(payload.is_winner?"prize":"none"),prize_label:payload.result_label==="RUEDA"?"Premio en ruleta":(payload.is_winner?"₲ "+fmt(Number(payload.amount_won||0)):"Sin premio"),prize_amount:Number(payload.amount_won||0),wheel_spins:Number(payload.wheel_spins||0)};
           const wheel=payload.wheel_result?{outcome_label:payload.wheel_result.label||"Resultado",outcome_type:payload.wheel_result.type,outcome_amount:payload.wheel_result.value}:null;
           showSavedTicket(saved,wheel);
         } else if(rowState){rowState.scratched=true;rowState.prize_label=payload.result_label==="RUEDA"?"Premio en ruleta":(payload.is_winner?"Premio registrado":"Sin premio");}
