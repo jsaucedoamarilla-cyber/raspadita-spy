@@ -1,30 +1,10 @@
 <!doctype html>
-<html lang="es">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#2a1a45">
-  <title>Raspadita San Pedro del Ycuamandyyú</title>
-  <script>
-    // Conservar el token de la boleta al entrar al juego.
-    // Es esencial que el cliente llegue a la boleta individual, no a la descarga de la APK.
-    (function () {
-      var target = new URL("millonaria/", window.location.href);
-      target.search = window.location.search;
-      target.hash = window.location.hash;
-      window.location.replace(target.toString());
-    })();
-  </script>
-</head>
-<body>
-  <p>Abriendo la boleta de Raspadita San Pedro del Ycuamandyyú…</p>
-  <a id="gameLink" href="millonaria/">Entrar al juego</a>
-  <script>
-    var link = document.getElementById("gameLink");
-    var target = new URL("millonaria/", window.location.href);
-    target.search = window.location.search;
-    target.hash = window.location.hash;
-    link.href = target.toString();
-  </script>
-</body>
-</html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><meta name="theme-color" content="#160e28"><title>Elegir raspadita</title>
+<script>if (window.location.search || window.location.hash) { var target = new URL("millonaria/", window.location.href); target.search = window.location.search; target.hash = window.location.hash; window.location.replace(target.toString()); }</script>
+<style>
+*{box-sizing:border-box}body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:22px;background:radial-gradient(ellipse at top,#3b1d6e 0%,transparent 52%),linear-gradient(160deg,#0c0818,#160e28);font-family:system-ui,-apple-system,sans-serif;color:#fff}
+main{width:100%;max-width:410px;text-align:center} .logo{font-size:58px;margin-bottom:8px}h1{font-size:27px;line-height:1.15;margin:0 0 9px;color:#ffd700}p{color:#c4b5fd;margin:0 0 27px}.game{display:block;width:100%;text-decoration:none;color:#fff;border-radius:20px;padding:20px 17px;margin:14px 0;text-align:left;border:1px solid #ffffff30;box-shadow:0 12px 25px #0005}.game strong{display:block;font-size:18px;margin-bottom:6px}.game span{font-size:13px;opacity:.9}.sp{background:linear-gradient(135deg,#5b21b6,#312e81)}.mi{background:linear-gradient(135deg,#a16207,#6b21a8)}.hint{font-size:12px;color:#9ca3af;margin-top:25px}
+</style></head><body><main><div class="logo">🎟️</div><h1>RASPADITAS</h1><p>Elegí el juego que vas a utilizar</p>
+<a class="game sp" href="index.html"><strong>🎟️ San Pedro del Ycuamandyyú</strong><span>Ingresar al juego y las boletas de San Pedro</span></a>
+<a class="game mi" href="millonaria/index.html"><strong>🎡 Raspadita Millonaria</strong><span>Ingresar al juego con ruleta de premios</span></a>
+<div class="hint">Cada juego conserva su propia configuración. Si una boleta ya fue jugada, no la vuelvas a seleccionar.</div></main></body></html>
