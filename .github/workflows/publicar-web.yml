@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - "raspadita-apk/www/**"
+      - "millonaria/**"
       - ".github/workflows/publicar-web.yml"
   workflow_dispatch:
 
@@ -34,9 +35,10 @@ jobs:
         run: |
           rm -rf public-site
           cp -R raspadita-apk/www public-site
-          mkdir -p public-site/san-pedro
+          mkdir -p public-site/san-pedro public-site/millonaria
           cp raspadita-apk/www/index.html public-site/san-pedro/index.html
           cp raspadita-apk/www/selector.html public-site/index.html
+          cp millonaria/index.html public-site/millonaria/index.html
       - name: Cargar página pública
         uses: actions/upload-pages-artifact@v3
         with:
