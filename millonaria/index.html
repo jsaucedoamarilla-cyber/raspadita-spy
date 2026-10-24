@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>Raspadita San Pedro del Ycuamandyyú</title>
+  <title>Raspadita Millonaria</title>
   <meta name="theme-color" content="#0f0720" />
   <style>
     :root {
@@ -486,7 +486,7 @@
   <div class="top-bar">
     <div class="logo">
       <div class="logo-icon">🐆</div>
-      <span>RASPADITA SAN PEDRO DEL YCUAMANDYYÚ</span>
+      <span>RASPADITA MILLONARIA</span>
     </div>
     <div class="top-right">
       <div class="pill streak" id="streak-pill">🔥 0</div>
@@ -969,10 +969,8 @@
     // ===================== FINISH =====================
     async function finish() {
       S.finished = true;
-      if (IS_CONNECTED_CLIENT) {
-        try { await millonariaApi("scratch"); }
-        catch (err) { toast("Aviso: no se pudo guardar el estado de la boleta en el servidor."); }
-      }
+      // En boletas conectadas, play-ticket ya guarda el resultado definitivo en el servidor.
+      // No llamar acciones antiguas que la API actual no reconoce.
       document.getElementById("btn-new").disabled = false;
       document.getElementById("btn-all").disabled = true;
 
@@ -1085,8 +1083,9 @@
       let winIdx = 0, serverItem = null;
       try {
         if (IS_CONNECTED_CLIENT) {
-          const payload = await millonariaApi("spin");
+          const payload = await millonariaApi("spin-wheel");
           const outcome = Array.isArray(payload) ? payload[0] : (payload.result || payload);
+          S.serverWheelSpins = Number(outcome.wheel_spins ?? ((S.serverWheelSpins || 0) + 1));
           const label = String(outcome.outcome_label || outcome.label || "").toLowerCase();
           const type = String(outcome.outcome_type || outcome.type || "").toLowerCase();
           const amount = Number(outcome.outcome_amount ?? outcome.value ?? 0);
@@ -1134,7 +1133,16 @@
           text = "Nada esta vez...";
         }
         const rEl = document.getElementById("ruleta-result");
-        rEl.textContent = text; ruletaDone(item, text);
+        rEl.textContent = text;
+        if (item.type === "again" && Number(S.serverWheelSpins || 0) < 2) {
+          S.ruletaUsed = false;
+          btn.textContent = "🎡 GIRAR OTRA VEZ";
+          btn.disabled = false;
+        } else {
+          S.ruletaUsed = true;
+          btn.disabled = true;
+        }
+        ruletaDone(item, text);
         rEl.classList.remove("pop"); void rEl.offsetWidth; rEl.classList.add("pop");
         save(); beep(700, 0.15, "sine", 0.15);
       }, 4600);
@@ -1218,9 +1226,9 @@
 
     function compartir() {
       const id = document.getElementById("ticket-id").textContent;
-      const text = `💰 ¡RASPADITA SAN PEDRO DEL YCUAMANDYYÚ!\nBoleta N° ${id}\n¿Sacaré 3 animales iguales?\nRacha actual: ${S.streak} 🔥\n\nJugá vos también 💫`;
+      const text = `💰 ¡RASPADITA MILLONARIA!\nBoleta N° ${id}\n¿Sacaré 3 animales iguales?\nRacha actual: ${S.streak} 🔥\n\nJugá vos también 💫`;
       if (navigator.share) {
-        navigator.share({ title: "Raspadita San Pedro del Ycuamandyyú", text }).catch(()=>{});
+        navigator.share({ title: "Raspadita Millonaria", text }).catch(()=>{});
       } else {
         navigator.clipboard.writeText(text).then(() => toast("¡Copiado! Pegalo donde quieras"));
       }
@@ -1229,8 +1237,10 @@
     function showSavedTicket(ticket, roulette) {
       S.finished = true;
       S.scratched = 9;
-      S.ruletaUsed = !!roulette;
-      S.spin = ticket.prize_kind === "roulette" && !roulette;
+      S.serverWheelSpins = Number(ticket.wheel_spins || 0);
+      const canSpinAgain = !!roulette && String(roulette.outcome_type || "").toLowerCase() === "again" && S.serverWheelSpins < 2;
+      S.ruletaUsed = !!roulette && !canSpinAgain;
+      S.spin = ticket.prize_kind === "roulette" && (!roulette || canSpinAgain);
       S.canvases.forEach((c, i) => {
         c.revealed = true;
         c.canvas.classList.add("hidden");
@@ -1252,7 +1262,8 @@
         prizeText = roulette ? "🎡 Ruleta: " + roulette.outcome_label : "🎡 ¡Premio en la RULETA pendiente de girar!";
       }
       document.getElementById("result-prize").textContent = prizeText;
-      document.getElementById("result-msg").textContent = "Este es el resultado original guardado en el sistema. No se puede volver a raspar.";\n      document.getElementById("btn-home").style.display = SELLER_MODE ? "" : "none";
+      document.getElementById("result-msg").textContent = "Este es el resultado original guardado en el sistema. No se puede volver a raspar.";
+      document.getElementById("btn-home").style.display = SELLER_MODE ? "" : "none";
       document.getElementById("bonus-row").className = S.spin ? "bonus-row show" : "bonus-row";
       document.getElementById("btn-girar").disabled = !!roulette;
       if (roulette) {
@@ -1269,31 +1280,52 @@
     const GAME_BASE = location.href.split("?")[0];
     const URLP = new URLSearchParams(location.search);
     let DB_TICKET = Number(URLP.get("ticket") || 0);
-    let DB_TOKEN = (URLP.get("token") || "").trim().toUpperCase();
-    let CM = DB_TICKET >= 1 && DB_TICKET <= 5000 && /^[A-F0-9]{32}$/.test(DB_TOKEN)
+    let DB_TOKEN = (URLP.get("token") || "").trim();
+    const UUID_TOKEN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    let CM = DB_TICKET >= 1 && DB_TICKET <= 5000 && UUID_TOKEN.test(DB_TOKEN)
       ? [null, DB_TOKEN, String(DB_TICKET), ""] : location.hash.match(/^#t([a-z0-9]{4})-(\d{4})(?:-(\d{8,15}))?$/);
-    let IS_CONNECTED_CLIENT = DB_TICKET >= 1 && DB_TICKET <= 5000 && /^[A-F0-9]{32}$/.test(DB_TOKEN);
-    let IS_CLIENT = !!CM;\n    let SELLER_MODE = false, SELLER_PIN = "";\n    const MILLONARIA_BASE = "https://jsaucedoamarilla-cyber.github.io/raspadita-spy/millonaria/";
-    const SB_URL = "https://bmoepjlepqmnkuzmfuvq.supabase.co";
-    const SB_PUBLIC_KEY = "sb_publishable_SWI-q3Z_AIG4jRe43SfVIA_x8BgRFWG";
-    const SPIN_URL = SB_URL + "/functions/v1/millonaria-ruleta";
+    let IS_CONNECTED_CLIENT = UUID_TOKEN.test(DB_TOKEN);
+    let IS_CLIENT = !!CM;
+    let SELLER_MODE = false, SELLER_PIN = "";
+    const MILLONARIA_BASE = "https://jsaucedoamarilla-cyber.github.io/raspadita-spy/millonaria/";
+    const SB_URL = "https://kevrsvgalmskvqnysbkd.supabase.co";
+    const SB_PUBLIC_KEY = "sb_publishable_itHsSSmgXCLNWjfldx_f5A_J7ImxfOX";
+    const SPIN_URL = SB_URL + "/functions/v1/raspadita-public";
+    let SELLER_SESSION = null;
     async function millonariaApi(action) {
       const response = await fetch(SPIN_URL, {
         method: "POST",
-        headers: { "Content-Type": "application/json", "apikey": SB_PUBLIC_KEY },
+        headers: { "Content-Type": "application/json", "apikey": SB_PUBLIC_KEY, "Authorization": "Bearer " + (SELLER_SESSION?.access_token || "") },
         body: JSON.stringify({ action, ticket_number: DB_TICKET || Number(CM?.[2]), token: DB_TOKEN || CM?.[1] })
       });
       const data = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(data.error || "No se pudo conectar con el servidor");
+      if (!response.ok || data.error) throw new Error(data.error || "No se pudo conectar con el servidor");
       return data;
     }
     async function sellerApi(action, extra={}) {
-      const response=await fetch(SB_URL+"/functions/v1/millonaria-admin",{
-        method:"POST",headers:{"Content-Type":"application/json","apikey":SB_PUBLIC_KEY},
-        body:JSON.stringify({action,...extra})
+      if (action === "seller_login") {
+        const username = String(extra.username || "").trim().toLowerCase();
+        const password = String(extra.password || "");
+        const response = await fetch(SB_URL + "/auth/v1/token?grant_type=password", {
+          method: "POST", headers: { "Content-Type": "application/json", "apikey": SB_PUBLIC_KEY },
+          body: JSON.stringify({ email: username + "@raspaditamillonaria.com", password })
+        });
+        const auth = await response.json().catch(() => ({}));
+        if (!response.ok || !auth.access_token) throw new Error(auth.msg || auth.error_description || auth.message || "Usuario o contraseña incorrectos.");
+        SELLER_SESSION = auth;
+        return { ok: true, session: auth };
+      }
+      const actionMap = { seller_tickets: "seller-tickets", seller_issue: "seller-mark-sold" };
+      const body = { action: actionMap[action] || action, ...extra };
+      delete body.pin; delete body.seller_id;
+      const response = await fetch(SPIN_URL, {
+        method: "POST", headers: { "Content-Type": "application/json", "apikey": SB_PUBLIC_KEY, "Authorization": "Bearer " + (SELLER_SESSION?.access_token || "") },
+        body: JSON.stringify(body)
       });
-      const data=await response.json().catch(()=>({}));
-      if(!response.ok||!data.ok)throw new Error(({acceso_vendedora_invalido:"ID o PIN incorrecto, o usuario desactivado.",boleta_no_asignada:"Esta boleta no pertenece a tu cuenta.",boleta_ya_entregada:"Esta boleta ya fue entregada."})[data.error]||"No se pudo conectar con el panel.");
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || data.error) throw new Error(data.error || "No se pudo conectar con el panel.");
+      if (action === "seller_tickets") return { ...data, tickets: (data.tickets || []).map(t => ({ ...t, token: t.public_token, issued: t.status !== "assigned", sold: t.status !== "assigned", scratched: t.status === "played", prize_label: t.result_label || "", prize_amount: t.prize_amount || 0 })) };
+      if (action === "seller_issue") return { ...data, token: "", customer_link: data.customer_link };
       return data;
     }
     function symbolFromTicket(ticket) {
@@ -1321,7 +1353,12 @@
       const nb = document.getElementById("btn-notify");
       if (IS_CLIENT && CM[3]) { nb.style.display = "block"; nb.href = "https://wa.me/" + CM[3] + "?text=" + encodeURIComponent("¡Hola! Raspé mi boleta N° " + document.getElementById("ticket-id").textContent + ": " + pt); }
     }
-    function waMsg() { const url = P?.lastShareUrl || (MILLONARIA_BASE + "?ticket=" + encodeURIComponent(S.sel) + "&token=" + encodeURIComponent(String((P?.tickets || []).find(t => Number(t.ticket_number) === Number(S.sel))?.token || ""))); return "🎫 ¡Tu boleta N° " + S.sel + " de *Raspadita Millonaria* te espera! Raspá y podés ganar hasta ₲2.000.000 y en la RULETA hasta ₲1.330.000 🎡👇\n" + url; }
+    function customerUrl(token) { return SPIN_URL + "?action=customer-page&token=" + encodeURIComponent(String(token || "")); }
+    function waMsg() {
+      const row = (P?.tickets || []).find(t => Number(t.ticket_number) === Number(S.sel));
+      const link = P?.lastShareUrl || customerUrl(row?.token);
+      return "🎫 ¡Tu boleta N° " + S.sel + " de *Raspadita Millonaria* te espera! Raspá y podés ganar hasta ₲2.000.000 y en la RULETA hasta ₲500.000 🎡👇\n" + link;
+    }
     function updateWa() {
       let n = document.getElementById("wa-num").value.replace(/\D/g, "");
       if (n.startsWith("0")) n = n.slice(1);
@@ -1344,23 +1381,31 @@
     async function playNum(n) {
       const row=(P?.tickets||[]).find(t=>Number(t.ticket_number)===Number(n));
       if(!row || !row.token){toast("No se encontró esta boleta asignada");return;}
-      DB_TICKET=Number(n); DB_TOKEN=String(row.token).toUpperCase(); CM=[null,DB_TOKEN,String(n),String(P.phone||"")];
+      DB_TICKET=Number(n); DB_TOKEN=String(row.token); CM=[null,DB_TOKEN,String(n),String(P.phone||"")];
       IS_CONNECTED_CLIENT=true; IS_CLIENT=true; SELLER_MODE=true;
-      S.curNum=null; S.free=0; S.streak=0; S.rseed=Number(n);
+      S.curNum=null; S.free=0; S.streak=0; S.rseed=Number(n); S.serverPlay=null;
       try {
-        const payload=await millonariaApi("status"), ticket=payload.ticket;
-        if(!ticket || !Array.isArray(ticket.sticker_ids))throw new Error("No se pudo cargar la boleta");
-        const grid=ticket.sticker_ids.map(id=>CFG.symbols[Number(id)-1]);
-        startGame(grid,String(n));
-        if(ticket.scratched)showSavedTicket(ticket,payload.ruleta||null);
+        const payload=await millonariaApi("play-ticket");
+        if(!Array.isArray(payload.symbols) || payload.symbols.length!==9) throw new Error("El servidor no devolvió las 9 imágenes de esta boleta");
+        DB_TICKET=Number(payload.ticket_number||n);
+        S.serverPlay=payload; S.serverWheelSpins=Number(payload.wheel_spins||0);
+        startGame(payload.symbols,String(n));
+        const rowState=(P?.tickets||[]).find(t=>Number(t.ticket_number)===Number(n));
+        if(payload.already_played){
+          if(rowState){rowState.scratched=true;rowState.prize_label=payload.result_label==="RUEDA"?"Premio en ruleta":(payload.is_winner?"Premio registrado":"Sin premio");}
+          const saved={scratched:true,prize_kind:payload.result_label==="RUEDA"?"roulette":(payload.is_winner?"prize":"none"),prize_label:payload.result_label==="RUEDA"?"Premio en ruleta":(payload.is_winner?"₲ "+fmt(Number(payload.amount_won||0)):"Sin premio"),prize_amount:Number(payload.amount_won||0),wheel_spins:Number(payload.wheel_spins||0)};
+          const wheel=payload.wheel_result?{outcome_label:payload.wheel_result.label||"Resultado",outcome_type:payload.wheel_result.type,outcome_amount:payload.wheel_result.value}:null;
+          showSavedTicket(saved,wheel);
+        } else if(rowState){rowState.scratched=true;rowState.prize_label=payload.result_label==="RUEDA"?"Premio en ruleta":(payload.is_winner?"Premio registrado":"Sin premio");}
       } catch(e) { toast("Error al abrir boleta: "+(e.message||"intentá otra vez")); }
     }
     function playExtra() { S.curNum = null; S.rseed = null; startGame(extraGrid(), "EXTRA"); }
     async function shareNum(n) {
       try {
-        const d=await sellerApi("seller_issue",{seller_id:P.id,pin:SELLER_PIN,ticket_number:Number(n)});
-        P.lastShareUrl=MILLONARIA_BASE+"?ticket="+d.ticket_number+"&token="+encodeURIComponent(d.token);
-        const row=(P.tickets||[]).find(t=>Number(t.ticket_number)===Number(n)); if(row){row.issued=true;row.sold=true;}
+        const d=await sellerApi("seller_issue",{ticket_number:Number(n)});
+        const row=(P.tickets||[]).find(t=>Number(t.ticket_number)===Number(n));
+        P.lastShareUrl=customerUrl(row?.token);
+        if(row){row.issued=true;row.sold=true;}
         S.sel=String(n);
         document.getElementById("sheet-num").textContent="Boleta N.º "+pad(n);
         document.getElementById("wa-num").value="";
@@ -1375,15 +1420,16 @@
     function addPaid() { toast("La rendición se administra desde el panel web."); }
     function recordResult(t) { if (!IS_CLIENT && P && S.curNum) { P.res[S.curNum] = t; saveP(); } }
     async function setupSeller() {
-      const id=Number(document.getElementById("sl-id").value), pin=document.getElementById("sl-pin").value.trim();
-      if(!Number.isInteger(id)||id<1||pin.length<4){toast("Ingresá el ID y el PIN que te dio el administrador");return;}
+      const username = document.getElementById("sl-id").value.trim().toLowerCase();
+      const password = document.getElementById("sl-pin").value;
+      if (!username || !password) { toast("Ingresá tu usuario y contraseña"); return; }
       try {
-        const login=await sellerApi("seller_login",{seller_id:id,pin});
-        const list=await sellerApi("seller_tickets",{seller_id:id,pin});
-        SELLER_PIN=pin; SELLER_MODE=true;
-        P={id:login.seller.id,name:login.seller.name,phone:login.seller.phone||"",tickets:list.tickets||[],lastShareUrl:""};
+        await sellerApi("seller_login", { username, password });
+        const list = await sellerApi("seller_tickets");
+        SELLER_PIN = password; SELLER_MODE = true;
+        P = { id: list.seller.id, name: list.seller.name, phone: list.seller.phone || "", tickets: list.tickets || [], lastShareUrl: "" };
         renderPanel();
-      } catch(e) { toast(e.message||"ID o PIN incorrecto"); }
+      } catch(e) { SELLER_SESSION = null; toast(e.message || "Usuario o contraseña incorrectos"); }
     }
     function logoutSeller() {
       P=null; SELLER_PIN=""; SELLER_MODE=false; IS_CONNECTED_CLIENT=false; IS_CLIENT=false; DB_TICKET=0; DB_TOKEN=""; CM=null;
@@ -1394,9 +1440,9 @@
       const el = document.getElementById("panel");
       if (ADM) return renderAdmin();
       if (!P) {
-        el.innerHTML = `<h2>🎫 Raspadita San Pedro del Ycuamandyyú</h2><p>Acceso privado de vendedoras</p>
-          <p>ID de usuario creado por el administrador</p><input id="sl-id" type="number" inputmode="numeric" placeholder="ID de vendedora">
-          <p>PIN entregado por el administrador</p><input id="sl-pin" type="password" inputmode="numeric" placeholder="PIN privado">
+        el.innerHTML = `<h2>🎫 Raspadita Millonaria</h2><p>Acceso privado de vendedoras</p>
+          <p>Usuario de vendedora</p><input id="sl-id" type="text" autocomplete="username" placeholder="Usuario">
+          <p>Contraseña</p><input id="sl-pin" type="password" autocomplete="current-password" placeholder="Contraseña">
           <button class="st-btn" onclick="setupSeller()">🔐 Entrar</button>
           <p style="font-size:.75rem;color:var(--muted)">Si no tenés usuario, pedíselo al administrador. No se permite crear cuentas desde el APK.</p>`;
         return;
@@ -1487,3 +1533,4 @@
   </script>
 </body>
 </html>
+<!-- Build de prueba del panel Millonaria actualizado: 2026-10-22 -->
