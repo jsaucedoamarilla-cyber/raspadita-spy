@@ -969,10 +969,8 @@
     // ===================== FINISH =====================
     async function finish() {
       S.finished = true;
-      if (IS_CONNECTED_CLIENT) {
-        try { await millonariaApi("scratch"); }
-        catch (err) { toast("Aviso: no se pudo guardar el estado de la boleta en el servidor."); }
-      }
+      // En boletas conectadas, play-ticket ya guarda el resultado definitivo en el servidor.
+      // No llamar acciones antiguas que la API actual no reconoce.
       document.getElementById("btn-new").disabled = false;
       document.getElementById("btn-all").disabled = true;
 
@@ -1085,7 +1083,7 @@
       let winIdx = 0, serverItem = null;
       try {
         if (IS_CONNECTED_CLIENT) {
-          const payload = await millonariaApi("spin");
+          const payload = await millonariaApi("spin-wheel");
           const outcome = Array.isArray(payload) ? payload[0] : (payload.result || payload);
           const label = String(outcome.outcome_label || outcome.label || "").toLowerCase();
           const type = String(outcome.outcome_type || outcome.type || "").toLowerCase();
@@ -1270,10 +1268,11 @@
     const GAME_BASE = location.href.split("?")[0];
     const URLP = new URLSearchParams(location.search);
     let DB_TICKET = Number(URLP.get("ticket") || 0);
-    let DB_TOKEN = (URLP.get("token") || "").trim().toUpperCase();
-    let CM = DB_TICKET >= 1 && DB_TICKET <= 5000 && /^[A-F0-9]{32}$/.test(DB_TOKEN)
+    let DB_TOKEN = (URLP.get("token") || "").trim();
+    const UUID_TOKEN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    let CM = DB_TICKET >= 1 && DB_TICKET <= 5000 && UUID_TOKEN.test(DB_TOKEN)
       ? [null, DB_TOKEN, String(DB_TICKET), ""] : location.hash.match(/^#t([a-z0-9]{4})-(\d{4})(?:-(\d{8,15}))?$/);
-    let IS_CONNECTED_CLIENT = DB_TICKET >= 1 && DB_TICKET <= 5000 && /^[A-F0-9]{32}$/.test(DB_TOKEN);
+    let IS_CONNECTED_CLIENT = UUID_TOKEN.test(DB_TOKEN);
     let IS_CLIENT = !!CM;
     let SELLER_MODE = false, SELLER_PIN = "";
     const MILLONARIA_BASE = "https://jsaucedoamarilla-cyber.github.io/raspadita-spy/millonaria/";
@@ -1342,7 +1341,12 @@
       const nb = document.getElementById("btn-notify");
       if (IS_CLIENT && CM[3]) { nb.style.display = "block"; nb.href = "https://wa.me/" + CM[3] + "?text=" + encodeURIComponent("¡Hola! Raspé mi boleta N° " + document.getElementById("ticket-id").textContent + ": " + pt); }
     }
-    function waMsg() { return "🎫 ¡Tu boleta N° " + S.sel + " de *Raspadita Millonaria* te espera! Raspá y podés ganar hasta ₲2.000.000 y en la RULETA hasta ₲1.330.000 🎡👇\n" + GAME_BASE + "#t" + P.code + "-" + S.sel + (P.phone ? "-" + P.phone : ""); }
+    function customerUrl(token) { return SPIN_URL + "?action=customer-page&token=" + encodeURIComponent(String(token || "")); }
+    function waMsg() {
+      const row = (P?.tickets || []).find(t => Number(t.ticket_number) === Number(S.sel));
+      const link = P?.lastShareUrl || customerUrl(row?.token);
+      return "🎫 ¡Tu boleta N° " + S.sel + " de *Raspadita Millonaria* te espera! Raspá y podés ganar hasta ₲2.000.000 y en la RULETA hasta ₲500.000 🎡👇\n" + link;
+    }
     function updateWa() {
       let n = document.getElementById("wa-num").value.replace(/\D/g, "");
       if (n.startsWith("0")) n = n.slice(1);
@@ -1365,23 +1369,31 @@
     async function playNum(n) {
       const row=(P?.tickets||[]).find(t=>Number(t.ticket_number)===Number(n));
       if(!row || !row.token){toast("No se encontró esta boleta asignada");return;}
-      DB_TICKET=Number(n); DB_TOKEN=String(row.token).toUpperCase(); CM=[null,DB_TOKEN,String(n),String(P.phone||"")];
+      DB_TICKET=Number(n); DB_TOKEN=String(row.token); CM=[null,DB_TOKEN,String(n),String(P.phone||"")];
       IS_CONNECTED_CLIENT=true; IS_CLIENT=true; SELLER_MODE=true;
-      S.curNum=null; S.free=0; S.streak=0; S.rseed=Number(n);
+      S.curNum=null; S.free=0; S.streak=0; S.rseed=Number(n); S.serverPlay=null;
       try {
-        const payload=await millonariaApi("status"), ticket=payload.ticket;
-        if(!ticket || !Array.isArray(ticket.sticker_ids))throw new Error("No se pudo cargar la boleta");
-        const grid=ticket.sticker_ids.map(id=>CFG.symbols[Number(id)-1]);
-        startGame(grid,String(n));
-        if(ticket.scratched)showSavedTicket(ticket,payload.ruleta||null);
+        const payload=await millonariaApi("play-ticket");
+        if(!Array.isArray(payload.symbols) || payload.symbols.length!==9) throw new Error("El servidor no devolvió las 9 imágenes de esta boleta");
+        DB_TICKET=Number(payload.ticket_number||n);
+        S.serverPlay=payload;
+        startGame(payload.symbols,String(n));
+        const rowState=(P?.tickets||[]).find(t=>Number(t.ticket_number)===Number(n));
+        if(payload.already_played){
+          if(rowState){rowState.scratched=true;rowState.prize_label=payload.result_label==="RUEDA"?"Premio en ruleta":(payload.is_winner?"Premio registrado":"Sin premio");}
+          const saved={scratched:true,prize_kind:payload.result_label==="RUEDA"?"roulette":(payload.is_winner?"prize":"none"),prize_label:payload.result_label==="RUEDA"?"Premio en ruleta":(payload.is_winner?"₲ "+fmt(Number(payload.amount_won||0)):"Sin premio"),prize_amount:Number(payload.amount_won||0)};
+          const wheel=payload.wheel_result?{outcome_label:payload.wheel_result.label||"Resultado",outcome_type:payload.wheel_result.type,outcome_amount:payload.wheel_result.value}:null;
+          showSavedTicket(saved,wheel);
+        } else if(rowState){rowState.scratched=true;rowState.prize_label=payload.result_label==="RUEDA"?"Premio en ruleta":(payload.is_winner?"Premio registrado":"Sin premio");}
       } catch(e) { toast("Error al abrir boleta: "+(e.message||"intentá otra vez")); }
     }
     function playExtra() { S.curNum = null; S.rseed = null; startGame(extraGrid(), "EXTRA"); }
     async function shareNum(n) {
       try {
         const d=await sellerApi("seller_issue",{ticket_number:Number(n)});
-        P.lastShareUrl=d.customer_link||"";
-        const row=(P.tickets||[]).find(t=>Number(t.ticket_number)===Number(n)); if(row){row.issued=true;row.sold=true;}
+        const row=(P.tickets||[]).find(t=>Number(t.ticket_number)===Number(n));
+        P.lastShareUrl=customerUrl(row?.token);
+        if(row){row.issued=true;row.sold=true;}
         S.sel=String(n);
         document.getElementById("sheet-num").textContent="Boleta N.º "+pad(n);
         document.getElementById("wa-num").value="";
