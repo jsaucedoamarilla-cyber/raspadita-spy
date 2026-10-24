@@ -30,10 +30,17 @@ jobs:
       - name: Configurar GitHub Pages
         uses: actions/configure-pages@v5
 
-      - name: Preparar página pública
+      - name: Preparar página pública con selector en el inicio
+        run: |
+          rm -rf public-site
+          cp -R raspadita-apk/www public-site
+          mkdir -p public-site/san-pedro
+          cp raspadita-apk/www/index.html public-site/san-pedro/index.html
+          cp raspadita-apk/www/selector.html public-site/index.html
+      - name: Cargar página pública
         uses: actions/upload-pages-artifact@v3
         with:
-          path: raspadita-apk/www
+          path: public-site
 
       - name: Publicar página
         id: deployment
