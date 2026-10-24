@@ -1321,7 +1321,7 @@
       const nb = document.getElementById("btn-notify");
       if (IS_CLIENT && CM[3]) { nb.style.display = "block"; nb.href = "https://wa.me/" + CM[3] + "?text=" + encodeURIComponent("¡Hola! Raspé mi boleta N° " + document.getElementById("ticket-id").textContent + ": " + pt); }
     }
-    function waMsg() { return "🎫 ¡Tu boleta N° " + S.sel + " de *Raspadita San Pedro del Ycuamandyyú* te espera! Raspá y podés ganar hasta ₲2.000.000 y en la RULETA hasta ₲1.330.000 🎡👇\n" + GAME_BASE + "#t" + P.code + "-" + S.sel + (P.phone ? "-" + P.phone : ""); }
+    function waMsg() { const url = P?.lastShareUrl || (MILLONARIA_BASE + "?ticket=" + encodeURIComponent(S.sel) + "&token=" + encodeURIComponent(String((P?.tickets || []).find(t => Number(t.ticket_number) === Number(S.sel))?.token || ""))); return "🎫 ¡Tu boleta N° " + S.sel + " de *Raspadita Millonaria* te espera! Raspá y podés ganar hasta ₲2.000.000 y en la RULETA hasta ₲1.330.000 🎡👇\n" + url; }
     function updateWa() {
       let n = document.getElementById("wa-num").value.replace(/\D/g, "");
       if (n.startsWith("0")) n = n.slice(1);
