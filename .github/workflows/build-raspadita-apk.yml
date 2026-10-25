@@ -1,0 +1,66 @@
+name: Crear APK Raspadita San Pedro
+on:
+  push:
+    paths:
+      - 'raspadita-apk/www/**'
+      - '.github/workflows/build-raspadita-apk.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar proyecto
+        uses: actions/checkout@v4
+      - name: Preparar Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Preparar Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Preparar aplicación web
+        run: |
+          mkdir -p www
+          cp -R raspadita-apk/www/. www/
+          cat > package.json <<'EOF'
+          {
+            "name": "raspadita-san-pedro",
+            "version": "1.0.0",
+            "private": true,
+            "scripts": {},
+            "dependencies": {
+              "@capacitor/core": "^7.4.3",
+              "@capacitor/android": "^7.4.3"
+            },
+            "devDependencies": {
+              "@capacitor/cli": "^7.4.3"
+            }
+          }
+          EOF
+          cat > capacitor.config.json <<'EOF'
+          {
+            "appId": "py.com.raspadita.sanpedro",
+            "appName": "Raspadita San Pedro",
+            "webDir": "www",
+            "bundledWebRuntime": false
+          }
+          EOF
+          npm install
+          npx cap add android
+          npx cap sync android
+      - name: Compilar APK
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug
+      - name: Publicar APK para descargar
+        uses: actions/upload-artifact@v4
+        with:
+          name: Raspadita-San-Pedro-APK
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          retention-days: 14
