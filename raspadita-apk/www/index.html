@@ -1053,7 +1053,7 @@ function setPrizeStickers(prize) {
     { icon: '🐅', id: 10, value: '₲ 2.000.000' },
     { icon: '🎟️', id: 1, value: 'BOLETA GRATIS' }
   ];
-  const grid = document.getElementById('ticketAnimalGrid');
+  const grid = document.getElementById('stickerRow') || document.getElementById('ticketAnimalGrid');
   if (grid) {
     const shuffle = arr => {
       for (let i = arr.length - 1; i > 0; i--) {
