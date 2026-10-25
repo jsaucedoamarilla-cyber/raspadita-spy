@@ -1422,9 +1422,9 @@ async function issueSellerTicket() {
   if (sellerCode === null) return null;
   if (!sellerCode.trim()) { alert('Ingresá el código de acceso.'); return null; }
   try {
-    const response = await fetch('https://bmoepjlepqmnkuzmfuvq.supabase.co/functions/v1/raspadita-issue-link', {
+    const response = await fetch('https://qnnbqkgtndpvkswcfjgv.supabase.co/functions/v1/raspadita-issue-link', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'apikey': 'sb_publishable_SWI-q3Z_AIG4jRe43SfVIA_x8BgRFWG' },
+      headers: { 'Content-Type': 'application/json', 'apikey': 'sb_publishable_ShUbQHZeEXBIa2YorXGhLQ_7shsqN_R' },
       body: JSON.stringify({ pin: sellerCode })
     });
     const data = await response.json();
@@ -1721,9 +1721,9 @@ function copyWa() {
     const bar = $('ticketBar');
     cv.style.pointerEvents = 'none';
     try {
-      const response = await fetch('https://bmoepjlepqmnkuzmfuvq.supabase.co/functions/v1/raspadita-scratch', {
+      const response = await fetch('https://qnnbqkgtndpvkswcfjgv.supabase.co/functions/v1/raspadita-scratch', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'apikey': 'sb_publishable_SWI-q3Z_AIG4jRe43SfVIA_x8BgRFWG' },
+        headers: { 'Content-Type': 'application/json', 'apikey': 'sb_publishable_ShUbQHZeEXBIa2YorXGhLQ_7shsqN_R' },
         body: JSON.stringify({ action: 'scratch', token: TOKEN })
       });
       const data = await response.json();
@@ -1790,9 +1790,9 @@ function copyWa() {
     cv.style.pointerEvents = 'none';
     bar.textContent = 'Verificando tu boleta…';
     try {
-      const response = await fetch('https://bmoepjlepqmnkuzmfuvq.supabase.co/functions/v1/raspadita-scratch', {
+      const response = await fetch('https://qnnbqkgtndpvkswcfjgv.supabase.co/functions/v1/raspadita-scratch', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'apikey': 'sb_publishable_SWI-q3Z_AIG4jRe43SfVIA_x8BgRFWG' },
+        headers: { 'Content-Type': 'application/json', 'apikey': 'sb_publishable_ShUbQHZeEXBIa2YorXGhLQ_7shsqN_R' },
         body: JSON.stringify({ action: 'status', token: TOKEN })
       });
       const data = await response.json();
