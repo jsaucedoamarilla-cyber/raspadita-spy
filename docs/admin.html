@@ -60,7 +60,7 @@ renderReport();
 renderPublicTickets();
 }
 let secretPage=0;
-function ticketHasPrize(x){return (Number(x.prize_amount||0)>0)||(x.prize_kind&&x.prize_kind!=='none')||(x.prize_label&&!/segu[ií] participando/i.test(x.prize_label));}
+function ticketHasPrize(x){const kind=String(x.prize_kind||'').toLowerCase();if(kind==='none')return false;if(kind==='cash'||kind==='free')return true;if(Number(x.prize_amount||0)>0)return true;const label=String(x.prize_label||'').trim().toLowerCase();return !!label&&label!=='sin premio'&&!/segu[ií] participando/i.test(label);}
 function renderSecretPrizes(){
 const t=(state.tickets||[]).slice().sort((x,y)=>Number(x.ticket_number)-Number(y.ticket_number)),a=state.assignments||[],s=state.sellers||[];
 const by=new Map(a.map(x=>[Number(x.ticket_number),x])),sn=new Map(s.map(x=>[Number(x.id),x.name]));
