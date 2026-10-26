@@ -1,0 +1,84 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><meta name="theme-color" content="#130b25"><title>Vendedora · Raspadita Millonaria</title><style>
+:root{color-scheme:dark;--gold:#ffd66b;--card:#211435}*{box-sizing:border-box}body{margin:0;padding:16px;background:radial-gradient(circle at top,#38205a,#10091d 65%);font:16px system-ui;color:#fff;max-width:760px;margin:auto}h1{color:var(--gold)}.card{background:var(--card);border:1px solid #4b3564;border-radius:16px;padding:16px;margin:12px 0}input,button{width:100%;padding:12px;border-radius:10px;border:1px solid #614a7a;background:#170e25;color:white;font:inherit;margin:5px 0}button{background:linear-gradient(90deg,#ffd66b,#ffb52e);color:#28153c;font-weight:800;border:0}.secondary{background:#392650;color:#fff}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.stat{background:#170e25;padding:12px;border-radius:12px}.stat b{display:block;color:var(--gold);font-size:1.15rem}.ticket{border-top:1px solid #4b3564;padding:12px 0}.ticket-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-top:10px}.ticket-card{background:#170e25;border:1px solid #60447b;border-radius:13px;padding:10px 5px;text-align:center;min-width:0}.ticket-card strong{display:block;color:var(--gold);font-size:1.12rem}.ticket-card .state{font-size:.72rem;color:#a7f3c5;margin:4px 0}.ticket-card button{font-size:.82rem;padding:9px 4px}.ticket-card.used{opacity:.65;border-color:#735b5b}.ticket-card.used .state{color:#ffb4b4}.small{color:#b8a9cc;font-size:.9rem}.hidden{display:none}#msg{white-space:pre-wrap}
+</style></head><body><h1>🎟️ RASPADITA MILLONARIA</h1><p class="small">Acceso de vendedora</p><div class="card" id="msg">Ingresá tu usuario y contraseña.</div>
+<section id="login" class="card"><input id="username" autocomplete="username" placeholder="Usuario"><input id="password" type="password" autocomplete="current-password" placeholder="Contraseña"><button id="loginBtn">Entrar</button></section>
+<section id="app" class="hidden"><div class="card"><h2 id="hello">Mis boletas</h2><div class="grid"><div class="stat">Asignadas<b id="assigned">0</b></div><div class="stat">Sin vender<b id="available">0</b></div><div class="stat">Vendidas<b id="sold">0</b></div><div class="stat">Jugadas<b id="played">0</b></div><div class="stat">Total vendido<b id="sales">₲ 0</b></div><div class="stat">Premios de raspada<b id="prizes">0</b></div><div class="stat">Total premios raspada<b id="prizeTotal">₲ 0</b></div><div class="stat">Premios de ruleta<b id="wheel">0</b></div></div><p class="small">Solo marcá como vendida una boleta después de cobrar al cliente. Enlace individual para compartir por WhatsApp.</p><button class="secondary" id="refresh">Actualizar mis boletas</button><button id="shareAvailable">📸 Enviar captura de boletas disponibles</button><button class="secondary" id="logout">Cerrar sesión</button></div><div class="card"><h2>Plancha de boletas</h2><div id="tickets">Cargando…</div></div><div class="card"><h2>💵 Rendición</h2><input id="remitAmount" type="number" min="1" placeholder="Monto a entregar en guaraníes"><input id="remitNote" placeholder="Nota (opcional)"><button id="remit">Registrar rendición</button></div></section>
+<script>
+const URL="https://kevrsvgalmskvqnysbkd.supabase.co",KEY="sb_publishable_itHsSSmgXCLNWjfldx_f5A_J7ImxfOX",API=URL+"/functions/v1/raspadita-public";const $=id=>document.getElementById(id);let current=null,sellerSession=null;
+function msg(t){$("msg").textContent=t}function money(n){return "₲ "+Number(n||0).toLocaleString("es-PY")}function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+async function call(action,data={}){const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),12000);try{const r=await fetch(API,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+(sellerSession?.access_token||""),"apikey":KEY},body:JSON.stringify({action,...data}),signal:controller.signal});let j;try{j=await r.json()}catch(_){throw Error("El servidor respondió de forma inesperada. Probá de nuevo.")}if(!r.ok||j.error)throw Error(j.error||"No se pudo completar.");return j}catch(e){if(e.name==="AbortError")throw Error("El servidor tardó más de 12 segundos. Revisá internet e intentá otra vez.");throw e}finally{clearTimeout(timer)}}
+async function login(){const username=$("username").value.trim().toLowerCase(),password=$("password").value;if(!username||!password){msg("Ingresá tu usuario y contraseña.");return}const btn=$("loginBtn");btn.disabled=true;msg("Verificando acceso…");try{const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),12000);let r,auth;try{r=await fetch(URL+"/auth/v1/token?grant_type=password",{method:"POST",headers:{"Content-Type":"application/json","apikey":KEY},body:JSON.stringify({email:username+"@raspaditamillonaria.com",password}),signal:controller.signal});auth=await r.json()}finally{clearTimeout(timer)}if(!r.ok||!auth.access_token)throw Error(auth.msg||auth.error_description||auth.message||"No se pudo iniciar sesión. Revisá usuario y contraseña.");sellerSession=auth;current=await call("seller-tickets");$("login").classList.add("hidden");$("app").classList.remove("hidden");render(current);msg("Sesión iniciada. Tus datos se cargaron desde el servidor.")}catch(e){sellerSession=null;msg(e.name==="AbortError"?"La conexión tardó demasiado. Revisá internet e intentá otra vez.":(e.message||"No se pudo conectar."))}finally{btn.disabled=false}}
+function render(d){
+  $("hello").textContent="Hola, "+d.seller.name;
+  $("assigned").textContent=d.stats.assigned;
+  $("available").textContent=d.stats.available;
+  $("sold").textContent=d.stats.sold;
+  $("played").textContent=d.stats.played;
+  $("sales").textContent=money(d.stats.sales_total);
+  $("prizes").textContent=d.stats.ticket_prizes_count;
+  $("prizeTotal").textContent=money(d.stats.ticket_prizes_total);
+  $("wheel").textContent=d.stats.wheel_prizes_count;
+  const available=d.tickets.filter(t=>t.status==="assigned");
+  const used=d.tickets.filter(t=>t.status!=="assigned");
+  const card=t=>'<div class="ticket-card '+(t.status==="played"?"used":"")+'"><strong>'+String(t.ticket_number).padStart(4,"0")+'</strong><div class="state">'+(t.status==="assigned"?"DISPONIBLE":t.status==="played"?"JUGADA":"VENDIDA")+'</div>'+(t.status==="assigned"?'<button onclick="playOnThisPhone('+t.ticket_number+')">Jugar aquí</button><button class="secondary" onclick="sendTicket('+t.ticket_number+')">Enviar</button>':'<span class="small">No disponible</span>')+'</div>';
+  $("tickets").innerHTML='<h3>Disponibles ('+available.length+')</h3><p class="small">Podés enviar una captura de esta lista para que el cliente elija su número. Las boletas jugadas o vendidas no aparecen como disponibles.</p><div class="ticket-grid">'+(available.map(card).join("")||'<p>No quedan boletas disponibles.</p>')+'</div>'+(used.length?'<details style="margin-top:14px"><summary>Boletas ya vendidas o jugadas ('+used.length+')</summary><div class="ticket-grid">'+used.map(card).join("")+'</div></details>':"");
+}
+async function playOnThisPhone(n){
+  if(!confirm("Para jugar esta boleta en este celular, primero se registrará como vendida. ¿Continuar con la boleta "+String(n).padStart(4,"0")+"?"))return;
+  try{
+    const d=await call("seller-mark-sold",{ticket_number:n});
+    const link=d.customer_link||current.tickets.find(t=>Number(t.ticket_number)===Number(n))?.customer_link;
+    if(!link)throw Error("La boleta quedó registrada, pero no llegó el enlace. Tocá Actualizar mis boletas.");
+    location.href=link;
+    msg("Boleta "+String(n).padStart(4,"0")+" registrada. Se abrirá el juego en este celular.");
+    current=await call("seller-tickets");render(current);
+  }catch(e){msg(e.message)}
+}
+async function sendTicket(n){
+  const t=current?.tickets?.find(x=>Number(x.ticket_number)===Number(n));
+  if(!t){msg("No encontré esa boleta. Tocá Actualizar mis boletas.");return}
+  const number=String(n).padStart(4,"0");
+  try{
+    msg("Preparando WhatsApp para la boleta "+number+"…");
+    let link=t.customer_link;
+    if(t.status==="assigned"){
+      const d=await call("seller-mark-sold",{ticket_number:n});
+      link=d.customer_link||link;
+      if(!link)throw Error("La boleta quedó registrada, pero no llegó el enlace. Tocá Actualizar mis boletas.");
+      current=await call("seller-tickets");
+      render(current);
+    }
+    if(!link)throw Error("No encontré el enlace de esta boleta.");
+    msg("Abriendo WhatsApp para enviar la boleta "+number+"…");
+    // No usar window.open: Android WebView suele bloquear ventanas nuevas.
+    location.href="https://wa.me/?text="+encodeURIComponent("🎟️ RASPADITA MILLONARIA\nBoleta N.º "+number+". Jugá acá: "+link);
+  }catch(e){msg(e.message||"No se pudo preparar el envío. Revisá internet e intentá de nuevo.")}
+}
+async function shareAvailable(){
+  const available=(current?.tickets||[]).filter(t=>t.status==="assigned");
+  if(!available.length){msg("No hay boletas disponibles para compartir.");return}
+  const canvas=document.createElement("canvas"),ctx=canvas.getContext("2d");
+  const cols=4,cellW=180,cellH=112,rows=Math.ceil(available.length/cols);
+  canvas.width=cols*cellW;canvas.height=170+rows*cellH+45;
+  const bg=ctx.createLinearGradient(0,0,canvas.width,canvas.height);bg.addColorStop(0,"#38205a");bg.addColorStop(1,"#10091d");ctx.fillStyle=bg;ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.textAlign="center";ctx.fillStyle="#ffd66b";ctx.font="bold 31px system-ui";ctx.fillText("RASPADITA MILLONARIA",canvas.width/2,48);
+  ctx.fillStyle="#ffffff";ctx.font="bold 21px system-ui";ctx.fillText("BOLETAS DISPONIBLES",canvas.width/2,87);
+  ctx.fillStyle="#a7f3c5";ctx.font="18px system-ui";ctx.fillText("Elegí tu número y pedilo a la vendedora",canvas.width/2,120);
+  available.forEach((t,i)=>{const x=(i%cols)*cellW+10,y=145+Math.floor(i/cols)*cellH;ctx.fillStyle="#24133b";ctx.strokeStyle="#72509a";ctx.lineWidth=2;ctx.beginPath();ctx.roundRect(x,y,cellW-20,cellH-12,14);ctx.fill();ctx.stroke();ctx.fillStyle="#ffd66b";ctx.font="bold 31px system-ui";ctx.fillText(String(t.ticket_number).padStart(4,"0"),x+(cellW-20)/2,y+43);ctx.fillStyle="#a7f3c5";ctx.font="bold 15px system-ui";ctx.fillText("DISPONIBLE",x+(cellW-20)/2,y+72)});
+  ctx.fillStyle="#d8c7e8";ctx.font="15px system-ui";ctx.fillText("Pedí tu número por WhatsApp",canvas.width/2,canvas.height-20);
+  canvas.toBlob(async blob=>{
+    if(!blob){msg("No se pudo preparar la captura.");return}
+    const file=new File([blob],"boletas-disponibles.png",{type:"image/png"});
+    try{
+      if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({title:"Boletas disponibles · Raspadita Millonaria",text:"Elegí qué número querés jugar y escribime por WhatsApp.",files:[file]});msg("Captura compartida.");}
+      else{const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="boletas-disponibles.png";a.click();setTimeout(()=>URL.revokeObjectURL(url),2000);msg("La captura se descargó. Abrí WhatsApp y adjuntá la imagen al cliente.");}
+    }catch(e){if(e.name!=="AbortError")msg("No se pudo compartir la captura. Intentá de nuevo.");}
+  },"image/png");
+}
+async function refresh(){try{msg("Actualizando…");current=await call("seller-tickets");render(current);msg("Lista actualizada.")}catch(e){msg(e.message)}}
+async function markSold(n){if(!confirm("¿Confirmás que cobraste la boleta "+n+"?"))return;try{const d=await call("seller-mark-sold",{ticket_number:n});msg("Boleta "+n+" registrada como vendida. Compartí el enlace con el cliente.");current=await call("seller-tickets");render(current);if(confirm("¿Abrir WhatsApp para compartir la boleta ahora?"))location.href="https://wa.me/?text="+encodeURIComponent("🎟️ RASPADITA MILLONARIA\nJugá tu boleta acá: "+d.customer_link)}catch(e){msg(e.message)}}
+async function share(enc){const link=decodeURIComponent(enc);try{await navigator.clipboard.writeText(link);msg("Enlace copiado. También podés usar Enviar por WhatsApp.")}catch(e){prompt("Copiá el enlace:",link)}}
+async function remit(){try{const d=await call("seller-remit",{amount:Number($("remitAmount").value),note:$("remitNote").value});msg("Rendición registrada: "+money(d.remittance.amount));$("remitAmount").value="";$("remitNote").value=""}catch(e){msg(e.message)}}
+$("shareAvailable").onclick=shareAvailable;
+$("loginBtn").onclick=login;$("password").addEventListener("keydown",e=>{if(e.key==="Enter")login()});$("refresh").onclick=refresh;$("logout").onclick=async()=>{try{if(sellerSession?.access_token)await fetch(URL+"/auth/v1/logout",{method:"POST",headers:{"Authorization":"Bearer "+sellerSession.access_token,"apikey":KEY}})}catch(_){}sellerSession=null;location.reload()};$("remit").onclick=remit;
+</script></body></html>
