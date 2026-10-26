@@ -39,6 +39,7 @@ jobs:
           cp raspadita-apk/www/index.html public-site/san-pedro/index.html
           cp raspadita-apk/www/selector.html public-site/index.html
           cp millonaria/index.html public-site/millonaria/index.html
+          cp millonaria/admin.html public-site/millonaria/admin.html
       - name: Cargar página pública
         uses: actions/upload-pages-artifact@v3
         with:
