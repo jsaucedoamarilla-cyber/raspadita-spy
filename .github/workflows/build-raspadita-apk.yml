@@ -38,6 +38,7 @@ jobs:
           cp www/vendedora.html www/san-pedro.html
           sed -i "s/new URL('index.html',location.href)/new URL('juego.html',location.href)/g" www/san-pedro.html
           cp millonaria-source/seller/index.html www/millonaria.html
+          sed -i 's|href="../index.html"|href="index.html"|g' www/millonaria.html
           cat > www/index.html <<'EOF'
           <!doctype html>
           <html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><meta name="theme-color" content="#1b1030"><title>Raspaditas · Vendedora</title>
