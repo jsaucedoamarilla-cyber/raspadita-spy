@@ -11,7 +11,7 @@
 <div class="wrap">
 <div id="message" class="notice hidden" role="status"></div>
 <section id="login" class="card" style="max-width:440px;margin:28px auto"><h2>🔐 Entrada de administrador</h2><p class="tiny">Ingresá el PIN privado para administrar las boletas.</p><form id="loginForm"><label for="pin">PIN de administrador</label><input id="pin" type="password" inputmode="numeric" autocomplete="current-password" maxlength="12" required placeholder="Ingresar PIN"><button id="loginBtn">Entrar al panel</button></form></section>
-<main id="dashboard" class="hidden">
+<main id="dashboard" class="hidden">\n<section class="card" id="playTracking"><h2>📊 Seguimiento de jugadas</h2><p class="tiny">Control en tiempo real de boletas jugadas, premios y pagos. Se actualiza cada 30 segundos.</p><div class="stats"><div class="stat"><span>Boletas jugadas</span><b id="ptPlayed">Cargando…</b></div><div class="stat"><span>Con premio</span><b id="ptWins">Cargando…</b></div><div class="stat"><span>Sin premio</span><b id="ptNoWins">Cargando…</b></div><div class="stat"><span>Activaron ruleta</span><b id="ptWheel">Cargando…</b></div><div class="stat"><span>Importe de premios</span><b id="ptAmount">Cargando…</b></div><div class="stat"><span>Premios pagados</span><b id="ptPaid">Cargando…</b></div></div><p id="ptUpdated" class="tiny">Consultando servidor…</p><p id="ptMsg" class="notice error hidden"></p></section>
 <div class="card"><p class="tiny">Este aviso es solo para el panel privado. La raspadita pública no muestra cantidades ni distribución de premios.</p></div>
 <div class="card"><div class="topline"><div><h2 style="margin-bottom:4px">Resumen general</h2><div class="tiny">Precio de venta configurado: ₲ 5.000 por boleta</div></div><div class="actions"><button id="refresh" class="secondary">Actualizar</button><button id="logout" class="danger">Salir</button></div></div><div id="stats" class="stats" style="margin-top:14px"></div></div>
 <div class="split">
@@ -38,7 +38,30 @@ function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&l
 async function api(action,data={}){const r=await fetch(END,{method:'POST',headers:{'Content-Type':'application/json','apikey':KEY,...(session?{'x-admin-session':session}:{})},body:JSON.stringify({action,...data})});let j;try{j=await r.json()}catch(e){throw Error('El servidor respondió de forma inesperada.')}if(!r.ok||!j.ok)throw Error(j.error||'No se pudo completar la operación');return j;}
 function setLogged(on){$('login').classList.toggle('hidden',on);$('dashboard').classList.toggle('hidden',!on);}
 async function login(pin){const j=await api('login',{pin});session=j.token;sessionStorage.setItem('raspadita_admin_session',session);$('pin').value='';setLogged(true);await load();}
-async function load(){try{state=await api('summary');render();$('message').classList.add('hidden');}catch(e){if(/sesión/i.test(e.message)){session='';sessionStorage.removeItem('raspadita_admin_session');setLogged(false)}msg(e.message,true)}}
+
+async function refreshPlayTracking(){
+ try{
+  const d=await api('play_tracking');
+  const t=Array.isArray(d.tickets)?d.tickets:[];
+  const played=t.filter(x=>x.jugada===true);
+  const wins=played.filter(x=>Number(x.premio||0)>0 || (x.tipo_premio && !/SIN_PREMIO|NINGUNO|NO_PREMIO/i.test(String(x.tipo_premio))));
+  const noWins=played.filter(x=>!(Number(x.premio||0)>0) && (!x.tipo_premio || /SIN_PREMIO|NINGUNO|NO_PREMIO/i.test(String(x.tipo_premio))));
+  const wheel=Number(d.wheel_count||0);
+  $('ptPlayed').textContent=Number(d.played_count ?? played.length).toLocaleString('es-PY');
+  $('ptWins').textContent=wins.length.toLocaleString('es-PY');
+  $('ptNoWins').textContent=noWins.length.toLocaleString('es-PY');
+  $('ptWheel').textContent=wheel.toLocaleString('es-PY');
+  $('ptAmount').textContent=money(played.reduce((n,x)=>n+Number(x.premio||0),0));
+  $('ptPaid').textContent=money(played.filter(x=>x.pagado===true).reduce((n,x)=>n+Number(x.premio||0),0));
+  $('ptUpdated').textContent='Última actualización: '+new Date().toLocaleString('es-PY');
+  $('ptMsg').classList.add('hidden');
+ }catch(e){
+  $('ptMsg').textContent='No se pudo cargar el seguimiento: '+e.message;
+  $('ptMsg').classList.remove('hidden');
+  $('ptUpdated').textContent='Se volverá a intentar automáticamente.';
+ }
+}
+\nasync function load(){try{state=await api('summary');render();$('message').classList.add('hidden');await refreshPlayTracking();}catch(e){if(/sesión/i.test(e.message)){session='';sessionStorage.removeItem('raspadita_admin_session');setLogged(false)}msg(e.message,true)}}
 function render(){
 const t=state.tickets||[],s=state.sellers||[],a=state.assignments||[],r=state.remittances||[];
 const activeSellerCount=s.filter(x=>x.active).length;
@@ -94,7 +117,7 @@ $('refresh').onclick=load;$('reportSeller').onchange=renderReport;$('prizeFilter
 $('logout').onclick=async()=>{try{await api('logout')}catch(e){}session='';sessionStorage.removeItem('raspadita_admin_session');state=null;setLogged(false);msg('Sesión cerrada.');};
 $('downloadAll').onclick=()=>{if(!state)return;const s=state.sellers,a=state.assignments,r=state.remittances;csv('informe_vendedoras_raspadita.csv',[['Vendedora','Teléfono','Asignadas','Vendidas','Restantes','Ventas Gs','Rendido Gs','Saldo Gs','Estado'],...s.map(x=>{const aa=a.filter(y=>y.seller_id===x.id),ss=aa.filter(y=>y.status==='sold'),rev=ss.reduce((n,y)=>n+Number(y.sold_amount||5000),0),rr=r.filter(y=>y.seller_id===x.id).reduce((n,y)=>n+Number(y.amount),0);return[x.name,x.phone,aa.length,ss.length,aa.length-ss.length,rev,rr,rev-rr,x.active?'Activa':'Inactiva']} )]);};
 $('downloadReport').onclick=()=>{if(!report){msg('Elegí una vendedora para descargar su informe.',true);return;}csv('informe_'+report.seller.name.replace(/[^a-z0-9]/gi,'_')+'.csv',[['Vendedora',report.seller.name],['Boletas asignadas',report.assigned_count],['Boletas vendidas',report.sold_count],['Ventas Gs',report.revenue],['Rendido Gs',report.remitted],['Saldo Gs',report.balance],[],['Boleta','Estado','Asignada','Vendida','Raspada','Premio'],...report.assignments.map(x=>{const t=state.tickets.find(y=>y.ticket_number===x.ticket_number)||{},link=(state.ticket_links||[]).find(y=>y.ticket_number===x.ticket_number),u=link?new URL('./',location.href):null;if(u)u.searchParams.set('t',link.token);return[x.ticket_number,x.status,date(x.assigned_at),date(x.sold_at),t.scratched?'Sí':'No',t.scratched?t.prize_label:'Oculto',u?u.toString():'']})]);};
-if(session){setLogged(true);load()}else setLogged(false);
+if(session){setLogged(true);load()}else setLogged(false);\nsetInterval(()=>{if(session && !$('dashboard').classList.contains('hidden'))refreshPlayTracking()},30000);
 })();
 </script></body></html>
 <!-- Publicación actualizada para corregir acceso al panel. -->
