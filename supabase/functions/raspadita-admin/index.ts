@@ -126,6 +126,23 @@ Deno.serve(async req => {
    const seller=(await rows("raspadita_sellers",{method:"POST",body:JSON.stringify({name,phone:String(body.phone||"").trim()||null,pin_hash:pinHash}),headers:{Prefer:"return=representation"}}))[0];
    return json({ok:true,seller:{id:seller.id,name:seller.name,phone:seller.phone,active:seller.active}});
   }
+  if(action==="delete_seller") {
+   if(role!=="admin") return json({ok:false,error:"Solo el administrador puede eliminar vendedoras."},403);
+   const sid=Number(body.seller_id);
+   if(!Number.isInteger(sid)||sid<1) return json({ok:false,error:"Vendedora inválida."},400);
+   const seller=await db(`raspadita_sellers?id=eq.${sid}&select=id,name`);
+   if(!seller.length) return json({ok:false,error:"La vendedora ya no existe."},404);
+   const [assignments,remittances]=await Promise.all([
+    db(`raspadita_seller_assignments?seller_id=eq.${sid}&select=id,status,ticket_number`),
+    db(`raspadita_seller_remittances?seller_id=eq.${sid}&select=id`)
+   ]);
+   if(assignments.some((x:any)=>x.status==="sold")) return json({ok:false,error:"No se puede eliminar: esta vendedora tiene boletas vendidas. Desactivala para conservar el historial."},409);
+   if(remittances.length) return json({ok:false,error:"No se puede eliminar: hay rendiciones registradas. Desactivala para conservar el historial."},409);
+   if(assignments.length) await db(`raspadita_seller_assignments?seller_id=eq.${sid}`,{method:"DELETE",headers:{"Prefer":"return=minimal"}});
+   await db(`raspadita_sellers?id=eq.${sid}`,{method:"DELETE",headers:{"Prefer":"return=minimal"}});
+   await db("raspadita_admin_events",{method:"POST",headers:{Prefer:"return=minimal"},body:JSON.stringify({event_type:"seller_deleted",event_detail:{seller_id:sid,seller_name:seller[0].name,recovered_un_sold_assignments:assignments.length}})});
+   return json({ok:true,recovered:assignments.length});
+  }
   if(action==="set_seller_active") {
    await db(`raspadita_sellers?id=eq.${Number(body.seller_id)}`,{method:"PATCH",body:JSON.stringify({active:!!body.active}),headers:{Prefer:"return=minimal"}});
    return json({ok:true});
