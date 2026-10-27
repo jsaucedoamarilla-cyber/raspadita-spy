@@ -61,7 +61,8 @@ async function refreshPlayTracking(){
   $('ptUpdated').textContent='Se volverá a intentar automáticamente.';
  }
 }
-\nasync function load(){try{state=await api('summary');render();$('message').classList.add('hidden');await refreshPlayTracking();}catch(e){if(/sesión/i.test(e.message)){session='';sessionStorage.removeItem('raspadita_admin_session');setLogged(false)}msg(e.message,true)}}
+
+async function load(){try{state=await api('summary');render();$('message').classList.add('hidden');await refreshPlayTracking();}catch(e){if(/sesión/i.test(e.message)){session='';sessionStorage.removeItem('raspadita_admin_session');setLogged(false)}msg(e.message,true)}}
 function render(){
 const t=state.tickets||[],s=state.sellers||[],a=state.assignments||[],r=state.remittances||[];
 const activeSellerCount=s.filter(x=>x.active).length;
