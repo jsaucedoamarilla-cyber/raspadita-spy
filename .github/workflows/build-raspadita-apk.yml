@@ -48,7 +48,12 @@ jobs:
             "appId": "py.com.raspadita.sanpedro",
             "appName": "Raspadita San Pedro",
             "webDir": "www",
-            "bundledWebRuntime": false
+            "bundledWebRuntime": false,
+            "plugins": {
+              "CapacitorHttp": {
+                "enabled": true
+              }
+            }
           }
           EOF
           npm install
