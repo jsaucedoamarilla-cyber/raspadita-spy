@@ -1,4 +1,4 @@
-name: Crear APK Raspadita San Pedro
+name: Crear APK Vendedora con los dos juegos
 on:
   push:
     paths:
@@ -13,8 +13,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Descargar proyecto
+      - name: Descargar proyecto San Pedro
         uses: actions/checkout@v4
+      - name: Descargar proyecto Millonaria
+        uses: actions/checkout@v4
+        with:
+          repository: jsaucedoamarilla-cyber/raspadita-millonaria
+          path: millonaria-source
       - name: Preparar Java
         uses: actions/setup-java@v4
         with:
@@ -24,18 +29,29 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - name: Preparar versión pública y versión de vendedora
+      - name: Preparar las dos raspaditas dentro de la APK
         run: |
           mkdir -p www-public www
           cp -R raspadita-apk/www/. www-public/
           cp -R raspadita-apk/www/. www/
           cp www/index.html www/juego.html
-          cp www/vendedora.html www/index.html
-          sed -i "s/new URL('index.html',location.href)/new URL('juego.html',location.href)/" www/index.html
+          cp www/vendedora.html www/san-pedro.html
+          sed -i "s/new URL('index.html',location.href)/new URL('juego.html',location.href)/g" www/san-pedro.html
+          cp millonaria-source/seller/index.html www/millonaria.html
+          cat > www/index.html <<'EOF'
+          <!doctype html>
+          <html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><meta name="theme-color" content="#1b1030"><title>Raspaditas · Vendedora</title>
+          <style>
+          *{box-sizing:border-box}body{margin:0;min-height:100vh;padding:22px 16px;background:radial-gradient(circle at top,#493064,#10091d 70%);color:#fff;font:16px system-ui,sans-serif}.wrap{max-width:560px;margin:auto}h1{text-align:center;color:#ffdc78;font-size:27px}p{text-align:center;color:#d8cbe7}.card{display:block;text-decoration:none;color:#fff;padding:22px 18px;margin:18px 0;border-radius:18px;background:#241637;border:1px solid #654d7d;box-shadow:0 8px 22px #0004}.card strong{display:block;font-size:20px;margin-bottom:8px}.card span{color:#d8cbe7;font-size:14px}.sp{border-color:#d6aa52}.mi{border-color:#9b65c8}.foot{text-align:center;font-size:12px;color:#a99ab9;margin-top:28px}
+          </style></head><body><main class="wrap"><h1>🎟️ RASPADITAS · VENDEDORA</h1><p>Elegí el juego al que querés entrar.</p>
+          <a class="card sp" href="san-pedro.html"><strong>🟡 Raspadita San Pedro del Ycuamandyyú</strong><span>Ingresar con tu número de vendedora y PIN. Boletas e inventario de San Pedro.</span></a>
+          <a class="card mi" href="millonaria.html"><strong>🎡 Raspadita Millonaria</strong><span>Ingresar con tu usuario y contraseña. Boletas y ruleta de Millonaria.</span></a>
+          <p class="foot">Cada juego conserva su propio acceso y sus propios datos.</p></main></body></html>
+          EOF
           cat > package.json <<'EOF'
           {
-            "name": "raspadita-san-pedro",
-            "version": "1.0.0",
+            "name": "raspaditas-vendedora",
+            "version": "1.1.0",
             "private": true,
             "scripts": {},
             "dependencies": {
@@ -49,8 +65,8 @@ jobs:
           EOF
           cat > capacitor.config.json <<'EOF'
           {
-            "appId": "py.com.raspadita.sanpedro",
-            "appName": "Raspadita San Pedro Vendedora",
+            "appId": "py.com.raspadita.vendedora",
+            "appName": "Raspaditas Vendedora",
             "webDir": "www",
             "bundledWebRuntime": false,
             "plugins": {
@@ -71,13 +87,13 @@ jobs:
       - name: Publicar APK para descargar
         uses: actions/upload-artifact@v4
         with:
-          name: Raspadita-San-Pedro-APK-Vendedora
+          name: Raspaditas-San-Pedro-y-Millonaria-APK-Vendedora
           path: android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 14
-      - name: Preparar publicación web pública
+      - name: Preparar publicación web pública de San Pedro
         uses: actions/upload-pages-artifact@v3
         with:
           path: www-public
-      - name: Publicar página web
+      - name: Publicar página web pública
         uses: actions/deploy-pages@v4
