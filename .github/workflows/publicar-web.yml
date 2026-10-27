@@ -6,6 +6,7 @@ on:
     paths:
       - "raspadita-apk/www/**"
       - "millonaria/**"
+      - "docs/prueba-ruleta.html"
       - ".github/workflows/publicar-web.yml"
   workflow_dispatch:
 
@@ -40,6 +41,7 @@ jobs:
           cp raspadita-apk/www/selector.html public-site/index.html
           cp millonaria/index.html public-site/millonaria/index.html
           cp millonaria/admin.html public-site/millonaria/admin.html
+          cp docs/prueba-ruleta.html public-site/prueba-ruleta.html
       - name: Cargar página pública
         uses: actions/upload-pages-artifact@v3
         with:
