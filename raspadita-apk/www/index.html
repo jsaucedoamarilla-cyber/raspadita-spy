@@ -1786,7 +1786,7 @@ function copyWa() {
       return;
     }
     // Botón de regreso visible en la APK local de vendedoras; no modifica ni vuelve a jugar la boleta.
-    if (location.protocol === 'file:') {
+    if (location.protocol === 'file:' || location.protocol === 'capacitor:' || new URLSearchParams(location.search).get('seller') === '1') {
       const backButton = document.getElementById('sellerBackButton');
       if (backButton) {
         backButton.style.display = 'block';
