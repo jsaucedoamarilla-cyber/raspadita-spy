@@ -1,6 +1,14 @@
 <!doctype html>
 <html lang="es">
 <head>
+<script>
+/* Enlaces individuales de boletas: abrir directamente el juego de San Pedro,
+   conservando el token de la boleta y sin mostrar el selector de juegos. */
+if (new URLSearchParams(window.location.search).has('t')) {
+  window.location.replace('docs/index.html' + window.location.search + window.location.hash);
+}
+</script>
+
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#160e28">
