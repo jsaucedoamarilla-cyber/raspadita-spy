@@ -1495,7 +1495,7 @@ if ('serviceWorker' in navigator) {
 document.addEventListener('DOMContentLoaded', function() {
   try {
     const p = location.protocol;
-    if (p === 'file:' || p === 'content:' || p.indexOf('blob') === 0) {
+    if ((p === 'file:' || p === 'content:' || p.indexOf('blob') === 0) && new URLSearchParams(location.search).get('seller') !== '1') {
       const w = document.getElementById('hostWarn');
       if (w) w.style.display = 'block';
     }
