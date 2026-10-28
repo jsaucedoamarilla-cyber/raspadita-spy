@@ -1472,7 +1472,7 @@
     function adminLogin() {
       document.getElementById("panel").innerHTML = `<h2>🔐 Administrador</h2><p>Ingresá el PIN</p><input id="ad-pin" type="password" inputmode="numeric" placeholder="PIN"><button class="st-btn" onclick="adminEnter()">Entrar</button><button class="st-btn ghost" onclick="renderPanel()">⬅ Volver</button>`;
     }
-    function adminEnter() { toast("La administración de usuarios se realiza únicamente desde el panel web privado."); }
+    function adminEnter() { window.location.href = new URL("admin.html", window.location.href).href; }
     function adminExit() { ADM = false; renderPanel(); }
     function ticketsOf(sym) { const out = []; pool().forEach((x, i) => { if (x === sym) out.push(pad(i + 1)); }); return out; }
     function adminCheck() {
