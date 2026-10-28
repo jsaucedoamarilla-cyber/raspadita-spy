@@ -779,6 +779,7 @@ body.ticket .hide-t,body.ticket .prizes-section:nth-of-type(1){display:none!impo
 </style>
 </head>
 <body>
+  <button id="sellerBackButton" type="button" style="display:none;position:fixed;left:14px;right:14px;bottom:14px;z-index:500;background:linear-gradient(145deg,#ffe082,#ffc107);color:#1a0f2e;border:0;border-radius:14px;padding:15px 18px;font-size:16px;font-weight:900;box-shadow:0 8px 24px #0008;cursor:pointer">⬅ VOLVER A MIS BOLETAS</button>
   <div id="hostWarn" style="display:none;background:#ff5722;color:#fff;padding:10px 14px;text-align:center;font-size:0.85rem;font-weight:600;position:relative;z-index:250">
     ⚠️ Este archivo se abrió en el celular (no en internet).<br>
     Para que el cliente pueda jugar por WhatsApp, <b>subí el HTML a un hosting HTTPS</b> y compartí ese link.
@@ -1783,6 +1784,17 @@ function copyWa() {
         d.t = setTimeout(function () { d.style.display = 'none'; }, 3000);
       });
       return;
+    }
+    // Botón de regreso visible en la APK local de vendedoras; no modifica ni vuelve a jugar la boleta.
+    if (location.protocol === 'file:') {
+      const backButton = document.getElementById('sellerBackButton');
+      if (backButton) {
+        backButton.style.display = 'block';
+        backButton.addEventListener('click', function () {
+          if (history.length > 1) history.back();
+          else location.href = 'san-pedro.html';
+        });
+      }
     }
     document.body.classList.add('ticket');
     const bar = $('ticketBar');
