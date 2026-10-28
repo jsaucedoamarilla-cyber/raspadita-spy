@@ -85,6 +85,10 @@ jobs:
           cd android
           chmod +x gradlew
           ./gradlew assembleDebug
+      - name: Copiar APK a enlace público de descarga
+        run: |
+          mkdir -p www-public/descargas
+          cp android/app/build/outputs/apk/debug/app-debug.apk www-public/descargas/Raspaditas-Vendedora.apk
       - name: Publicar APK para descargar
         uses: actions/upload-artifact@v4
         with:
