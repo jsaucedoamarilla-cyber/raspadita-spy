@@ -1,0 +1,11 @@
+QUE SUBIR A GITHUB (solo 2 archivos)
+
+1) Carpeta 1_repositorio_raspadita-spy
+   Archivo: san-pedro.html
+   Subir en el repositorio raspadita-spy (en la pagina principal, junto a admin.html e index.html).
+
+2) Carpeta 2_repositorio_raspadita-millonaria/customer
+   Archivo: index.html
+   Subir en el repositorio raspadita-millonaria, dentro de la carpeta "customer".
+
+En GitHub: Add file > Upload files > elegir el archivo > Commit changes.
