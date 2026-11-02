@@ -1,0 +1,47 @@
+
+name: Generar APK Raspadita Spy
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "raspadita-apk/android-webview/**"
+      - "raspadita-apk/www/**"
+      - ".github/workflows/main.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar codigo
+        uses: actions/checkout@v4
+
+      - name: Configurar Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Configurar Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.2"
+
+      - name: Sincronizar web actual con los recursos del APK
+        working-directory: raspadita-apk/android-webview
+        run: cp -R ../www/. app/src/main/assets/www/
+
+      - name: Compilar APK
+        working-directory: raspadita-apk/android-webview
+        run: gradle assembleDebug
+
+      - name: Preparar APK para descargar
+        uses: actions/upload-artifact@v4
+        with:
+          name: Raspadita-Spy-APK
+          path: raspadita-apk/android-webview/app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
+          retention-days: 14

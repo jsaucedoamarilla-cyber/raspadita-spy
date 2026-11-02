@@ -1,0 +1,52 @@
+name: Publicar Raspadita San Pedro del Ycuamandyyu
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "raspadita-apk/www/**"
+      - "millonaria/**"
+      - "docs/prueba-ruleta.html"
+      - ".github/workflows/publicar-web.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: true
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Preparar página pública con selector en el inicio
+        run: |
+          rm -rf public-site
+          cp -R raspadita-apk/www public-site
+          mkdir -p public-site/san-pedro public-site/millonaria
+          cp raspadita-apk/www/index.html public-site/san-pedro/index.html
+          cp raspadita-apk/www/selector.html public-site/index.html
+          cp millonaria/index.html public-site/millonaria/index.html
+          cp millonaria/admin.html public-site/millonaria/admin.html
+          cp docs/prueba-ruleta.html public-site/prueba-ruleta.html
+      - name: Cargar página pública
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: public-site
+
+      - name: Publicar página
+        id: deployment
+        uses: actions/deploy-pages@v4

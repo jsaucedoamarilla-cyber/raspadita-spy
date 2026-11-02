@@ -1,0 +1,6 @@
+Copiá toda la carpeta www/ a:
+  app/src/main/assets/www/
+
+Ejemplo:
+  mkdir -p app/src/main/assets
+  cp -r ../www app/src/main/assets/

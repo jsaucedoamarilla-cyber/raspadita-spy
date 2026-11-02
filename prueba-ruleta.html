@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Prueba segura de ruleta · Raspadita San Pedro</title>
+<style>
+:root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,sans-serif;background:#101827;color:#fff;padding:20px}.wrap{max-width:520px;margin:auto}.card{background:#1b2940;border:1px solid #34445f;border-radius:20px;padding:20px;margin:14px 0}h1{font-size:1.55rem;margin:.2em 0}.sub{color:#c7d2e4;line-height:1.5}.warning{background:#3b2b16;border:1px solid #8e6727;padding:12px;border-radius:12px;color:#ffe2a5;font-weight:650}.wheel{width:min(78vw,300px);height:min(78vw,300px);border-radius:50%;margin:22px auto;background:conic-gradient(#f6c453 0 45deg,#243b65 45deg 90deg,#e85d75 90deg 135deg,#243b65 135deg 180deg,#43b7a7 180deg 225deg,#243b65 225deg 270deg,#a78bfa 270deg 315deg,#243b65 315deg);border:8px solid #f6c453;display:flex;align-items:center;justify-content:center;position:relative;box-shadow:0 0 0 5px #25354e,0 10px 30px #0008}.wheel:before{content:"▼";position:absolute;top:-17px;color:#fff;font-size:30px;text-shadow:0 2px 4px #000}.center{background:#101827;border:3px solid #f6c453;border-radius:50%;width:43%;height:43%;display:flex;align-items:center;justify-content:center;text-align:center;font-weight:900;padding:10px;font-size:1rem}.spin{width:100%;border:0;border-radius:12px;padding:15px;background:#f6c453;color:#171717;font-size:1.05rem;font-weight:800}.spin:disabled{opacity:.6}.result{text-align:center;font-size:1.35rem;font-weight:850;min-height:36px}.small{font-size:.88rem;color:#c7d2e4}.links a{color:#f6c453}.spinanim{animation:turn 2.2s cubic-bezier(.12,.7,.1,1) forwards}@keyframes turn{to{transform:rotate(1440deg)}}.pill{display:inline-block;background:#273b59;border-radius:999px;padding:5px 10px;font-size:.8rem}
+</style>
+</head>
+<body><main class="wrap">
+<div class="pill">MODO DE PRUEBA · SIMULACIÓN</div>
+<h1>🎡 Ruleta de Raspadita San Pedro</h1>
+<p class="sub">Esta pantalla sirve para probar el botón y el flujo visual de la ruleta. No usa la base de datos del juego ni entrega premios reales.</p>
+<div class="warning">⚠️ RESULTADOS SIMULADOS. No son premios ni comprobantes de pago.</div>
+<section class="card">
+<div id="wheel" class="wheel"><div id="center" class="center">PRUEBA<br>SEGURA</div></div>
+<div id="result" class="result" aria-live="polite">Tocá “Girar ruleta de prueba”.</div>
+<p id="hint" class="small" style="text-align:center">La simulación puede mostrar “Otra jugada” para probar un segundo giro.</p>
+<button id="spin" class="spin">Girar ruleta de prueba</button>
+</section>
+<section class="card">
+<h2>¿Qué estamos comprobando?</h2>
+<p>✅ Que el botón responda y la animación termine.</p>
+<p>✅ Que el mensaje de resultado se vea claramente.</p>
+<p>❌ No confirma la ruleta real, el inventario ni los premios de Supabase.</p>
+</section>
+<section class="card links">
+<h3>Después probamos WhatsApp</h3>
+<p class="sub">Cuando termines esta simulación, volvé al chat y te paso el enlace para comprobar el botón de compartir con una boleta de prueba, sin publicar ni cobrar un premio.</p>
+<a href="https://jsaucedoamarilla-cyber.github.io/raspadita-spy/">Volver al juego San Pedro</a>
+</section>
+</main>
+<script>
+(()=>{const wheel=document.getElementById('wheel'),center=document.getElementById('center'),result=document.getElementById('result'),hint=document.getElementById('hint'),btn=document.getElementById('spin');let extra=false,turn=0,busy=false;const outcomes=['NADA (SIMULADO)','OTRA JUGADA (SIMULADA)','PREMIO DE EJEMPLO (NO REAL)'];btn.addEventListener('click',()=>{if(busy)return;busy=true;btn.disabled=true;result.textContent='Girando…';center.innerHTML='GIRANDO';wheel.classList.remove('spinanim');wheel.style.transform='rotate(0deg)';void wheel.offsetWidth;wheel.classList.add('spinanim');turn++;setTimeout(()=>{wheel.classList.remove('spinanim');const outcome=outcomes[Math.floor(Math.random()*outcomes.length)];result.textContent=outcome;center.textContent='RESULTADO';busy=false;btn.disabled=false;if(outcome.startsWith('OTRA')&&!extra){extra=true;btn.textContent='Hacer segundo giro de prueba';hint.textContent='La simulación permite un giro adicional para ensayar el flujo.'}else{if(extra){hint.textContent='Prueba visual finalizada. No se modificó ninguna boleta real.'}btn.textContent='Girar otra vez (simulación)';extra=false;}},2250);});})();
+</script></body></html>

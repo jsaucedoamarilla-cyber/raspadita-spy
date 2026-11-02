@@ -1,0 +1,2 @@
+rootProject.name = "RaspaditaSPY"
+include ':app'
