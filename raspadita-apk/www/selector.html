@@ -1,11 +1,9 @@
 <!doctype html>
-<!-- Publicación forzada para activar GitHub Pages; corrección de enlaces individuales San Pedro. -->
 <html lang="es">
 <head>
 <script>
-// Los enlaces con token deben abrir la boleta individual de San Pedro, no el selector.
 if (new URLSearchParams(window.location.search).has('t')) {
-  window.location.replace('san-pedro/index.html' + window.location.search + window.location.hash);
+  window.location.replace('san-pedro/' + window.location.search + window.location.hash);
 }
 </script>
 <meta charset="utf-8">
@@ -32,8 +30,8 @@ p{color:#c4b5fd;margin:0 0 27px}
 <div class="logo">🎟️</div>
 <h1>RASPADITAS</h1>
 <p>Elegí el juego que vas a utilizar</p>
-<a class="game sp" href="vendedora.html"><strong>🎟️ San Pedro del Ycuamandyyú</strong><span>Ingresar al juego y las boletas de San Pedro</span></a>
-<a class="game mi" href="millonaria-vendedora.html"><strong>🎡 Raspadita Millonaria</strong><span>Ingresar al juego con ruleta de premios</span></a>
+<a class="game sp" href="san-pedro/"><strong>🎟️ San Pedro del Ycuamandyyú</strong><span>Ingresar al juego y las boletas de San Pedro</span></a>
+<a class="game mi" href="millonaria/index.html"><strong>🎡 Raspadita Millonaria</strong><span>Ingresar al juego con ruleta de premios</span></a>
 <div class="hint">Cada juego conserva su propia configuración. Si una boleta ya fue jugada, no la vuelvas a seleccionar.</div>
 </main>
 </body>
