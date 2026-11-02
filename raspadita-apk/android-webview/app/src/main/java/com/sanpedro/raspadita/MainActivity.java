@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 String url = request.getUrl().toString();
                 if (isAssetDirectoryUrl(url)) {
-                    view.loadUrl("file:///android_asset/www/index.html" + queryAndFragment(url));
+                    view.loadUrl(indexForDirectoryUrl(url));
                     return true;
                 }
                 return handleExternalUrl(url);
@@ -60,7 +60,14 @@ public class MainActivity extends AppCompatActivity {
         Uri uri = Uri.parse(rawUrl);
         String path = uri.getPath() == null ? "" : uri.getPath();
         return "file".equalsIgnoreCase(uri.getScheme())
-                && "/android_asset/www/".equals(path);
+                && path.startsWith("/android_asset/www/")
+                && path.endsWith("/");
+    }
+
+    private String indexForDirectoryUrl(String rawUrl) {
+        Uri uri = Uri.parse(rawUrl);
+        String path = uri.getPath() == null ? "/android_asset/www/" : uri.getPath();
+        return "file://" + path + "index.html" + queryAndFragment(rawUrl);
     }
 
     private String queryAndFragment(String rawUrl) {
