@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 if (isAssetDirectoryUrl(url)) {
-                    view.loadUrl("file:///android_asset/www/index.html" + queryAndFragment(url));
+                    view.loadUrl(indexForDirectoryUrl(url));
                     return true;
                 }
                 return handleExternalUrl(url);
