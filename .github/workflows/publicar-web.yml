@@ -44,6 +44,16 @@ jobs:
           cp millonaria/index.html public-site/millonaria/index.html
           cp millonaria/admin.html public-site/millonaria/admin.html
           cp docs/prueba-ruleta.html public-site/prueba-ruleta.html
+          touch public-site/.nojekyll
+          cat > public-site/404.html <<'EOF'
+          <!doctype html>
+          <html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="refresh" content="0;url=/raspadita-spy/"><title>Raspaditas</title></head><body><p>Abriendo Raspaditas… <a href="/raspadita-spy/">Continuar</a></p></body></html>
+          EOF
+          test -s public-site/index.html
+          test -s public-site/san-pedro/index.html
+          test -s public-site/san-pedro.html
+          test -s public-site/millonaria/index.html
+
       - name: Cargar página pública
         uses: actions/upload-pages-artifact@v3
         with:
